@@ -47,12 +47,11 @@ jobs:
           npm init -y
           npm install @google/generative-ai
 
-      # スクリプト実行（working-directory指定で迷子防止！）
+      # スクリプト実行
       - name: Translate README
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: node .github/scripts/translate-readme.cjs
-        working-directory: .github/actions-tmp
+        run: node .github/scripts/translate-readme.cjs ./README.ja.md
 
       # 変更チェックとコミット
       - name: Check for changes
