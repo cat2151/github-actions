@@ -33,7 +33,7 @@ jobs:
         with:
           repository: cat2151/github-actions
           path: .github/actions-tmp
-          token: ${{ secrets.GITHUB_TOKEN }}  # トークン忘れずに！
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       # Node.jsセットアップ
       - name: Setup Node.js
@@ -47,12 +47,12 @@ jobs:
           npm init -y
           npm install @google/generative-ai
 
-      # スクリプト実行（共有リポジトリから）
+      # スクリプト実行（working-directory指定で迷子防止！）
       - name: Translate README
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: |
-          node .github/actions-tmp/scripts/translate-readme.cjs
+        run: node .github/scripts/translate-readme.cjs
+        working-directory: .github/actions-tmp
 
       # 変更チェックとコミット
       - name: Check for changes
