@@ -4,40 +4,37 @@ const path = require('path');
 
 async function translateReadme() {
   try {
-    // 環境変数の確認
     if (!process.env.GEMINI_API_KEY) {
       throw new Error('GEMINI_API_KEY environment variable is not set');
     }
 
     console.log('Starting README translation process...');
 
-    // Gemini API の初期化
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
-    // プロジェクトルートへのパスを設定
-    const projectRoot = path.resolve(__dirname, '../../');
+    // ✅ 呼び出し元リポジトリのルートを基準にする
+    const projectRoot = process.cwd();
     const readmeJaPath = path.join(projectRoot, 'README.ja.md');
     const readmePath = path.join(projectRoot, 'README.md');
 
-    // README.ja.md の存在確認と読み込み
+    // Gemini API 初期化
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+    // README.ja.md 存在確認
     try {
       await fs.access(readmeJaPath);
-    } catch (error) {
+    } catch {
       throw new Error('README.ja.md file not found');
     }
 
     const japaneseContent = await fs.readFile(readmeJaPath, 'utf-8');
-
     if (!japaneseContent.trim()) {
       console.log('README.ja.md is empty, skipping translation.');
       return;
     }
 
-    console.log(`README.ja.md content length: ${japaneseContent.length} characters`);
+    console.log(`README.ja.md length: ${japaneseContent.length} chars`);
     console.log('Sending translation request to Gemini API...');
 
-    // 翻訳プロンプト
     const prompt = `Please translate the following Japanese Markdown text to English.
 Keep the Markdown formatting intact, including headers, links, code blocks, and other formatting elements.
 Make the translation natural and professional for an English-speaking developer audience.
@@ -49,54 +46,34 @@ IMPORTANT: Return ONLY the translated Markdown content. Do NOT wrap the response
 Japanese text to translate:
 ${japaneseContent}`;
 
-    // Gemini API で翻訳
     const result = await model.generateContent(prompt);
-    let translatedText = result.response.text();
+    let translatedText = result.response.text().trim();
 
-    if (!translatedText || !translatedText.trim()) {
-      throw new Error('Translation result is empty');
-    }
+    // 不要なコードブロック除去
+    translatedText = translatedText
+      .replace(/^```markdown\s*\n/, '')
+      .replace(/\n```\s*$/, '')
+      .trim();
 
-    // 余分なコードブロック記号を除去
-    translatedText = translatedText.replace(/^```markdown\s*\n/, '').replace(/\n```\s*$/, '');
-    translatedText = translatedText.trim();
-
-    console.log(`Translation result length: ${translatedText.length} characters`);
-
-    // 既存のREADME.mdと比較
+    // 既存READMEと比較
     let existingContent = '';
     try {
       existingContent = await fs.readFile(readmePath, 'utf-8');
-    } catch (error) {
+    } catch {
       console.log('README.md does not exist yet, will create new file');
     }
 
     if (existingContent === translatedText) {
-      console.log('Translation result is identical to existing README.md, no update needed');
+      console.log('No update needed');
       return;
     }
 
-    // 翻訳結果をREADME.mdに書き込み
     await fs.writeFile(readmePath, translatedText, 'utf-8');
-
-    console.log('Translation completed successfully!');
-    console.log('README.md has been updated with the English translation');
-
-    // 翻訳結果の簡単なプレビュー
-    const preview = translatedText.substring(0, 200);
-    console.log('Translation preview:');
-    console.log('---');
-    console.log(preview + (translatedText.length > 200 ? '...' : ''));
-    console.log('---');
-
+    console.log('README.md updated successfully!');
   } catch (error) {
     console.error('Translation failed:', error.message);
-    if (error.response) {
-      console.error('API Response:', error.response);
-    }
     process.exit(1);
   }
 }
 
-// メイン処理実行
 translateReadme();
