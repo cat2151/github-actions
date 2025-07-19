@@ -2,6 +2,11 @@ name: Auto Translate README
 
 on:
   workflow_call:
+    inputs:
+      target-branch:
+        required: false
+        type: string
+        default: main
     secrets:
       GEMINI_API_KEY:
         required: true
@@ -14,11 +19,11 @@ jobs:
       pull-requests: write
 
     steps:
-      # 呼び出し元リポジトリだけcheckout
       - name: Checkout target repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ inputs.target-branch }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
