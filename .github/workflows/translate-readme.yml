@@ -43,9 +43,10 @@ jobs:
       - name: list directory
         run: |
           echo "pwd: $(pwd)"
-          echo "pwd info: $(ls -l .)"
+          echo "pwd info: $(ls -al .)"
           echo "workspace: ${GITHUB_WORKSPACE}"
-          echo "workspace info: $(ls -l ${GITHUB_WORKSPACE})"
+          echo "workspace info: $(ls -al ${GITHUB_WORKSPACE})"
+          echo ".github info: $(ls -alR .github)"
 
       # スクリプト実行
       - name: Translate README
