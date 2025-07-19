@@ -39,11 +39,19 @@ jobs:
           npm init -y
           npm install @google/generative-ai
 
-      # スクリプト実行（github-actionsリポジトリ内のスクリプトを直接参照）
+      # デバッグ：スクリプトディレクトリの内容を確認
+      - name: Debug List scripts directory
+        run: ls -l ${{ github.action_path }}/../scripts/
+
+      # デバッグ：ワークスペースのルート内容を確認
+      - name: Debug List workspace root
+        run: ls -l ${{ github.workspace }}
+
+      # スクリプト実行（共通ワークフロー内スクリプトを安全に参照）
       - name: Translate README
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: node $GITHUB_ACTION_PATH/../scripts/translate-readme.cjs ./README.ja.md
+        run: node ${{ github.action_path }}/../scripts/translate-readme.cjs ./README.ja.md
 
       # 変更チェックとコミット
       - name: Check for changes
