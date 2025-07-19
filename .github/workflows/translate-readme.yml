@@ -42,10 +42,10 @@ jobs:
       # デバッグ：スクリプトディレクトリの内容を確認
       - name: Debug script directory
         run: |
-          echo "action_path: ${{ github.action_path }}"
+          echo "action_path: ${GITHUB_ACTION_PATH}"
           echo "pwd: $(pwd)"
-          echo "directory info: $(ls -l ${{ github.action_path }}/../scripts/)"
-          echo "workspace info: $(ls -l ${{ github.workspace }})"
+          echo "directory info: $(ls -l ${GITHUB_ACTION_PATH}/../scripts/)"
+          echo "workspace info: $(ls -l ${GITHUB_WORKSPACE})"
 
       # スクリプト実行（共通ワークフロー内スクリプトを安全に参照）
       - name: Translate README
