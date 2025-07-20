@@ -47,16 +47,19 @@ jobs:
 
       - name: Add link to issue note in issue body
         uses: actions/github-script@v7
+        env:
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          ISSUE_BODY: ${{ inputs.issue_body }}
         with:
           script: |
-            const notePath = `issue-notes/${{ inputs.issue_number }}.md`;
+            const notePath = `issue-notes/${process.env.ISSUE_NUMBER}.md`;
             const repo = context.repo.repo;
             const owner = context.repo.owner;
             const noteUrl = `https://github.com/${owner}/${repo}/blob/main/${notePath}`;
-            const newBody = `[issue-notes/${{ inputs.issue_number }}.md](${noteUrl})\n\n${{ inputs.issue_body }}`;
+            const newBody = `[issue-notes/${process.env.ISSUE_NUMBER}.md](${noteUrl})\n\n${process.env.ISSUE_BODY}`;
             await github.rest.issues.update({
               owner,
               repo,
-              issue_number: Number(inputs.issue_number),
+              issue_number: Number(process.env.ISSUE_NUMBER),
               body: newBody
             });
