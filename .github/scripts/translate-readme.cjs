@@ -44,7 +44,7 @@ Make the translation natural and professional for an English-speaking developer 
 If there are any technical terms or project-specific terms, keep them appropriate for a software development context.
 Preserve all URLs, code snippets, and special formatting exactly as they are.
 
-IMPORTANT: Return ONLY the translated Markdown content. Do NOT wrap the response in code blocks or add MERMAID any extra formatting markers like \`\`\`markdown or \`\`\`.
+IMPORTANT: Return ONLY the translated Markdown content. Do NOT wrap the response in code blocks or add any extra formatting markers like \`\`\`markdown or \`\`\`.
 
 Japanese text to translate:
 ${japaneseContent}`;
