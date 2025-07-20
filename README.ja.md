@@ -1,6 +1,6 @@
 # GitHub Actions 共通ワークフロー集
 
-**このリポジトリは、複数プロジェクトで使い回せるGitHub Actions共通ワークフロー集です**
+このリポジトリは、**複数プロジェクトで使い回せるGitHub Actions共通ワークフロー集**です
 
 <p align="left">
   <a href="README.ja.md"><img src="https://img.shields.io/badge/🇯🇵-Japanese-red.svg" alt="Japanese"></a>
