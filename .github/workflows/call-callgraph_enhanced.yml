@@ -1,0 +1,13 @@
+# 呼び出し元ワークフロー: call-callgraph_enhanced.yml
+name: Call Call Graph Enhanced
+
+on:
+  schedule:
+    # 毎日午前5時(JST) = UTC 20:00前日
+    - cron: '0 20 * * *'
+  workflow_dispatch:
+
+jobs:
+  call-callgraph-enhanced:
+    # uses: ./.github/workflows/callgraph_enhanced.yml # ローカルでのテスト用
+    uses: cat2151/github-actions/.github/workflows/callgraph_enhanced.yml
