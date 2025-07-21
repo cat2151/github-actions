@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-function extractCallerinfo(sarifFile) {
+function extractCallerinfo(sarifFile, allowedFiles) {
   try {
     const fileContent = fs.readFileSync(sarifFile, 'utf8');
     const sarif = JSON.parse(fileContent);
@@ -35,7 +35,7 @@ function extractCallerinfo(sarifFile) {
             const loc = result.locations[0].physicalLocation;
             const fileUri = loc.artifactLocation.uri.replace(/^file:\/\//, '').replace(/\\/g, '/');
             const fileName = fileUri.startsWith('src/') ? fileUri : 'src/' + path.basename(fileUri);
-            if (isValidSourceFile(fileName)) {
+            if (isValidSourceFile(fileName, allowedFiles)) {
               const srcLine = getSourceLine(fileName, loc.region?.startLine || 1);
               results.push({
                 caller,
@@ -57,7 +57,7 @@ function extractCallerinfo(sarifFile) {
   }
 }
 
-function extractCalleeinfo(sarifFile) {
+function extractCalleeinfo(sarifFile, allowedFiles) {
   try {
     const fileContent = fs.readFileSync(sarifFile, 'utf8');
     const sarif = JSON.parse(fileContent);
@@ -73,7 +73,7 @@ function extractCalleeinfo(sarifFile) {
           if (calleeMatch) {
             const callee = calleeMatch[1].trim();
             const fileName = calleeMatch[2].trim().startsWith('src/') ? calleeMatch[2].trim() : 'src/' + calleeMatch[2].trim();
-            if (isValidSourceFile(fileName)) {
+            if (isValidSourceFile(fileName, allowedFiles)) {
               const line = parseInt(calleeMatch[3], 10);
               let srcLine = null;
               try {

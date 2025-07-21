@@ -40,13 +40,11 @@ function getSourceLine(file, line) {
   }
 }
 
-function isValidSourceFile(filePath) {
+function isValidSourceFile(filePath, allowedFiles) {
+  if (!Array.isArray(allowedFiles)) {
+    throw new Error('allowedFiles must be provided as an array');
+  }
   const normalizedPath = filePath.replace(/\\/g, '/');
-  const allowedFiles = [
-    'src/main.js',
-    'src/mml2json.js',
-    'src/play.js'
-  ];
   for (const allowedFile of allowedFiles) {
     if (normalizedPath === allowedFile || normalizedPath.endsWith('/' + allowedFile)) {
       return true;
@@ -55,12 +53,15 @@ function isValidSourceFile(filePath) {
   return false;
 }
 
-function convertDetailedData(detailedData, calleeInfo) {
+function convertDetailedData(detailedData, calleeInfo, allowedFiles) {
+  if (!Array.isArray(allowedFiles)) {
+    throw new Error('allowedFiles must be provided as an array');
+  }
   const nodes = new Map();
   const edges = [];
   const calleeLocationMap = new Map();
   detailedData.forEach((item) => {
-    if (item.callee && item.file && item.line && item.line > 0 && isValidSourceFile(item.file)) {
+    if (item.callee && item.file && item.line && item.line > 0 && isValidSourceFile(item.file, allowedFiles)) {
       if (!calleeLocationMap.has(item.callee)) {
         calleeLocationMap.set(item.callee, []);
       }
@@ -111,7 +112,7 @@ function convertDetailedData(detailedData, calleeInfo) {
         calleeFncDef: calleeFncDef
       });
     }
-    if (item.file && item.line && item.line > 0 && isValidSourceFile(item.file)) {
+    if (item.file && item.line && item.line > 0 && isValidSourceFile(item.file, allowedFiles)) {
       const callerNode = nodes.get(item.caller);
       if (!callerNode.locations.some(loc => loc.file === item.file && loc.line === item.line)) {
         callerNode.locations.push({
@@ -134,7 +135,7 @@ function convertDetailedData(detailedData, calleeInfo) {
       target: item.callee,
       hasCalleeLocationInfo: calleeLocationMap.has(item.callee)
     };
-    if (item.file && item.line && item.line > 0 && isValidSourceFile(item.file)) {
+    if (item.file && item.line && item.line > 0 && isValidSourceFile(item.file, allowedFiles)) {
       edgeData.file = item.file;
       edgeData.line = item.line;
       edgeData.column = item.column || 1;
