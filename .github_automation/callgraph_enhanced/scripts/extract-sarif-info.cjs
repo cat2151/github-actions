@@ -3,6 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { isValidSourceFile } = require('./callgraph-utils.cjs');
 
 function extractCallerinfo(sarifFile, allowedFiles) {
   try {
@@ -80,9 +81,7 @@ function extractCalleeinfo(sarifFile, allowedFiles) {
             if (isValidSourceFile(fileName, allowedFiles)) {
               const line = parseInt(calleeMatch[3], 10);
               let srcLine = null;
-              try {
-                srcLine = getSourceLine(fileName, line);
-              } catch (e) {}
+              srcLine = getSourceLine(fileName, line);
               results.push({
                 callee,
                 file: fileName,

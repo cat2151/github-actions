@@ -53,18 +53,9 @@ fs.writeFileSync(outputPath, html);
 console.log('コールグラフHTMLを生成しました:', outputPath);
 
 // デバッグ用: Caller sourceLine 付きの詳細データをJSONで出力
-try {
-  writeDebugCallerSourceLines(sarifPath, path.resolve('generated-docs/callerSourceLines.json'));
-  console.log('✓ callerSourceLines.json (with sourceLine) generated');
-} catch (e) {
-  console.warn('Failed to write callerSourceLines.json:', e);
-}
-
+writeDebugCallerSourceLines(sarifPath, path.resolve('generated-docs/callerSourceLines.json'));
+console.log('✓ callerSourceLines.json (with sourceLine) generated');
 
 // デバッグ用: Callee sourceLine 付きの詳細データをJSONで出力
-try {
-  writeDebugCalleeSourceLines(sarifPath, path.resolve('generated-docs/calleeSourceLines.json'));
-  console.log('✓ calleeSourceLines.json (with callee sourceLine) generated');
-} catch (e) {
-  console.warn('Failed to write calleeSourceLines.json:', e);
-}
+writeDebugCalleeSourceLines(sarifPath, path.resolve('generated-docs/calleeSourceLines.json'));
+console.log('✓ calleeSourceLines.json (with callee sourceLine) generated');
