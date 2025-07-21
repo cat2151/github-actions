@@ -51,9 +51,13 @@ function extractCallerinfo(sarifFile, allowedFiles) {
         }
       });
     });
+    if (results.length === 0) {
+      console.log('SARIF内容:', JSON.stringify(sarif, null, 2));
+      throw new Error('該当するcaller情報が見つかりませんでした');
+    }
     return results;
-  } catch (error) {
-    return [];
+  } catch (e) {
+    throw e;
   }
 }
 
@@ -61,7 +65,7 @@ function extractCalleeinfo(sarifFile, allowedFiles) {
   try {
     const fileContent = fs.readFileSync(sarifFile, 'utf8');
     const sarif = JSON.parse(fileContent);
-    if (!sarif.runs || sarif.runs.length === 0) return [];
+    if (!sarif.runs || sarif.runs.length === 0) throw new Error('SARIFファイルにrunsがありません');
     const results = [];
     sarif.runs.forEach((run) => {
       if (!run.results) return;
@@ -90,9 +94,13 @@ function extractCalleeinfo(sarifFile, allowedFiles) {
         }
       });
     });
+    if (results.length === 0) {
+      console.log('SARIF内容:', JSON.stringify(sarif, null, 2));
+      throw new Error('該当するcallee情報が見つかりませんでした');
+    }
     return results;
   } catch (e) {
-    return [];
+    throw e;
   }
 }
 

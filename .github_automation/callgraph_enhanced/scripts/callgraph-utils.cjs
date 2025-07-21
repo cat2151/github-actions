@@ -54,7 +54,13 @@ function isValidSourceFile(filePath, allowedFiles) {
 }
 
 function convertDetailedData(detailedData, calleeInfo, allowedFiles) {
-  if (!Array.isArray(allowedFiles)) {
+  if (!Array.isArray(detailedData) || detailedData.length === 0) {
+    throw new Error('convertDetailedData: detailedDataが0件です。入力データを確認してください。');
+  }
+  if (!Array.isArray(calleeInfo) || calleeInfo.length === 0) {
+    throw new Error('convertDetailedData: calleeInfoが0件です。入力データを確認してください。');
+  }
+  if (!Array.isArray(allowedFiles) || allowedFiles.length === 0) {
     throw new Error('allowedFiles must be provided as an array');
   }
   const nodes = new Map();
