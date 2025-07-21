@@ -10,7 +10,7 @@ on:
 jobs:
   call-callgraph-enhanced:
     # uses: ./.github/workflows/callgraph_enhanced.yml # ローカルでのテスト用
-    uses: cat2151/github-actions/.github/workflows/callgraph_enhanced.yml
+    uses: cat2151/github-actions/.github/workflows/callgraph_enhanced.yml@main
     with:
       CONFIG_NAME: .github/actions-tmp/.github_automation/callgraph_enhanced/config/example.json # このファイルは共通ワークフロー側にありますので参考にしてください（この記述になっているのは、共通ワークフロー側で .github/actions-tmp/ にcheckoutしているため）
       # CONFIG_NAME: ./my.json # projectごとに設定を変える場合用。上記と衝突しないファイル名にしてください
