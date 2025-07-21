@@ -12,15 +12,15 @@
         <h1>Function Call Graph with Source Links</h1>
         <div class="stats-container">
             <div class="stats">
-                <div class="stat-value">0</div>
+                <div class="stat-value">3</div>
                 <div class="stat-label">Functions</div>
             </div>
             <div class="stats">
-                <div class="stat-value">0</div>
+                <div class="stat-value">2</div>
                 <div class="stat-label">Call Relationships</div>
             </div>
             <div class="stats">
-                <div class="stat-value">0</div>
+                <div class="stat-value">2</div>
                 <div class="stat-label">With Callee Location</div>
             </div>
         </div>
@@ -46,13 +46,85 @@
     </div>
 
     <div class="generated-time">
-        Generated: 2025/7/21 12:13:33
+        Generated: 2025/7/21 14:21:23
     </div>
 
     <script>
       const graphData = {
-  "nodes": [],
-  "edges": []
+  "nodes": [
+    {
+      "id": "main (main.js:6)",
+      "label": "main (main.js:6)",
+      "locations": [
+        {
+          "file": "src/main.js",
+          "line": 7,
+          "column": 5,
+          "type": "caller",
+          "sourceLine": "    greet('World');"
+        }
+      ],
+      "hasLocationInfo": true,
+      "hasCalleeLocationInfo": true
+    },
+    {
+      "id": "greet (main.js:2)",
+      "label": "greet (main.js:2)",
+      "locations": [
+        {
+          "file": "src/main.js",
+          "line": 7,
+          "column": 5,
+          "type": "definition",
+          "sourceLine": "    greet('World');"
+        }
+      ],
+      "hasLocationInfo": true,
+      "hasCalleeLocationInfo": true,
+      "calleeFncDef": "function greet(name) {"
+    },
+    {
+      "id": "global (main.js:10)",
+      "label": "global (main.js:10)",
+      "locations": [
+        {
+          "file": "src/main.js",
+          "line": 10,
+          "column": 1,
+          "type": "caller",
+          "sourceLine": "main();"
+        }
+      ],
+      "hasLocationInfo": true,
+      "hasCalleeLocationInfo": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-0",
+      "source": "main (main.js:6)",
+      "target": "greet (main.js:2)",
+      "hasCalleeLocationInfo": true,
+      "file": "src/main.js",
+      "line": 7,
+      "column": 5,
+      "location": "src/main.js:7:5",
+      "hasLocationInfo": true,
+      "sourceLine": "    greet('World');"
+    },
+    {
+      "id": "edge-1",
+      "source": "global (main.js:10)",
+      "target": "main (main.js:6)",
+      "hasCalleeLocationInfo": true,
+      "file": "src/main.js",
+      "line": 10,
+      "column": 1,
+      "location": "src/main.js:10:1",
+      "hasLocationInfo": true,
+      "sourceLine": "main();"
+    }
+  ]
 };
       const repo = "cat2151/github-actions";
       const branch = "main";
