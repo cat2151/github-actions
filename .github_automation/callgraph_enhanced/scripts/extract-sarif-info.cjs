@@ -3,7 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { isValidSourceFile } = require('./callgraph-utils.cjs');
+const { isValidSourceFile, getSourceLine } = require('./common-utils.cjs');
 
 function extractCallerinfo(sarifFile, allowedFiles) {
   try {

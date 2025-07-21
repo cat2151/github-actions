@@ -3,9 +3,14 @@
 
 const fs = require('fs');
 const path = require('path');
-const { extractCallerinfo, extractCalleeinfo } = require('./extract-sarif-info.cjs');
+const { getSourceLine, isValidSourceFile } = require('./common-utils.cjs');
 
-function writeDebugCallerSourceLines(sarifFile, debugOutFile) {
+// 注意：extractCallerinfo, extractCalleeinfo は、requireするかわりに、extractCallerinfo, extractCalleeinfo を引数で渡す設計にしてください。循環参照防止のためです。
+
+function writeDebugCallerSourceLines(sarifFile, debugOutFile, extractCallerinfo) {
+  if (typeof extractCallerinfo !== 'function') {
+    throw new Error('extractCallerinfo 関数を引数で渡してください');
+  }
   const results = extractCallerinfo(sarifFile);
   try {
     fs.writeFileSync(debugOutFile, JSON.stringify(results, null, 2), 'utf8');
@@ -15,7 +20,10 @@ function writeDebugCallerSourceLines(sarifFile, debugOutFile) {
   }
 }
 
-function writeDebugCalleeSourceLines(sarifFile, debugOutFile) {
+function writeDebugCalleeSourceLines(sarifFile, debugOutFile, extractCalleeinfo) {
+  if (typeof extractCalleeinfo !== 'function') {
+    throw new Error('extractCalleeinfo 関数を引数で渡してください');
+  }
   const results = extractCalleeinfo(sarifFile);
   try {
     fs.writeFileSync(debugOutFile, JSON.stringify(results, null, 2), 'utf8');
