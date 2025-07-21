@@ -6,6 +6,9 @@ const path = require('path');
 const { isValidSourceFile, getSourceLine } = require('./common-utils.cjs');
 
 function extractCallerinfo(sarifFile, allowedFiles) {
+  if (!Array.isArray(allowedFiles) || allowedFiles.length === 0) {
+    throw new Error('extractCallerinfo: allowedFiles must be a non-empty array');
+  }
   try {
     const fileContent = fs.readFileSync(sarifFile, 'utf8');
     const sarif = JSON.parse(fileContent);
@@ -63,6 +66,9 @@ function extractCallerinfo(sarifFile, allowedFiles) {
 }
 
 function extractCalleeinfo(sarifFile, allowedFiles) {
+  if (!Array.isArray(allowedFiles) || allowedFiles.length === 0) {
+    throw new Error('extractCalleeinfo: allowedFiles must be a non-empty array');
+  }
   try {
     const fileContent = fs.readFileSync(sarifFile, 'utf8');
     const sarif = JSON.parse(fileContent);

@@ -7,11 +7,14 @@ const { getSourceLine, isValidSourceFile } = require('./common-utils.cjs');
 
 // 注意：extractCallerinfo, extractCalleeinfo は、requireするかわりに、extractCallerinfo, extractCalleeinfo を引数で渡す設計にしてください。循環参照防止のためです。
 
-function writeDebugCallerSourceLines(sarifFile, debugOutFile, extractCallerinfo) {
+function writeDebugCallerSourceLines(sarifFile, debugOutFile, extractCallerinfo, allowedFiles) {
   if (typeof extractCallerinfo !== 'function') {
     throw new Error('extractCallerinfo 関数を引数で渡してください');
   }
-  const results = extractCallerinfo(sarifFile);
+  if (!Array.isArray(allowedFiles) || allowedFiles.length === 0) {
+    throw new Error('writeDebugCallerSourceLines: allowedFiles must be a non-empty array');
+  }
+  const results = extractCallerinfo(sarifFile, allowedFiles);
   try {
     fs.writeFileSync(debugOutFile, JSON.stringify(results, null, 2), 'utf8');
     return true;
@@ -20,11 +23,14 @@ function writeDebugCallerSourceLines(sarifFile, debugOutFile, extractCallerinfo)
   }
 }
 
-function writeDebugCalleeSourceLines(sarifFile, debugOutFile, extractCalleeinfo) {
+function writeDebugCalleeSourceLines(sarifFile, debugOutFile, extractCalleeinfo, allowedFiles) {
   if (typeof extractCalleeinfo !== 'function') {
     throw new Error('extractCalleeinfo 関数を引数で渡してください');
   }
-  const results = extractCalleeinfo(sarifFile);
+  if (!Array.isArray(allowedFiles) || allowedFiles.length === 0) {
+    throw new Error('writeDebugCalleeSourceLines: allowedFiles must be a non-empty array');
+  }
+  const results = extractCalleeinfo(sarifFile, allowedFiles);
   try {
     fs.writeFileSync(debugOutFile, JSON.stringify(results, null, 2), 'utf8');
     return true;
