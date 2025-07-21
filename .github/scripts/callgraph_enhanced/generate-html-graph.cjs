@@ -9,7 +9,8 @@
  */
 const path = require('path');
 const fs = require('fs');
-const { extractCallerinfo, extractCalleeinfo, convertDetailedData, writeDebugCallerSourceLines, writeDebugCalleeSourceLines } = require('../callgraph-utils.cjs');
+const { convertDetailedData, writeDebugCallerSourceLines, writeDebugCalleeSourceLines } = require('./callgraph-utils.cjs');
+const { extractCallerinfo, extractCalleeinfo } = require('./extract-sarif-info.cjs');
 const generateHTML = require('./generateHTML.cjs');
 
 const sarifPath = path.resolve('codeql-results.sarif');
