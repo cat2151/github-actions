@@ -36,8 +36,20 @@ if (isWSL || isAct) {
 
 try {
   execSync('git add generated-docs/callgraph-enhanced.html');
-  execSync('git commit -m "Update callgraph-enhanced.html [auto]"');
-  execSync('git push || echo "No changes to push"');
+  const commitResult = execSync('git commit -m "Update callgraph-enhanced.html [auto]"', { stdio: 'pipe' }).toString();
+  if (/nothing to commit|no changes added to commit|working tree clean/i.test(commitResult)) {
+    console.log('コミットすべき変更がありません。push/pullをスキップします。');
+    process.exit(0);
+  }
+  console.log('コミット完了。push前にpull --rebaseを実行します。');
+  try {
+    execSync('git pull --rebase origin main', { stdio: 'inherit' });
+  } catch (e) {
+    console.error('git pull --rebaseに失敗しました。競合の可能性があります:', e.message);
+    process.exit(1);
+  }
+  console.log('pull --rebase成功。pushを実行します。');
+  execSync('git push', { stdio: 'inherit' });
   console.log('コミット・プッシュ完了');
 } catch (e) {
   console.error('コミット・プッシュに失敗:', e.message);
