@@ -4,6 +4,18 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 class ProjectSummaryGenerator {
+  /**
+   * Gemini APIの出力から不要なコードブロック（```markdown等）を除去
+   */
+  cleanMarkdownCodeBlock(text) {
+    if (!text) return '';
+    // 先頭の ```markdown または ``` を除去
+    text = text.replace(/^```markdown\s*\n?/i, '');
+    text = text.replace(/^```\s*\n?/i, '');
+    // 末尾の ``` を除去
+    text = text.replace(/\n?```\s*$/i, '');
+    return text.trim();
+  }
   constructor() {
     this.projectRoot = path.resolve(__dirname, '../../');
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -627,12 +639,12 @@ Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md)
       // プロジェクト概要生成
       console.log('Generating project overview...');
       const overviewResult = await this.model.generateContent(overviewPrompt);
-      summaries.overview = overviewResult.response.text();
+      summaries.overview = this.cleanMarkdownCodeBlock(overviewResult.response.text());
 
       // 開発状況生成
       console.log('Generating development status...');
       const developmentResult = await this.model.generateContent(developmentPrompt);
-      summaries.development = developmentResult.response.text();
+      summaries.development = this.cleanMarkdownCodeBlock(developmentResult.response.text());
 
       console.log('Both summaries generated successfully');
       return summaries;
