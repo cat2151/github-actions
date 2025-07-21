@@ -12,6 +12,13 @@
 - 🔗 共通化されたワークフローで、どのプロジェクトからも呼ぶだけでOK
 - ✅ メンテは一括、プロジェクト開発に集中できます
 
+## Quick Links
+| 項目 | リンク |
+|------|--------|
+| 📖 プロジェクト概要 | [generated-docs/project-overview.md](generated-docs/project-overview.md) |
+| 📖 コールグラフ | [generated-docs/callgraph-enhanced.html](https://cat2151.github.io/github-actions/generated-docs/callgraph-enhanced.html) |
+| 📊 開発状況 | [generated-docs/development-status.md](generated-docs/development-status.md) |
+
 # notes
 - まだ共通化の作業中です
 - まだワークフロー内容を改善中です
