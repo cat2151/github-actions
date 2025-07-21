@@ -1,13 +1,16 @@
-
-# GitHub Actions Reusable Workflow for Call Graph Generation
 name: Generate Call Graph
-
-# TODO Windowsネイティブでのtestをしていた名残が残っているので、今後整理していく。今はWSL act でtestしており、Windowsネイティブ環境依存問題が解決した
-#  ChatGPTにレビューさせるとそこそこ有用そうな提案が得られたので、今後それをやる予定
-#  agentに自己チェックさせる手も、セカンドオピニオンとして選択肢に入れておく
 
 on:
   workflow_call:
+    inputs:
+      CONFIG_NAME:
+        required: true
+        type: string
+
+env:
+  ACTION_TMP: .github/actions-tmp                                              # 共通ワークフロー側
+  CALLGRAPH: .github/actions-tmp/.github_automation/callgraph_enhanced/scripts # 共通ワークフロー側
+  QUERIES: .github/codeql-queries
 
 jobs:
   check-commits:
@@ -20,10 +23,18 @@ jobs:
         with:
           fetch-depth: 50 # 過去のコミットを取得
 
+      - name: Checkout shared github-actions repo ※共通ワークフロー側。こうしないと呼び出し元リポジトリ側の内容が上書きされて消える
+        uses: actions/checkout@v4
+        with:
+          repository: cat2151/github-actions
+          path: ${{ env.ACTION_TMP }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Check for user commits in last 24 hours
         id: check
         run: |
-          node .github/scripts/callgraph_enhanced/check-commits.cjs
+          node ${{ env.CALLGRAPH }}/check-commits.cjs
 
   generate-callgraph:
     needs: check-commits
@@ -35,7 +46,7 @@ jobs:
       actions: read
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository ※呼び出し元リポジトリ側
         uses: actions/checkout@v4
 
       - name: Set Git identity
@@ -43,12 +54,17 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Remove old CodeQL packages cache
-        run: rm -rf ~/.codeql/packages
+      - name: Checkout shared github-actions repo ※共通ワークフロー側。こうしないと呼び出し元リポジトリ側の内容が上書きされて消える
+        uses: actions/checkout@v4
+        with:
+          repository: cat2151/github-actions
+          path: ${{ env.ACTION_TMP }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check Node.js version
         run: |
-          node .github/scripts/callgraph_enhanced/check-node-version.cjs
+          node ${{ env.CALLGRAPH }}/check-node-version.cjs
 
       - name: Install CodeQL CLI
         run: |
@@ -59,31 +75,27 @@ jobs:
 
       - name: Install CodeQL query packs
         run: |
-          /opt/codeql/codeql pack install .github/codeql-queries
+          /opt/codeql/codeql pack install ${{ env.QUERIES }}
 
       - name: Check CodeQL exists
         run: |
-          node .github/scripts/callgraph_enhanced/check-codeql-exists.cjs
+          node ${{ env.CALLGRAPH }}/check-codeql-exists.cjs
 
       - name: Verify CodeQL Configuration
         run: |
-          node .github/scripts/callgraph_enhanced/analyze-codeql.cjs verify-config
-
-      - name: Remove existing CodeQL DB (if any)
-        run: |
-          rm -rf codeql-db
+          node ${{ env.CALLGRAPH }}/analyze-codeql.cjs verify-config
 
       - name: Perform CodeQL Analysis
         run: |
-          node .github/scripts/callgraph_enhanced/analyze-codeql.cjs analyze
+          node ${{ env.CALLGRAPH }}/analyze-codeql.cjs analyze --overwrite
 
       - name: Check CodeQL Analysis Results
         run: |
-          node .github/scripts/callgraph_enhanced/analyze-codeql.cjs check-results
+          node ${{ env.CALLGRAPH }}/analyze-codeql.cjs check-results
 
       - name: Debug CodeQL execution
         run: |
-          node .github/scripts/callgraph_enhanced/analyze-codeql.cjs debug
+          node ${{ env.CALLGRAPH }}/analyze-codeql.cjs debug
 
       - name: Wait for CodeQL results
         run: |
@@ -91,12 +103,12 @@ jobs:
 
       - name: Find and process CodeQL results
         run: |
-          node .github/scripts/callgraph_enhanced/find-process-results.cjs
+          node ${{ env.CALLGRAPH }}/find-process-results.cjs
 
       - name: Generate HTML graph
         run: |
-          node .github/scripts/callgraph_enhanced/generate-html-graph.cjs
+          node ${{ env.CALLGRAPH }}/generate-html-graph.cjs ${{ inputs.CONFIG_NAME }}
 
       - name: Copy files to generated-docs and commit results
         run: |
-          node .github/scripts/callgraph_enhanced/copy-commit-results.cjs
+          node ${{ env.CALLGRAPH }}/copy-commit-results.cjs
