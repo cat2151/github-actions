@@ -152,6 +152,13 @@ function convertDetailedData(detailedData, calleeInfo, allowedFiles) {
   const blacklist = ['forEach', 'map', 'filter', 'reduce', 'find', 'some', 'every', 'sort', 'concat', 'join', 'push', 'pop', 'shift', 'unshift', 'splice', 'slice'];
   allNodes = allNodes.filter(node => !blacklist.includes(node.id));
   allEdges = allEdges.filter(edge => !blacklist.includes(edge.source) && !blacklist.includes(edge.target));
+  if (allNodes.length === 0) {
+    // エラー時にデバッグ情報を出力
+    console.log('convertDetailedData: detailedData =', detailedData);
+    console.log('convertDetailedData: calleeInfo =', calleeInfo);
+    console.log('convertDetailedData: nodes.values() =', Array.from(nodes.values()));
+    throw new Error('convertDetailedData: allNodesが0件です。入力データやフィルタ条件を確認してください。');
+  }
   return {
     nodes: allNodes,
     edges: allEdges
