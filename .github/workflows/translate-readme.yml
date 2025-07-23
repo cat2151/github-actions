@@ -11,6 +11,11 @@ on:
       GEMINI_API_KEY:
         required: true
 
+env:
+  TMP_DIR: .github/actions-tmp
+  SCRIPT_DIR: .github_automation/translate/scripts
+  DOC_NAME: README
+
 jobs:
   translate:
     runs-on: ubuntu-latest
@@ -20,81 +25,39 @@ jobs:
       pull-requests: write
 
     steps:
-      # ディレクトリの内容を確認
-      - name: list directory
-        run: |
-          echo "pwd: $(pwd)"
-          echo "pwd info: $(ls -al .)"
-          echo "workspace: ${GITHUB_WORKSPACE}"
-          echo "workspace info: $(ls -al ${GITHUB_WORKSPACE})"
-          echo ".github info: $(ls -alR .github)"
-
-      # 呼び出し元リポジトリをcheckout（翻訳対象ファイル取得）
-      - name: Checkout target repository
+      - name: Checkout target repository # 翻訳対象ファイルを取得するため、呼び出し元リポジトリをcheckout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ inputs.target-branch }}
 
-      # ディレクトリの内容を確認
-      - name: list directory
-        run: |
-          echo "pwd: $(pwd)"
-          echo "pwd info: $(ls -al .)"
-          echo "workspace: ${GITHUB_WORKSPACE}"
-          echo "workspace info: $(ls -al ${GITHUB_WORKSPACE})"
-          echo ".github info: $(ls -alR .github)"
-
-      # 共有リポジトリを別ディレクトリにチェックアウト（scriptファイル取得。こうしないと呼び出し元リポジトリの内容が上書きされて消える）
-      - name: Checkout shared github-actions repo
+      - name: Checkout shared github-actions repo # スクリプトを取得するため、共有のgithub-actionsリポジトリをcheckout
         uses: actions/checkout@v4
         with:
           repository: cat2151/github-actions
-          path: .github/actions-tmp
+          path: ${{ env.TMP_DIR }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # ディレクトリの内容を確認
-      - name: list directory
-        run: |
-          echo "pwd: $(pwd)"
-          echo "pwd info: $(ls -al .)"
-          echo "workspace: ${GITHUB_WORKSPACE}"
-          echo "workspace info: $(ls -al ${GITHUB_WORKSPACE})"
-          echo ".github info: $(ls -alR .github)"
-
-      # Node.jsセットアップ
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 依存パッケージインストール
       - name: Install dependencies
         run: |
           npm init -y
           npm install @google/generative-ai
 
-      # ディレクトリの内容を確認
-      - name: list directory
-        run: |
-          echo "pwd: $(pwd)"
-          echo "pwd info: $(ls -al .)"
-          echo "workspace: ${GITHUB_WORKSPACE}"
-          echo "workspace info: $(ls -al ${GITHUB_WORKSPACE})"
-          echo ".github info: $(ls -alR .github)"
-
-      # スクリプト実行
       - name: Translate README
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: node .github/actions-tmp/.github/scripts/translate-readme.cjs ./README.ja.md
+        run: node ${{ env.TMP_DIR }}/${{ env.SCRIPT_DIR }}/translate-readme.cjs ./${{ env.DOC_NAME }}.ja.md
 
-      # 変更チェックとコミット
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet HEAD -- README.md; then
+          if git diff --quiet HEAD -- ${{ env.DOC_NAME }}.md; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -105,6 +68,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add README.md
-          git commit -m "Auto-translate README.ja.md to README.md"
+          git add ${{ env.DOC_NAME }}.md
+          git commit -m "Auto-translate ${{ env.DOC_NAME }}.ja.md to ${{ env.DOC_NAME }}.md"
           git push
