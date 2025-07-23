@@ -10,7 +10,11 @@ const { execSync } = require('child_process');
 const path = require('path');
 
 const dbPath = path.resolve('codeql-db');
-const queriesPath = path.resolve('.github/codeql-queries');
+if (!process.env.QUERIES) {
+  console.error('環境変数 QUERIES が設定されていません。');
+  process.exit(1);
+}
+const queriesPath = path.resolve(process.env.QUERIES);
 
 // コマンドライン引数取得
 const args = process.argv.slice(2);

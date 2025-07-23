@@ -11,8 +11,8 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const src = path.resolve('generated-docs/callgraph-enhanced.html');
-const dest = path.resolve('generated-docs/callgraph-enhanced.html');
+const src = path.resolve('generated-docs/callgraph.html');
+const dest = path.resolve('generated-docs/callgraph.html');
 
 if (!fs.existsSync(src)) {
   console.error('生成HTMLが見つかりません:', src);
@@ -35,8 +35,8 @@ if (isWSL || isAct) {
 }
 
 try {
-  execSync('git add generated-docs/callgraph-enhanced.html');
-  const commitResult = execSync('git commit -m "Update callgraph-enhanced.html [auto]"', { stdio: 'pipe' }).toString();
+  execSync('git add generated-docs/callgraph.html');
+  const commitResult = execSync('git commit -m "Update callgraph.html [auto]"', { stdio: 'pipe' }).toString();
   if (/nothing to commit|no changes added to commit|working tree clean/i.test(commitResult)) {
     console.log('コミットすべき変更がありません。push/pullをスキップします。');
     process.exit(0);

@@ -8,9 +8,10 @@ on:
         type: string
 
 env:
-  ACTION_TMP: .github/actions-tmp                                              # 共通ワークフロー側
-  CALLGRAPH: .github/actions-tmp/.github_automation/callgraph_enhanced/scripts # 共通ワークフロー側
-  QUERIES: .github/codeql-queries
+  ACTION_TMP: .github/actions-tmp
+  CALLGRAPH: .github/actions-tmp/.github_automation/callgraph/scripts
+  PRESETS: .github/actions-tmp/.github_automation/callgraph/presets
+  QUERIES: .github/actions-tmp/.github_automation/callgraph/codeql-queries
 
 jobs:
   check-commits:
@@ -108,6 +109,10 @@ jobs:
       - name: Generate HTML graph
         run: |
           node ${{ env.CALLGRAPH }}/generate-html-graph.cjs ${{ inputs.CONFIG_NAME }}
+
+      - name: copy presets to generated-docs
+        run: |
+          cp -r ${{ env.PRESETS }}/* generated-docs/ # htmlと同じ場所にcssとjsをコピーする。htmlをシンプルにする用
 
       - name: Copy files to generated-docs and commit results
         run: |

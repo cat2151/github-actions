@@ -36,7 +36,7 @@ try {
 }
 
 const sarifPath = path.resolve('codeql-results.sarif');
-const outputPath = path.resolve('generated-docs/callgraph-enhanced.html');
+const outputPath = path.resolve('generated-docs/callgraph.html');
 
 if (!fs.existsSync(sarifPath)) {
   console.error('SARIFファイルが見つかりません:', sarifPath);

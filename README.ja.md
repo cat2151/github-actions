@@ -16,7 +16,7 @@
 | 項目 | リンク |
 |------|--------|
 | 📖 プロジェクト概要 | [generated-docs/project-overview.md](generated-docs/project-overview.md) |
-| 📖 コールグラフ | [generated-docs/callgraph-enhanced.html](https://cat2151.github.io/github-actions/generated-docs/callgraph-enhanced.html) |
+| 📖 コールグラフ | [generated-docs/callgraph.html](https://cat2151.github.io/github-actions/generated-docs/callgraph.html) |
 | 📊 開発状況 | [generated-docs/development-status.md](generated-docs/development-status.md) |
 
 # notes
