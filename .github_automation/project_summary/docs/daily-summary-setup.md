@@ -24,7 +24,6 @@
 │   └── daily-project-summary.yml     # メインワークフロー
 ├── scripts/
 │   ├── generate-project-summary.cjs  # 要約生成スクリプト（Node.js）
-│   └── test-summary.cjs             # 手動テスト用
 └── prompts/
     ├── project-overview-prompt.md    # 来訪者向けプロンプト
     └── development-status-prompt.md  # 開発者向けプロンプト
@@ -76,16 +75,6 @@ generated-docs/                       # 生成された要約の保存先
 2. "Daily Project Summary" ワークフローを選択
 3. "Run workflow" ボタンをクリック
 
-### ローカルテスト
-```bash
-# 環境変数を設定
-export GEMINI_API_KEY="your-api-key"
-export GITHUB_TOKEN="your-github-token"  # オプション
-
-# テストスクリプト実行
-node .github/scripts/test-summary.cjs
-```
-
 ## トラブルシューティング
 
 ### よくある問題
@@ -108,8 +97,7 @@ GitHub Actions の実行ログで詳細なエラー情報を確認できます�
 ## API制限について
 
 ### Gemini API
-- 無料枠: 月間15リクエスト
-- 1日1回実行なので月間最大31リクエスト
+- 無料枠: 1日50リクエスト
 - 必要に応じて有料プランの検討
 
 ### GitHub API

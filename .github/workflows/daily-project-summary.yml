@@ -4,6 +4,10 @@ on:
     secrets:
       GEMINI_API_KEY:
         required: true
+env:
+  TMP_DIR: /tmp/summary-deps
+  SCRIPT_DIR: .github_automation/project_summary/scripts
+  DOCS_DIR: generated-docs
 
 jobs:
   generate-summary:
@@ -15,11 +19,19 @@ jobs:
       pull-requests: read
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository # サマリ対象を取得するため、呼び出し元リポジトリをcheckout
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0  # 履歴を取得するため
+
+      - name: Checkout shared github-actions repo # スクリプトを取得するため、共有のgithub-actionsリポジトリをcheckout
+        uses: actions/checkout@v4
+        with:
+          repository: cat2151/github-actions
+          path: ${{ env.TMP_DIR }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -28,27 +40,25 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # 一時的なディレクトリで依存関係をインストール
-          mkdir -p /tmp/summary-deps
-          cd /tmp/summary-deps
+          mkdir -p ${{ env.TMP_DIR }}
+          cd ${{ env.TMP_DIR }}
           npm init -y
           npm install @google/generative-ai @octokit/rest
-          # generated-docsディレクトリを作成
-          mkdir -p $GITHUB_WORKSPACE/generated-docs
 
       - name: Generate project summary
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          NODE_PATH: /tmp/summary-deps/node_modules
+          NODE_PATH: ${{ env.TMP_DIR }}/node_modules
         run: |
-          node .github/scripts/generate-project-summary.cjs
+          mkdir -p ${{ env.DOCS_DIR }}
+          node ${{ env.TMP_DIR }}/${{ env.SCRIPT_DIR }}/generate-project-summary.cjs
 
       - name: Check for generated summaries
         id: check_summaries
         run: |
-          if [ -f "generated-docs/project-overview.md" ] && [ -f "generated-docs/development-status.md" ]; then
+          if [ -f "${{ env.DOCS_DIR }}/project-overview.md" ] && [ -f "${{ env.DOCS_DIR }}/development-status.md" ]; then
             echo "summaries_generated=true" >> $GITHUB_OUTPUT
           else
             echo "summaries_generated=false" >> $GITHUB_OUTPUT
@@ -62,8 +72,8 @@ jobs:
           # package.jsonの変更のみリセット（generated-docsは保持）
           git restore package.json 2>/dev/null || true
           # サマリーファイルのみを追加
-          git add generated-docs/project-overview.md
-          git add generated-docs/development-status.md
+          git add ${{ env.DOCS_DIR }}/project-overview.md
+          git add ${{ env.DOCS_DIR }}/development-status.md
           git commit -m "Update project summaries (overview & development status)"
           git push
 
