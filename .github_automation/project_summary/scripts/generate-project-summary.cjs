@@ -464,25 +464,29 @@ class ProjectSummaryGenerator {
    * プロンプトファイルを読み込み
    */
   async loadPrompts() {
+    if (!process.env.SCRIPT_DIR) {
+      throw new Error('SCRIPT_DIR environment variable is not set');
+    }
     const prompts = {
       overview: '',
       development: ''
     };
 
+
     try {
-      const overviewPromptPath = path.join(this.projectRoot, '.github/prompts/project-overview-prompt.md');
+      const overviewPromptPath = path.join(process.env.SCRIPT_DIR, '../../prompts/project-overview-prompt.md');
       prompts.overview = await fs.readFile(overviewPromptPath, 'utf-8');
     } catch (error) {
       console.warn('Could not read project-overview-prompt.md:', error.message);
-      prompts.overview = `プロジェクト概要、技術スタック、ファイル構造、関数構造を詳細に説明してください。`;
+      throw new Error('project-overview-prompt.md could not be read');
     }
 
     try {
-      const developmentPromptPath = path.join(this.projectRoot, '.github/prompts/development-status-prompt.md');
+      const developmentPromptPath = path.join(process.env.SCRIPT_DIR, '../../prompts/development-status-prompt.md');
       prompts.development = await fs.readFile(developmentPromptPath, 'utf-8');
     } catch (error) {
       console.warn('Could not read development-status-prompt.md:', error.message);
-      prompts.development = `現在のissuesを要約し、次の一手の候補を3つリストしてください。`;
+      throw new Error('development-status-prompt.md could not be read');
     }
 
     return prompts;
