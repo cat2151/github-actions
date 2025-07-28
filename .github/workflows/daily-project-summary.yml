@@ -45,6 +45,11 @@ jobs:
           npm init -y
           npm install @google/generative-ai @octokit/rest
 
+      - name: for Verify generated files # 生成前のtimestampやfilesizeのチェック用
+        run: |
+          ls -la ${{ env.DOCS_DIR }}/project-overview.md
+          ls -la ${{ env.DOCS_DIR }}/development-status.md
+
       - name: Generate project summary
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -54,6 +59,11 @@ jobs:
         run: |
           mkdir -p ${{ env.DOCS_DIR }}
           node ${{ env.SCRIPT_DIR }}/generate-project-summary.cjs
+
+      - name: Verify generated files # 生成後のtimestampやfilesizeのチェック用
+        run: |
+          ls -la ${{ env.DOCS_DIR }}/project-overview.md
+          ls -la ${{ env.DOCS_DIR }}/development-status.md
 
       - name: Check for generated summaries
         id: check_summaries
@@ -69,13 +79,14 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          # package.jsonの変更のみリセット（generated-docsは保持）
-          git restore package.json 2>/dev/null || true
-          # サマリーファイルのみを追加
           git add ${{ env.DOCS_DIR }}/project-overview.md
           git add ${{ env.DOCS_DIR }}/development-status.md
-          git commit -m "Update project summaries (overview & development status)"
-          git push
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update project summaries (overview & development status)"
+            git push
+          fi
 
       - name: Summary generation result
         run: |
