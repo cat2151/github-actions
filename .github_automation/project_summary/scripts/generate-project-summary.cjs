@@ -5,6 +5,24 @@ const { execSync } = require('child_process');
 
 class ProjectSummaryGenerator {
   /**
+   * @param {string} overviewPromptPath - プロジェクト概要プロンプトのパス（必須）
+   * @param {string} developmentStatusPromptPath - 開発状況プロンプトのパス（必須）
+   */
+  constructor(overviewPromptPath, developmentStatusPromptPath) {
+    if (!overviewPromptPath) {
+      throw new Error('overviewPromptPath is required as the first argument');
+    }
+    if (!developmentStatusPromptPath) {
+      throw new Error('developmentStatusPromptPath is required as the second argument');
+    }
+    this.overviewPromptPath = overviewPromptPath;
+    this.developmentStatusPromptPath = developmentStatusPromptPath;
+    this.projectRoot = path.resolve(__dirname, '../../');
+    this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    // this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }); // agentが提案したもの
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' }); // userが調査して、こちらがベターである、と判断したもの
+  }
+  /**
    * Gemini APIの出力から不要なコードブロック（```markdown等）を除去
    */
   cleanMarkdownCodeBlock(text) {
@@ -16,12 +34,7 @@ class ProjectSummaryGenerator {
     text = text.replace(/\n?```\s*$/i, '');
     return text.trim();
   }
-  constructor() {
-    this.projectRoot = path.resolve(__dirname, '../../');
-    this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    // this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }); // agentが提案したもの
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' }); // userが調査して、こちらがベターである、と判断したもの
-  }
+
 
   /**
    * 過去24時間以内にユーザーコミットがあるかチェック
@@ -464,31 +477,22 @@ class ProjectSummaryGenerator {
    * プロンプトファイルを読み込み
    */
   async loadPrompts() {
-    if (!process.env.SCRIPT_DIR) {
-      throw new Error('SCRIPT_DIR environment variable is not set');
-    }
     const prompts = {
       overview: '',
       development: ''
     };
-
-
     try {
-      const overviewPromptPath = path.join(process.env.SCRIPT_DIR, '../../prompts/project-overview-prompt.md');
-      prompts.overview = await fs.readFile(overviewPromptPath, 'utf-8');
+      prompts.overview = await fs.readFile(this.overviewPromptPath, 'utf-8');
     } catch (error) {
-      console.warn('Could not read project-overview-prompt.md:', error.message);
-      throw new Error('project-overview-prompt.md could not be read');
+      console.warn(`Could not read ${this.overviewPromptPath}:`, error.message);
+      throw new Error(`${this.overviewPromptPath} could not be read`);
     }
-
     try {
-      const developmentPromptPath = path.join(process.env.SCRIPT_DIR, '../../prompts/development-status-prompt.md');
-      prompts.development = await fs.readFile(developmentPromptPath, 'utf-8');
+      prompts.development = await fs.readFile(this.developmentStatusPromptPath, 'utf-8');
     } catch (error) {
-      console.warn('Could not read development-status-prompt.md:', error.message);
-      throw new Error('development-status-prompt.md could not be read');
+      console.warn(`Could not read ${this.developmentStatusPromptPath}:`, error.message);
+      throw new Error(`${this.developmentStatusPromptPath} could not be read`);
     }
-
     return prompts;
   }
 
@@ -1021,5 +1025,7 @@ Generated at: ${timeStr} JST
 }
 
 // メイン処理実行
-const generator = new ProjectSummaryGenerator();
+const overviewPromptPath = process.argv[2];
+const developmentStatusPromptPath = process.argv[3];
+const generator = new ProjectSummaryGenerator(overviewPromptPath, developmentStatusPromptPath);
 generator.run();

@@ -7,7 +7,10 @@ on:
 env:
   TMP_DIR: .github/actions-tmp
   SCRIPT_DIR: .github/actions-tmp/.github_automation/project_summary/scripts
+  PROMPT_DIR: .github/actions-tmp/.github_automation/project_summary/prompts
   DOCS_DIR: generated-docs
+  OVERVIEW_PROMPT: project-overview-prompt.md
+  DEVELOPMENT_STATUS_PROMPT: development-status-prompt.md
 
 jobs:
   generate-summary:
@@ -58,7 +61,9 @@ jobs:
           NODE_PATH: ${{ env.TMP_DIR }}/node_modules
         run: |
           mkdir -p ${{ env.DOCS_DIR }}
-          node ${{ env.SCRIPT_DIR }}/generate-project-summary.cjs
+          node ${{ env.SCRIPT_DIR }}/generate-project-summary.cjs \
+            ${{ env.PROMPT_DIR }}/${{ env.OVERVIEW_PROMPT }} \
+            ${{ env.PROMPT_DIR }}/${{ env.DEVELOPMENT_STATUS_PROMPT }}
 
       - name: Verify generated files # 生成後のtimestampやfilesizeのチェック用
         run: |
