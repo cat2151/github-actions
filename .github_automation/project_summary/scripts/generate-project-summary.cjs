@@ -693,7 +693,7 @@ ${summaries.overview}
 Generated at: ${timeStr} JST
 `;
     await fs.writeFile(overviewPath, overviewContent, 'utf-8');
-    console.log(`Project overview saved to: generated-docs/${overviewFilename}`);
+    console.log(`Project overview saved to: ${path.resolve(overviewPath)}`);
     filenames.push(overviewFilename);
 
     // 2. 開発状況を保存
@@ -707,7 +707,7 @@ ${summaries.development}
 Generated at: ${timeStr} JST
 `;
     await fs.writeFile(developmentPath, developmentContent, 'utf-8');
-    console.log(`Development status saved to: generated-docs/${developmentFilename}`);
+    console.log(`Development status saved to: ${path.resolve(developmentPath)}`);
     filenames.push(developmentFilename);
 
     return filenames;

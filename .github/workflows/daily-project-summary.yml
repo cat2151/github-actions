@@ -48,10 +48,10 @@ jobs:
           npm init -y
           npm install @google/generative-ai @octokit/rest
 
-      - name: for Verify generated files # 生成前のtimestampやfilesizeのチェック用
+      - name: remove generated files # こうしないと生成ミスを検知できない
         run: |
-          ls -la ${{ env.DOCS_DIR }}/project-overview.md
-          ls -la ${{ env.DOCS_DIR }}/development-status.md
+          rm -f ${{ env.DOCS_DIR }}/project-overview.md
+          rm -f ${{ env.DOCS_DIR }}/development-status.md
 
       - name: Generate project summary
         env:
