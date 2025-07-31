@@ -7,16 +7,26 @@ class ProjectSummaryGenerator {
   /**
    * @param {string} overviewPromptPath - プロジェクト概要プロンプトのパス（必須）
    * @param {string} developmentStatusPromptPath - 開発状況プロンプトのパス（必須）
+   * @param {string} overviewPath - プロジェクト概要出力先パス（必須）
+   * @param {string} developmentPath - 開発状況出力先パス（必須）
    */
-  constructor(overviewPromptPath, developmentStatusPromptPath) {
+  constructor(overviewPromptPath, developmentStatusPromptPath, overviewPath, developmentPath) {
     if (!overviewPromptPath) {
       throw new Error('overviewPromptPath is required as the first argument');
     }
     if (!developmentStatusPromptPath) {
       throw new Error('developmentStatusPromptPath is required as the second argument');
     }
+    if (!overviewPath) {
+      throw new Error('overviewPath is required as the third argument');
+    }
+    if (!developmentPath) {
+      throw new Error('developmentPath is required as the fourth argument');
+    }
     this.overviewPromptPath = overviewPromptPath;
     this.developmentStatusPromptPath = developmentStatusPromptPath;
+    this.overviewPath = overviewPath;
+    this.developmentPath = developmentPath;
     this.projectRoot = path.resolve(__dirname, '../../');
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     // this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }); // agentが提案したもの
@@ -671,44 +681,32 @@ Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md)
     const dateStr = jstDate.toISOString().split('T')[0]; // YYYY-MM-DD
     const timeStr = jstDate.toISOString().replace('T', ' ').split('.')[0]; // YYYY-MM-DD HH:mm:ss
 
-    const summaryDir = path.join(this.projectRoot, 'generated-docs');
+    // 出力先パスを this.overviewPath, this.developmentPath から取得
+    const overviewPath = this.overviewPath;
+    const developmentPath = this.developmentPath;
 
     // ディレクトリが存在しない場合は作成
     try {
-      await fs.mkdir(summaryDir, { recursive: true });
-    } catch (error) {
-      // ディレクトリが既に存在する場合はエラーを無視
-    }
+      await fs.mkdir(path.dirname(overviewPath), { recursive: true });
+    } catch (error) {}
+    try {
+      await fs.mkdir(path.dirname(developmentPath), { recursive: true });
+    } catch (error) {}
 
     const filenames = [];
 
     // 1. プロジェクト概要を保存
-    const overviewFilename = 'project-overview.md';
-    const overviewPath = path.join(summaryDir, overviewFilename);
     const overviewContent = `Last updated: ${dateStr}
-
-${summaries.overview}
-
----
-Generated at: ${timeStr} JST
-`;
+\n${summaries.overview}\n\n---\nGenerated at: ${timeStr} JST\n`;
     await fs.writeFile(overviewPath, overviewContent, 'utf-8');
     console.log(`Project overview saved to: ${path.resolve(overviewPath)}`);
-    filenames.push(overviewFilename);
+    filenames.push(overviewPath);
 
     // 2. 開発状況を保存
-    const developmentFilename = 'development-status.md';
-    const developmentPath = path.join(summaryDir, developmentFilename);
-    const developmentContent = `Last updated: ${dateStr}
-
-${summaries.development}
-
----
-Generated at: ${timeStr} JST
-`;
+    const developmentContent = `Last updated: ${dateStr}\n\n${summaries.development}\n\n---\nGenerated at: ${timeStr} JST\n`;
     await fs.writeFile(developmentPath, developmentContent, 'utf-8');
     console.log(`Development status saved to: ${path.resolve(developmentPath)}`);
-    filenames.push(developmentFilename);
+    filenames.push(developmentPath);
 
     return filenames;
   }
@@ -1025,7 +1023,17 @@ Generated at: ${timeStr} JST
 }
 
 // メイン処理実行
+
+// overviewPath, developmentPath を第3・第4引数で取得
 const overviewPromptPath = process.argv[2];
 const developmentStatusPromptPath = process.argv[3];
-const generator = new ProjectSummaryGenerator(overviewPromptPath, developmentStatusPromptPath);
+const overviewPath = process.argv[4];
+const developmentPath = process.argv[5];
+
+const generator = new ProjectSummaryGenerator(
+  overviewPromptPath,
+  developmentStatusPromptPath,
+  overviewPath,
+  developmentPath
+);
 generator.run();

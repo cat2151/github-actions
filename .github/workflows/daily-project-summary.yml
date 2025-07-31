@@ -11,6 +11,8 @@ env:
   DOCS_DIR: generated-docs
   OVERVIEW_PROMPT: project-overview-prompt.md
   DEVELOPMENT_STATUS_PROMPT: development-status-prompt.md
+  OUT_OVERVIEW: project-overview.md
+  OUT_DEVELOPMENT_STATUS: development-status.md
 
 jobs:
   generate-summary:
@@ -50,8 +52,8 @@ jobs:
 
       - name: remove generated files # こうしないと生成ミスを検知できない
         run: |
-          rm -f ${{ env.DOCS_DIR }}/project-overview.md
-          rm -f ${{ env.DOCS_DIR }}/development-status.md
+          rm -f ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}
+          rm -f ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
 
       - name: Generate project summary
         env:
@@ -63,17 +65,19 @@ jobs:
           mkdir -p ${{ env.DOCS_DIR }}
           node ${{ env.SCRIPT_DIR }}/generate-project-summary.cjs \
             ${{ env.PROMPT_DIR }}/${{ env.OVERVIEW_PROMPT }} \
-            ${{ env.PROMPT_DIR }}/${{ env.DEVELOPMENT_STATUS_PROMPT }}
+            ${{ env.PROMPT_DIR }}/${{ env.DEVELOPMENT_STATUS_PROMPT }} \
+            ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }} \
+            ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
 
       - name: Verify generated files # 生成後のtimestampやfilesizeのチェック用
         run: |
-          ls -la ${{ env.DOCS_DIR }}/project-overview.md
-          ls -la ${{ env.DOCS_DIR }}/development-status.md
+          ls -la ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}
+          ls -la ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
 
       - name: Check for generated summaries
         id: check_summaries
         run: |
-          if [ -f "${{ env.DOCS_DIR }}/project-overview.md" ] && [ -f "${{ env.DOCS_DIR }}/development-status.md" ]; then
+          if [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}" ] && [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}" ]; then
             echo "summaries_generated=true" >> $GITHUB_OUTPUT
           else
             echo "summaries_generated=false" >> $GITHUB_OUTPUT
@@ -84,8 +88,8 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add ${{ env.DOCS_DIR }}/project-overview.md
-          git add ${{ env.DOCS_DIR }}/development-status.md
+          git add ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}
+          git add ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
@@ -97,7 +101,7 @@ jobs:
         run: |
           if [ "${{ steps.check_summaries.outputs.summaries_generated }}" == "true" ]; then
             echo "✅ Project summaries updated successfully"
-            echo "📊 Generated: project-overview.md & development-status.md"
+            echo "📊 Generated: ${{ env.OUT_OVERVIEW }} & ${{ env.OUT_DEVELOPMENT_STATUS }}"
           else
             echo "ℹ️ No summaries generated (likely no user commits in the last 24 hours)"
           fi
