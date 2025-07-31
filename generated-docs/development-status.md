@@ -1,21 +1,21 @@
-Last updated: 2025-07-23
+Last updated: 2025-08-01
 
 # Development Status
 
 ## 現在のIssues
-- `project-summary`ツール ([Issue #12](issue-notes/12.md)) の他プロジェクトからの再利用性向上に焦点を当てた作業が進行中です。
-- 同様に、`translate`ツール ([Issue #11](issue-notes/11.md)) も他プロジェクトからの利用を容易にするための改善が進められています。
-- `callgraph`ツール ([Issue #10](issue-notes/10.md)) についても、既存プロジェクトへの統合を簡素化する改善作業が行われています。
+- 既存のGitHub Actions（[Issue #13](issue-notes/13.md) `issue-note`, [Issue #12](issue-notes/12.md) `project-summary`, [Issue #11](issue-notes/11.md) `translate`, [Issue #10](issue-notes/10.md) `callgraph`）の再利用性を高めるための改善が進行中です。
+- これらのアクションを他のプロジェクトでより簡単に統合・利用できるよう、設定の柔軟性向上とエラー対策に注力しています。
+- 特に[Issue #12](issue-notes/12.md)の`project-summary`では、出力パスのymlからの指定やバグ修正が最近完了しました。
 
 ## 次の一手候補
-1. `project-summary`ツールの他プロジェクトからの再利用性向上
-   - 最初の小さな一歩: 現在の`project-summary`の利用方法（特に`daily-summary-setup.md`）をレビューし、セットアップ手順を簡素化するための具体的な改善点を特定する。
+1. [Issue #13](issue-notes/13.md) issue-note を他projectから使いやすくする
+   - 最初の小さな一歩: `issue-note`アクションの`action.yml`を開き、ユーザーがymlから指定できるべき入力パラメータ（例: 出力ファイル名、issueノートテンプレートのパスなど）を洗い出してください。
 
-2. `translate`ツールの他プロジェクトからの再利用性向上
-   - 最初の小さな一歩: 現在の`translate`の利用方法（特に`TRANSLATION_SETUP.md`）をレビューし、より汎用的な使用例と設定方法を追記・更新する。
+2. [Issue #11](issue-notes/11.md) translate を他projectから使いやすくする
+   - 最初の小さな一歩: `translate`アクションの`action.yml`を開き、ユーザーがymlから指定できるべき入力パラメータ（例: 翻訳対象のファイルパス、出力ディレクトリ、言語設定など）を洗い出してください。
 
-3. `callgraph`ツールの他プロジェクトからの再利用性向上
-   - 最初の小さな一歩: 現在の`callgraph`の利用方法（特に`callgraph.md`）をレビューし、別プロジェクトでのセットアップ手順を具体的に記述する。
+3. [Issue #10](issue-notes/10.md) callgraph を他projectから使いやすくする
+   - 最初の小さな一歩: `callgraph`アクションの`action.yml`を開き、ユーザーがymlから指定できるべき入力パラメータ（例: 解析対象のコードパス、出力HTMLファイルのパス、タイトルなど）を洗い出してください。
 
 ---
-Generated at: 2025-07-23 07:05:08 JST
+Generated at: 2025-08-01 07:05:20 JST
