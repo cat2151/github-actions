@@ -67,7 +67,8 @@ jobs:
             ${{ env.PROMPT_DIR }}/${{ env.OVERVIEW_PROMPT }} \
             ${{ env.PROMPT_DIR }}/${{ env.DEVELOPMENT_STATUS_PROMPT }} \
             ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }} \
-            ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
+            ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }} \
+            ${{ env.TMP_DIR }}
 
       - name: Verify generated files # 生成後のtimestampやfilesizeのチェック用
         run: |

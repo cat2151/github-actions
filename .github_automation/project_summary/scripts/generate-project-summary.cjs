@@ -10,7 +10,7 @@ class ProjectSummaryGenerator {
    * @param {string} overviewPath - プロジェクト概要出力先パス（必須）
    * @param {string} developmentPath - 開発状況出力先パス（必須）
    */
-  constructor(overviewPromptPath, developmentStatusPromptPath, overviewPath, developmentPath) {
+  constructor(overviewPromptPath, developmentStatusPromptPath, overviewPath, developmentPath, projectRoot) {
     if (!overviewPromptPath) {
       throw new Error('overviewPromptPath is required as the first argument');
     }
@@ -23,11 +23,14 @@ class ProjectSummaryGenerator {
     if (!developmentPath) {
       throw new Error('developmentPath is required as the fourth argument');
     }
+    if (!projectRoot) {
+      throw new Error('projectRoot is required as the fifth argument');
+    }
     this.overviewPromptPath = overviewPromptPath;
     this.developmentStatusPromptPath = developmentStatusPromptPath;
     this.overviewPath = overviewPath;
     this.developmentPath = developmentPath;
-    this.projectRoot = path.resolve(__dirname, '../../');
+    this.projectRoot = projectRoot;
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     // this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }); // agentが提案したもの
     this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' }); // userが調査して、こちらがベターである、と判断したもの
@@ -1024,16 +1027,18 @@ Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md)
 
 // メイン処理実行
 
-// overviewPath, developmentPath を第3・第4引数で取得
+// overviewPath, developmentPath, projectRoot を第3・第4・第5引数で取得
 const overviewPromptPath = process.argv[2];
 const developmentStatusPromptPath = process.argv[3];
 const overviewPath = process.argv[4];
 const developmentPath = process.argv[5];
+const projectRoot = process.argv[6];
 
 const generator = new ProjectSummaryGenerator(
   overviewPromptPath,
   developmentStatusPromptPath,
   overviewPath,
-  developmentPath
+  developmentPath,
+  projectRoot
 );
 generator.run();
