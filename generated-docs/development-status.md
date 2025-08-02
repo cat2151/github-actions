@@ -1,21 +1,21 @@
-Last updated: 2025-08-01
+Last updated: 2025-08-02
 
 # Development Status
 
 ## 現在のIssues
-- 既存のGitHub Actions（[Issue #13](issue-notes/13.md) `issue-note`, [Issue #12](issue-notes/12.md) `project-summary`, [Issue #11](issue-notes/11.md) `translate`, [Issue #10](issue-notes/10.md) `callgraph`）の再利用性を高めるための改善が進行中です。
-- これらのアクションを他のプロジェクトでより簡単に統合・利用できるよう、設定の柔軟性向上とエラー対策に注力しています。
-- 特に[Issue #12](issue-notes/12.md)の`project-summary`では、出力パスのymlからの指定やバグ修正が最近完了しました。
+- 現在、開発中のGitHub Actionsツール群（issue-note, project-summary, translate, callgraph）を他のプロジェクトで容易に利用できるようにするための汎用化に関する課題がオープンしています。
+- 特に、[Issue #12](issue-notes/12.md) では `project-summary` の汎用性向上とバグ修正に関する作業が進められており、最近のコミットでいくつかの修正が適用されました。
+- [Issue #13](issue-notes/13.md) (issue-note), [Issue #11](issue-notes/11.md) (translate), [Issue #10](issue-notes/10.md) (callgraph) についても、同様に各ツールを汎用化し、他のプロジェクトで使いやすくする作業が残っています。
 
 ## 次の一手候補
-1. [Issue #13](issue-notes/13.md) issue-note を他projectから使いやすくする
-   - 最初の小さな一歩: `issue-note`アクションの`action.yml`を開き、ユーザーがymlから指定できるべき入力パラメータ（例: 出力ファイル名、issueノートテンプレートのパスなど）を洗い出してください。
+1. [Issue #12](issue-notes/12.md) の `project-summary` 汎用性向上の最終確認と安定化
+   - 最初の小さな一歩: `project-summary` が他のリポジトリで期待通りに動作するか、具体的なテストリポジトリを作成し、`daily-project-summary.yml` ワークフローをコピーして実行し、生成されるドキュメントが正しいか検証する。
 
-2. [Issue #11](issue-notes/11.md) translate を他projectから使いやすくする
-   - 最初の小さな一歩: `translate`アクションの`action.yml`を開き、ユーザーがymlから指定できるべき入力パラメータ（例: 翻訳対象のファイルパス、出力ディレクトリ、言語設定など）を洗い出してください。
+2. [Issue #13](issue-notes/13.md) の `issue-note` 「他プロジェクトでの使いやすさ」改善に着手
+   - 最初の小さな一歩: `issue-note` のコードベースと既存のワークフローをレビューし、他のプロジェクトで再利用するために必要な汎用化のポイント（例: パス設定の抽象化、設定ファイルの外部化）を特定し、初期の変更案を検討する。
 
-3. [Issue #10](issue-notes/10.md) callgraph を他projectから使いやすくする
-   - 最初の小さな一歩: `callgraph`アクションの`action.yml`を開き、ユーザーがymlから指定できるべき入力パラメータ（例: 解析対象のコードパス、出力HTMLファイルのパス、タイトルなど）を洗い出してください。
+3. 各ツールの汎用化に向けた共通課題の洗い出しと設計検討
+   - 最初の小さな一歩: オープン中の全 Issue ([Issue #10](issue-notes/10.md), [Issue #11](issue-notes/11.md), [Issue #12](issue-notes/12.md), [Issue #13](issue-notes/13.md)) を再確認し、これらを「他プロジェクトから使いやすくする」上で共通して適用できるであろう設計パターンや必要な一般的な変更箇所（例: 入力パラメーターの統一、実行環境の抽象化）を洗い出し、ドキュメントにまとめる。
 
 ---
-Generated at: 2025-08-01 07:05:20 JST
+Generated at: 2025-08-02 07:05:28 JST
