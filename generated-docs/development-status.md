@@ -1,21 +1,21 @@
-Last updated: 2025-08-04
+Last updated: 2025-08-05
 
 # Development Status
 
 ## 現在のIssues
-- 既存のGitHub Actions (issue-note, project-summary, translate, callgraph) の再利用性向上に焦点が当てられています。
-- 各機能を他のプロジェクトで簡単に利用できるよう、汎用化に向けた改修が進められています。
-- 特に[Issue #10](issue-notes/10.md) (callgraph) と[Issue #12](issue-notes/12.md) (project-summary) に関連する作業とバグ修正が最近行われました。
+- 現在オープンされているIssueは、既存のドキュメント生成ツール（`issue-note`、`project-summary`、`translate`、`callgraph`）を他プロジェクトから利用しやすくするための汎用化に焦点を当てています。
+- 具体的には、[Issue #10](issue-notes/10.md) で `callgraph`、[Issue #11](issue-notes/11.md) で `translate`、[Issue #12](issue-notes/12.md) で `project-summary` の改善が進行中です。
+- 残る [Issue #13](issue-notes/13.md) は、`issue-note` の他プロジェクトからの再利用性向上に取り組む予定です。
 
 ## 次の一手候補
-1. [Issue #13](issue-notes/13.md) (issue-note) の他プロジェクトからの利用しやすさ改善
-   - 最初の小さな一歩: `issue-note` アクションのリポジトリ構造や入力パラメーターを、他のプロジェクトで利用しやすいように見直し、`action.yml` の定義に必要な情報を特定する。
+1. [Issue #13] issue-note の他プロジェクトからの利用を可能にする
+   - 最初の小さな一歩: [Issue #13](issue-notes/13.md) の詳細を確認し、`issue-note` のコードベースが他プロジェクトから呼び出されるためのインターフェースや設定の必要性を検討する。
 
-2. [Issue #11](issue-notes/11.md) (translate) の汎用化に向けた初期調査
-   - 最初の小さな一歩: `translate` アクションの現在の実装と依存関係をレビューし、他のプロジェクトで再利用するために必要な変更点（例: 設定ファイルの外部化、動的な入力のサポート）をリストアップする。
+2. [Issue #12] project-summary の汎用化における次のステップを特定する
+   - 最初の小さな一歩: 最近のコミットと [Issue #12](issue-notes/12.md) の進捗状況を確認し、`project-summary` を他プロジェクトから利用可能にするために残された具体的なタスク（例: 必要なパラメータの外部化、依存関係の切り離しなど）を洗い出す。
 
-3. 汎用化されたアクションの利用例作成とドキュメント化
-   - 最初の小さな一歩: 汎用化作業が進んだアクション（例: [Issue #10](issue-notes/10.md) の `callgraph` または [Issue #12](issue-notes/12.md) の `project-summary`）を、実際に別のダミーリポジトリでセットアップし、その手順をREADMEに追記する準備をする。
+3. [Issue #10] および [Issue #11] の完了状況を確認し、必要であれば最終化する
+   - 最初の小さな一歩: [Issue #10](issue-notes/10.md) と [Issue #11](issue-notes/11.md) に関連する最近のコミット内容をレビューし、これらのツールが他プロジェクトから利用可能な状態になっているか、またはテスト、ドキュメント化、リファクタリングなどの最終ステップが必要かを確認する。
 
 ---
-Generated at: 2025-08-04 07:05:17 JST
+Generated at: 2025-08-05 07:05:58 JST
