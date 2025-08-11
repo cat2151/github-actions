@@ -3,6 +3,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const { execSync } = require('child_process');
 const GitUtils = require('./GitUtils.cjs');
+const FileSystemUtils = require('./FileSystemUtils.cjs');
 
 class ProjectSummaryGenerator {
   /**
@@ -33,6 +34,7 @@ class ProjectSummaryGenerator {
     this.developmentPath = developmentPath;
     this.projectRoot = projectRoot;
     this.gitUtils = new GitUtils(projectRoot);
+    this.fileSystemUtils = new FileSystemUtils(projectRoot);
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     // this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }); // agentが提案したもの
     this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' }); // userが調査して、こちらがベターである、と判断したもの
@@ -103,7 +105,7 @@ class ProjectSummaryGenerator {
 
     try {
       // プロジェクト構造を取得（Node.jsのfsモジュールを使用）
-      const structure = await this.getProjectStructure();
+      const structure = await this.fileSystemUtils.getProjectStructure();
       projectInfo.structure = structure;
     } catch (error) {
       console.warn('Could not get project structure:', error.message);
@@ -112,7 +114,7 @@ class ProjectSummaryGenerator {
     try {
       // 詳細なファイルツリーを取得
       console.log('Generating detailed file tree...');
-      projectInfo.fileTree = await this.getDetailedFileTree();
+      projectInfo.fileTree = await this.fileSystemUtils.getDetailedFileTree();
     } catch (error) {
       console.warn('Could not get detailed file tree:', error.message);
     }
@@ -156,27 +158,27 @@ class ProjectSummaryGenerator {
     const deps = { ...packageJson.dependencies, ...packageJson.devDependencies };
 
     // フロントエンド技術
-    if (this.checkFileExists('src/index.html')) {
+    if (this.fileSystemUtils.checkFileExists('src/index.html')) {
       techStack.frontend.push('HTML5 - ブラウザベースのMMLプレイヤー');
     }
 
     // 音楽・オーディオ技術
-    if (deps['tonejs'] || this.checkFileExists('src/**/*.js', 'Tone.js')) {
+    if (deps['tonejs'] || this.fileSystemUtils.checkFileExists('src/**/*.js', 'Tone.js')) {
       techStack.music.push('Tone.js - Web Audio API音声ライブラリ');
     }
 
-    if (this.checkFileExists('src/index.html')) {
-      const htmlContent = this.readFileContent('src/index.html');
+    if (this.fileSystemUtils.checkFileExists('src/index.html')) {
+      const htmlContent = this.fileSystemUtils.readFileContent('src/index.html');
       if (htmlContent && htmlContent.includes('unpkg.com/tone')) {
         techStack.music.push('Tone.js CDN - unpkg経由でのライブラリ配信');
       }
     }
 
-    if (this.checkFileExists('src/grammar.pegjs') || this.checkFileExists('src/**/*.js')) {
+    if (this.fileSystemUtils.checkFileExists('src/grammar.pegjs') || this.fileSystemUtils.checkFileExists('src/**/*.js')) {
       techStack.music.push('MML (Music Macro Language) - 音楽記法パーサー');
     }
 
-    if (deps['tonejs'] || this.checkFileExists('src/**/*.js', 'Tone.js')) {
+    if (deps['tonejs'] || this.fileSystemUtils.checkFileExists('src/**/*.js', 'Tone.js')) {
       techStack.music.push('Web Audio API - ブラウザ音声技術（Tone.js経由）');
     }
 
@@ -189,7 +191,7 @@ class ProjectSummaryGenerator {
     }
 
     // 開発ツール
-    if (packageJson.packageManager === 'pnpm' || this.checkFileExists('pnpm-lock.yaml')) {
+    if (packageJson.packageManager === 'pnpm' || this.fileSystemUtils.checkFileExists('pnpm-lock.yaml')) {
       techStack.development.push('pnpm - 高速で効率的なパッケージマネージャー');
     }
 
@@ -198,8 +200,8 @@ class ProjectSummaryGenerator {
       techStack.testing.push('Vitest - 高速なViteベースのテストフレームワーク');
     }
 
-    if (this.checkFileExists('.gitignore')) {
-      const gitignoreContent = this.readFileContent('.gitignore');
+    if (this.fileSystemUtils.checkFileExists('.gitignore')) {
+      const gitignoreContent = this.fileSystemUtils.readFileContent('.gitignore');
       if (gitignoreContent && gitignoreContent.includes('TDD開発環境')) {
         techStack.testing.push('TDD (Test-Driven Development) - テスト駆動開発手法');
       }
@@ -213,12 +215,12 @@ class ProjectSummaryGenerator {
     }
 
     // PegJSファイルの存在チェック
-    if (this.checkFileExists('src/grammar.pegjs')) {
+    if (this.fileSystemUtils.checkFileExists('src/grammar.pegjs')) {
       techStack.buildTools.push('PEG文法定義 - MML音楽記法のパーサー生成');
     }
 
     // 開発標準・設定
-    if (this.checkFileExists('.editorconfig')) {
+    if (this.fileSystemUtils.checkFileExists('.editorconfig')) {
       techStack.standards.push('EditorConfig - コード統一ルール');
     }
 
@@ -237,13 +239,13 @@ class ProjectSummaryGenerator {
     }
 
     // PegJSファイルの存在チェック
-    if (this.checkFileExists('src/grammar.pegjs')) {
+    if (this.fileSystemUtils.checkFileExists('src/grammar.pegjs')) {
       techStack.buildTools.push('PEG文法定義 - MML音楽記法のパーサー生成');
     }
 
     // GitHub Actionsの検出
-    if (this.checkFileExists('.github/workflows')) {
-      const workflowFiles = this.getWorkflowFiles();
+    if (this.fileSystemUtils.checkFileExists('.github/workflows')) {
+      const workflowFiles = this.fileSystemUtils.getWorkflowFiles();
       if (workflowFiles.length > 0) {
         techStack.automation.push(`GitHub Actions - CI/CD自動化 (${workflowFiles.length}個のワークフロー)`);
 
@@ -265,114 +267,6 @@ class ProjectSummaryGenerator {
     }
 
     return techStack;
-  }
-
-  /**
-   * ファイル存在チェック（簡易版）
-   */
-  checkFileExists(pattern, keyword = null) {
-    try {
-      const fs = require('fs');
-      const path = require('path');
-
-      if (pattern.includes('**')) {
-        // glob的なパターンの場合は簡易チェック
-        const basePath = pattern.split('**')[0];
-        const fullPath = path.join(this.projectRoot, basePath);
-        return fs.existsSync(fullPath);
-      } else {
-        // 具体的なファイルパス
-        const fullPath = path.join(this.projectRoot, pattern);
-        return fs.existsSync(fullPath);
-      }
-    } catch (error) {
-      return false;
-    }
-  }
-
-  /**
-   * GitHub Actionsワークフローファイルを取得
-   */
-  getWorkflowFiles() {
-    try {
-      const fs = require('fs');
-      const path = require('path');
-      const workflowsPath = path.join(this.projectRoot, '.github/workflows');
-
-      if (!fs.existsSync(workflowsPath)) {
-        return [];
-      }
-
-      const files = fs.readdirSync(workflowsPath);
-      return files.filter(file => file.endsWith('.yml') || file.endsWith('.yaml'));
-    } catch (error) {
-      return [];
-    }
-  }
-
-  /**
-   * ファイル内容を読み取る（簡易版）
-   */
-  readFileContent(filePath) {
-    try {
-      const fs = require('fs');
-      const path = require('path');
-      const fullPath = path.join(this.projectRoot, filePath);
-
-      if (fs.existsSync(fullPath)) {
-        return fs.readFileSync(fullPath, 'utf-8');
-      }
-      return null;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  /**
-   * プロジェクト構造を取得（クロスプラットフォーム対応）
-   */
-  async getProjectStructure() {
-    const extensions = ['.js', '.ts', '.json', '.md', '.html', '.css', '.pegjs'];
-    const excludeDirs = ['.git', 'node_modules', '.github'];
-    const files = [];
-
-    const walkDir = async (dir, relativePath = '') => {
-      try {
-        const items = await fs.readdir(path.join(this.projectRoot, dir));
-
-        for (const item of items) {
-          const fullPath = path.join(dir, item);
-          const absolutePath = path.join(this.projectRoot, fullPath);
-          const relativeItemPath = path.join(relativePath, item);
-
-          // 除外ディレクトリをスキップ
-          if (excludeDirs.includes(item)) {
-            continue;
-          }
-
-          try {
-            const stat = await fs.stat(absolutePath);
-            if (stat.isDirectory()) {
-              await walkDir(fullPath, relativeItemPath);
-            } else if (stat.isFile()) {
-              const ext = path.extname(item);
-              if (extensions.includes(ext)) {
-                files.push(relativeItemPath.replace(/\\/g, '/'));
-                if (files.length >= 30) break; // 最大30ファイル
-              }
-            }
-          } catch (error) {
-            // ファイル/ディレクトリアクセスエラーをスキップ
-            continue;
-          }
-        }
-      } catch (error) {
-        // ディレクトリ読み取りエラーをスキップ
-      }
-    };
-
-    await walkDir('.');
-    return files.join('\n');
   }
 
   /**
@@ -634,64 +528,6 @@ Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md)
     filenames.push(developmentPath);
 
     return filenames;
-  }
-
-  /**
-   * 詳細なファイル階層ツリーを生成
-   */
-  async getDetailedFileTree() {
-    const excludeDirs = ['.git', 'node_modules', '.github'];
-    const tree = [];
-
-    const buildTree = async (dir, depth = 0) => {
-      try {
-        const items = await fs.readdir(path.join(this.projectRoot, dir));
-        items.sort();
-
-        for (const item of items) {
-          if (excludeDirs.includes(item)) continue;
-
-          const fullPath = path.join(dir, item);
-          const absolutePath = path.join(this.projectRoot, fullPath);
-          const indent = '  '.repeat(depth);
-
-          try {
-            const stat = await fs.stat(absolutePath);
-            if (stat.isDirectory()) {
-              tree.push(`${indent}📁 ${item}/`);
-              await buildTree(fullPath, depth + 1);
-            } else {
-              const ext = path.extname(item);
-              const icon = this.getFileIcon(ext);
-              tree.push(`${indent}${icon} ${item}`);
-            }
-          } catch (error) {
-            continue;
-          }
-        }
-      } catch (error) {
-        // ディレクトリ読み取りエラーをスキップ
-      }
-    };
-
-    await buildTree('.');
-    return tree.join('\n');
-  }
-
-  /**
-   * ファイル拡張子に応じたアイコンを取得
-   */
-  getFileIcon(ext) {
-    const icons = {
-      '.js': '📜',
-      '.ts': '📘',
-      '.json': '📊',
-      '.md': '📖',
-      '.html': '🌐',
-      '.css': '🎨',
-      '.pegjs': '📝'
-    };
-    return icons[ext] || '📄';
   }
 
   /**
