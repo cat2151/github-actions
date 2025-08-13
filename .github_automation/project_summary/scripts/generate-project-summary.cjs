@@ -43,6 +43,59 @@ class ProjectSummaryGenerator {
     // this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }); // agentが提案したもの
     this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' }); // userが調査して、こちらがベターである、と判断したもの
   }
+
+  /**
+   * メイン実行関数
+   */
+  async run() {
+    try {
+      console.log('Starting project summary generation...');
+
+      // 環境変数チェック
+      if (!process.env.GEMINI_API_KEY) {
+        throw new Error('GEMINI_API_KEY environment variable is not set');
+      }
+
+      // 過去24時間のユーザーコミットチェック
+      const hasUserCommits = await this.gitUtils.hasUserCommitsInLast24Hours();
+      if (!hasUserCommits) {
+        console.log('No user commits in the last 24 hours. Skipping summary generation.');
+        return;
+      }
+
+      // データ収集
+      console.log('Collecting project data...');
+      const [projectInfo, issues, recentChanges, prompts] = await Promise.all([
+        this.collectProjectInfo(),
+        this.collectIssues(),
+        this.gitUtils.collectRecentChanges(),
+        this.loadPrompts()
+      ]);
+
+      // Octokitのインストールが必要な場合のハンドリング
+      if (issues.length === 0 && !process.env.GITHUB_TOKEN) {
+        console.warn('GITHUB_TOKEN not set, skipping Issues collection');
+      }
+
+      // テキスト生成
+      const summaries = await this.generateSummaries(projectInfo, issues, recentChanges, prompts);
+
+      // ファイル保存
+      const filenames = await this.saveSummaries(summaries);
+
+      console.log('Project summary generation completed successfully!');
+      console.log(`Generated files: ${filenames.join(', ')}`);
+      return filenames;
+
+    } catch (error) {
+      console.error('Project summary generation failed:', error.message);
+      if (error.response) {
+        console.error('API Response:', error.response);
+      }
+      process.exit(1);
+    }
+  }
+
   /**
    * Gemini APIの出力から不要なコードブロック（```markdown等）を除去
    */
