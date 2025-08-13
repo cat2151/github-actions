@@ -66,7 +66,7 @@ class ProjectSummaryGenerator {
       // データ収集
       console.log('Collecting project data...');
       const [projectInfo, issues, recentChanges, prompts] = await Promise.all([
-        this.collectProjectInfo(),
+        this.projectAnalyzer.collectProjectInfo(),
         this.collectIssues(),
         this.gitUtils.collectRecentChanges(),
         this.loadPrompts()
