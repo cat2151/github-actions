@@ -1,50 +1,50 @@
-Last updated: 2025-08-14
+Last updated: 2025-08-15
 
 # Development Status
 
 ## 現在のIssues
-- 現在、[Issue #10]から[Issue #13]にかけて、`callgraph`、`translate`、`project-summary`、`issue-note`といった主要な自動化スクリプト群を他のプロジェクトからより利用しやすくするための改善が求められています。
-- 特に、[Issue #15]では`project_summary`関連のスクリプトをAgentによる保守性を高めるため、1ファイル200行未満を目指し分解するリファクタリングが進行中です。
-- 直近の変更では、[Issue #15]の一環として`CodeAnalyzer.cjs`や`ProjectAnalyzer.cjs`が`generate-project-summary.cjs`から切り出されており、コードのモジュール化が進められています。
+- [Issue #15](issue-notes/15.md)は、`project_summary`スクリプトを分解し、1ファイルあたりの行数を200行未満に抑えることで、agentによるメンテナンス性を向上させるためのリファクタリングを進めています。
+- [Issue #10](issue-notes/10.md)、[Issue #11](issue-notes/11.md)、[Issue #12](issue-notes/12.md)、[Issue #13](issue-notes/13.md)は、それぞれ`callgraph`、`translate`、`project-summary`、`issue-note`といった既存機能を他のプロジェクトから利用しやすくするための汎用化を目的としています。
+- これらのissueは、GitHub Actionsのリポジトリ内で開発されているツールの再利用性と保守性を高めることに焦点を当てています。
 
 ## 次の一手候補
-1. [Issue #15] `project_summary`スクリプトのさらなる分解とリファクタリング
-   - 最初の小さな一歩: `generate-project-summary.cjs`ファイルの現在のサイズと残りの主要な処理ブロックを確認し、さらに分割可能な論理単位を特定する。
+1. [Issue #15](issue-notes/15.md): project_summary scripts cjs を分解し、できるだけ1ファイル200行未満にし、agentによるメンテをしやすくする
+   - 最初の小さな一歩: `project_summary/scripts/generate-project-summary.cjs` ファイル内で、まだ分解されていない大きなロジックがあれば、それを独立した関数またはモジュールとして切り出すための候補を特定する。
    - Agent実行プロンプ:
      ```
-     対象ファイル: .github_automation/project_summary/scripts/generate-project-summary.cjs
+     対象ファイル: `.github_automation/project_summary/scripts/generate-project-summary.cjs`
      
-     実行内容: 対象ファイル内の関数構造と依存関係を詳細に分析し、特にファイルサイズ200行未満という目標達成のために、さらに独立したモジュールとして切り出せる論理的な単位（関数、クラス、または新たなファイル）を提案してください。主要な処理フローと各関数の役割を明確にしてください。
+     実行内容: 上記ファイルを分析し、複数の責任を持つ、または行数が200行を超える可能性のあるブロックを特定してください。その後、それらのブロックをどのように分割し、別のCJSモジュールとして切り出すことができるかの提案をMarkdown形式で記述してください。各提案には、切り出す機能の概要、新しいファイル名、および現在のファイルからの呼び出し元の変更点を含めてください。
      
-     確認事項: ファイル分割の提案は、既存の機能が損なわれないこと、およびテストカバレッジへの影響がないことを考慮してください。分割後のファイル間の依存関係が過度に複雑にならないよう注意してください。
+     確認事項: 既存の`CodeAnalyzer.cjs`, `ProjectAnalyzer.cjs`, `ProjectSummaryGenerator.cjs`との機能重複がないか、また、分解後のファイル間の依存関係が明確になるかを確認してください。`generate-project-summary.cjs`の全体的な処理フローが理解しやすくなることを優先してください。
      
-     期待する出力: `generate-project-summary.cjs`の主要な処理フローの概要と、分割候補となるロジックの具体的な説明、推定される切り出し後のファイル名と主要な役割をmarkdown形式で箇条書きで出力してください。
+     期待する出力: `generate-project-summary.cjs`の分解候補と、それぞれの候補を別ファイルに切り出す際の具体的な変更提案をMarkdown形式で出力してください。
      ```
 
-2. [Issue #12] `project-summary`アクションを他プロジェクトから利用するための入力要件を明確化
-   - 最初の小さな一歩: `generate-project-summary.cjs`スクリプトが受け取るコマンドライン引数、環境変数、および内部で参照するファイルパスやディレクトリ構造を洗い出す。
+2. [Issue #12](issue-notes/12.md): project-summary を他projectから使いやすくする
+   - 最初の小さな一歩: `project-summary`機能が現在どのように呼び出され、どのような設定を必要としているか（例: 入力パス、出力パスなど）を調査し、汎用化のために必要なパラメータを特定する。
    - Agent実行プロンプト:
      ```
-     対象ファイル: .github_automation/project_summary/scripts/generate-project-summary.cjs
+     対象ファイル: `.github/workflows/generate-project-summary.yml`, `.github_automation/project_summary/scripts/generate-project-summary.cjs`
      
-     実行内容: `generate-project-summary.cjs`スクリプトがGitHub Actionsのアクションとして外部プロジェクトから利用されることを想定し、スクリプトの実行に必要な全ての入力（コマンドライン引数、環境変数）と、スクリプトが内部で参照する固定パスや前提となるファイル/ディレクトリ構造を特定してください。
+     実行内容: `project-summary`機能が他のプロジェクトから再利用されることを想定し、現在ハードコードされているパスや設定、またはコマンドライン引数として渡すことが望ましい項目を洗い出してください。それらをGitHub Actionsの`inputs`として定義するために必要な変更点を分析し、Markdown形式で出力してください。
      
-     確認事項: 入力パラメータがスクリプト内でどのように利用されているか、およびそのパラメータが省略された場合のデフォルト動作についても確認してください。GitHub Actionsの`action.yml`で`inputs`として定義されるべき項目を想定してください。
+     確認事項: 既存のワークフローとスクリプトの連携を確認し、汎用化によって現在の動作が損なわれないこと、および新しい`inputs`が直感的で理解しやすいものであることを確認してください。
      
-     期待する出力: `project-summary`アクションを外部プロジェクトで利用する際に設定が必要となる項目（入力パラメータ、環境変数、前提となるファイル/ディレクトリ）と、それぞれの簡単な説明をmarkdown形式で箇条書きで出力してください。
+     期待する出力: `project-summary`を再利用可能なアクションとして構成するために必要な`workflow_dispatch`の`inputs`定義と、それに合わせてスクリプト側でこれらの`inputs`を受け取るための変更点についての提案をMarkdown形式で出力してください。
      ```
 
-3. [Issue #13] `issue-note`アクションを他プロジェクトから利用するための設定項目を洗い出し
-   - 最初の小さな一歩: `issue-note`の生成・管理プロセスに関わるスクリプトとワークフローファイルを特定し、その機能と必要な外部依存（APIトークン、リポジトリ情報など）を調査する。
+3. [Issue #10](issue-notes/10.md): callgraph を他projectから使いやすくする
+   - 最初の小さな一歩: `callgraph`機能が現在どのように実行され、どのような出力を生成しているかを確認し、他のプロジェクトで利用する際に最低限必要な入出力要件を特定する。
    - Agent実行プロンプト:
      ```
-     対象ファイル: .github_automation/issue_note_generator/generate-issue-note.cjs, .github/workflows/generate-issue-note.yml (存在する場合)
+     対象ファイル: `.github/workflows/generate-callgraph.yml`, `.github_automation/callgraph/generate-callgraph.cjs`
      
-     実行内容: `issue-note`の生成と管理を行うスクリプトおよび関連するワークフローファイル（もし存在すれば）を分析し、この機能を他のGitHubプロジェクトで再利用するために必要なすべての設定項目を特定してください。これには、必須となる入力パラメータ、必要なGitHub APIトークンや環境変数、および前提となるファイル構造やリポジトリ構成が含まれます。
+     実行内容: `callgraph`機能が他のプロジェクトから再利用されることを想定し、GitHub Actionsの`inputs`として外部から渡せるようにすべきパラメータ（例: 解析対象のディレクトリ、出力ファイル名など）を洗い出してください。それぞれのパラメータについて、説明とデフォルト値を考慮し、`action.yml`または`workflow_dispatch`の`inputs`定義として提案してください。
      
-     確認事項: ハルシネーションを避けるため、既存のファイルから直接読み取れる情報のみを基に分析してください。もし正確なファイルパスが不明な場合は、一般的な命名規則を基にした仮定のパスを使用し、その旨を明記してください。
+     確認事項: 既存のワークフローとスクリプトの連携、および`callgraph`の生成に必要な依存関係（例: `npm install`など）を考慮し、外部プロジェクトでの利用時に明確な指示を提供できることを確認してください。
      
-     期待する出力: `issue-note`機能を外部プロジェクトで利用するために設定が必要な項目（必須入力、必要なシークレット、ファイル配置の前提）と、それぞれの簡単な説明をmarkdown形式で箇条書きで出力してください。
+     期待する出力: `callgraph`を他のプロジェクトから利用するためのアクションとしてパッケージ化する際に必要となる`inputs`の定義（`action.yml`の形式を模倣）と、それらの入力がスクリプトでどのように利用されるかについての説明をMarkdown形式で出力してください。
 
 ---
-Generated at: 2025-08-14 07:05:32 JST
+Generated at: 2025-08-15 07:05:32 JST
