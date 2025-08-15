@@ -1,4 +1,4 @@
-const ProjectSummaryGenerator = require('./ProjectSummaryGenerator.cjs');
+const ProjectSummaryCoordinator = require('./ProjectSummaryCoordinator.cjs');
 
 // メイン処理実行
 
@@ -8,11 +8,11 @@ const overviewPath = process.argv[4];
 const developmentPath = process.argv[5];
 const projectRoot = process.argv[6];
 
-const generator = new ProjectSummaryGenerator(
+const coordinator = new ProjectSummaryCoordinator(
   overviewPromptPath,
   developmentStatusPromptPath,
   overviewPath,
   developmentPath,
   projectRoot
 );
-generator.run();
+coordinator.run();
