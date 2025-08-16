@@ -1,10 +1,10 @@
-const BaseSummaryGenerator = require('./BaseSummaryGenerator.cjs');
+const BaseIssueTracker = require('./BaseIssueTracker.cjs');
 
 /**
  * 開発状況生成器
  * 開発者向けの進捗状況を生成
  */
-class DevelopmentStatusGenerator extends BaseSummaryGenerator {
+class DevelopmentStatusGenerator extends BaseIssueTracker {
   /**
    * @param {string} developmentStatusPromptPath - 開発状況プロンプトのパス（必須）
    * @param {string} developmentPath - 開発状況出力先パス（必須）

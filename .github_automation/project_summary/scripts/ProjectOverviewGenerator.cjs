@@ -1,10 +1,10 @@
-const BaseSummaryGenerator = require('./BaseSummaryGenerator.cjs');
+const BaseProjectAnalyzer = require('./BaseProjectAnalyzer.cjs');
 
 /**
  * プロジェクト概要生成器
  * 来訪者向けのプロジェクト紹介を生成
  */
-class ProjectOverviewGenerator extends BaseSummaryGenerator {
+class ProjectOverviewGenerator extends BaseProjectAnalyzer {
   /**
    * @param {string} overviewPromptPath - プロジェクト概要プロンプトのパス（必須）
    * @param {string} overviewPath - プロジェクト概要出力先パス（必須）
