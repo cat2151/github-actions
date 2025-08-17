@@ -1,10 +1,11 @@
-const BaseIssueTracker = require('./BaseIssueTracker.cjs');
+const BaseGenerator = require('./BaseGenerator.cjs');
+const IssueTracker = require('./IssueTracker.cjs');
 
 /**
  * 開発状況生成器
  * 開発者向けの進捗状況を生成
  */
-class DevelopmentStatusGenerator extends BaseIssueTracker {
+class DevelopmentStatusGenerator extends BaseGenerator {
   /**
    * @param {string} developmentStatusPromptPath - 開発状況プロンプトのパス（必須）
    * @param {string} developmentPath - 開発状況出力先パス（必須）
@@ -25,6 +26,24 @@ class DevelopmentStatusGenerator extends BaseIssueTracker {
   }
 
   /**
+   * 環境変数とコミット状況をチェック
+   * @returns {Promise<boolean>} 実行を続行するかどうか
+   */
+  async validateEnvironment() {
+    // 基底クラスの環境変数チェック
+    await super.validateEnvironment();
+
+    // 過去24時間のユーザーコミットチェック
+    const hasUserCommits = await IssueTracker.hasRecentUserCommits(this.projectRoot);
+    if (!hasUserCommits) {
+      console.log('No user commits in the last 24 hours. Skipping summary generation.');
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
    * メイン実行関数
    * @returns {Promise<string>} 生成されたファイルのパス
    */
@@ -40,8 +59,8 @@ class DevelopmentStatusGenerator extends BaseIssueTracker {
 
       // データ収集
       const [issues, recentChanges, prompt] = await Promise.all([
-        this.collectIssues(),
-        this.collectRecentChanges(),
+        IssueTracker.collectIssues(this.projectRoot),
+        IssueTracker.collectRecentChanges(this.projectRoot),
         this.loadPrompt(this.developmentStatusPromptPath)
       ]);
 
