@@ -1,10 +1,11 @@
-const BaseProjectAnalyzer = require('./BaseProjectAnalyzer.cjs');
+const BaseGenerator = require('./BaseGenerator.cjs');
+const ProjectAnalysisOrchestrator = require('./ProjectAnalysisOrchestrator.cjs');
 
 /**
  * プロジェクト概要生成器
- * 来訪者向けのプロジェクト紹介を生成
+ * AI生成に特化した軽量クラス
  */
-class ProjectOverviewGenerator extends BaseProjectAnalyzer {
+class ProjectOverviewGenerator extends BaseGenerator {
   /**
    * @param {string} overviewPromptPath - プロジェクト概要プロンプトのパス（必須）
    * @param {string} overviewPath - プロジェクト概要出力先パス（必須）
@@ -22,6 +23,7 @@ class ProjectOverviewGenerator extends BaseProjectAnalyzer {
     
     this.overviewPromptPath = overviewPromptPath;
     this.overviewPath = overviewPath;
+    this.orchestrator = new ProjectAnalysisOrchestrator(projectRoot);
   }
 
   /**
@@ -38,14 +40,14 @@ class ProjectOverviewGenerator extends BaseProjectAnalyzer {
         return null;
       }
 
-      // データ収集
-      const [projectInfo, prompt] = await Promise.all([
-        this.collectProjectInfo(),
+      // データ収集・分析（新しいオーケストレーターを使用）
+      const [formattedReport, prompt] = await Promise.all([
+        this.orchestrator.generateFormattedReport(),
         this.loadPrompt(this.overviewPromptPath)
       ]);
 
       // プロジェクト概要生成
-      const overview = await this.generateOverview(projectInfo, prompt);
+      const overview = await this.generateOverview(formattedReport, prompt);
 
       // ファイル保存
       const filename = await this.saveToFile(overview, this.overviewPath);
@@ -65,39 +67,55 @@ class ProjectOverviewGenerator extends BaseProjectAnalyzer {
 
   /**
    * プロジェクト概要を生成
-   * @param {Object} projectInfo - プロジェクト情報
+   * @param {Object} formattedReport - フォーマット済み分析結果
    * @param {string} prompt - プロンプト内容
    * @returns {Promise<string>} 生成された概要
    */
-  async generateOverview(projectInfo, prompt) {
+  async generateOverview(formattedReport, prompt) {
     console.log('Generating project overview with Gemini API...');
 
-    const overviewPrompt = `
-${prompt}
+    const overviewPrompt = this._buildPrompt(formattedReport, prompt);
+
+    try {
+      const result = await this.model.generateContent(overviewPrompt);
+      return this._processAIResponse(result.response.text());
+    } catch (error) {
+      console.error('Error generating project overview:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * プロンプトを構築
+   * @private
+   */
+  _buildPrompt(formattedReport, basePrompt) {
+    return `
+${basePrompt}
 
 以下のプロジェクト情報を参考にして要約を生成してください：
 
 ## プロジェクト情報
-名前: ${projectInfo.name}
-説明: ${projectInfo.description}
+名前: ${formattedReport.name}
+説明: ${formattedReport.description}
 
 依存関係:
-${JSON.stringify(projectInfo.dependencies, null, 2)}
+${JSON.stringify(formattedReport.dependencies, null, 2)}
 
 ## 技術スタック
-${this.formatTechStack(projectInfo.techStack)}
+${formattedReport.formatted.techStack}
 
 ## ファイル階層ツリー
-${projectInfo.fileTree}
+${formattedReport.fileTree}
 
 ## ファイル詳細分析
-${this.formatFileDetails(projectInfo.fileAnalysis)}
+${formattedReport.formatted.fileDetails}
 
 ## 関数呼び出し階層
-${this.formatFunctionHierarchy(projectInfo.functionHierarchy)}
+${formattedReport.formatted.functionHierarchy}
 
 ## プロジェクト構造（ファイル一覧）
-${projectInfo.structure}
+${formattedReport.structure}
 
 上記の情報を基に、プロンプトで指定された形式でプロジェクト概要を生成してください。
 特に以下の点を重視してください：
@@ -107,14 +125,14 @@ ${projectInfo.structure}
 - 関数の説明は実際に検出された関数の役割に基づく
 - 関数呼び出し階層は実際の呼び出し関係に基づく
 `;
+  }
 
-    try {
-      const result = await this.model.generateContent(overviewPrompt);
-      return this.cleanMarkdownCodeBlock(result.response.text());
-    } catch (error) {
-      console.error('Error generating project overview:', error.message);
-      throw error;
-    }
+  /**
+   * AI応答を処理
+   * @private
+   */
+  _processAIResponse(response) {
+    return this.cleanMarkdownCodeBlock(response);
   }
 }
 
