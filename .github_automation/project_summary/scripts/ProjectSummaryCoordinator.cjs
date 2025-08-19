@@ -1,5 +1,5 @@
-const ProjectOverviewGenerator = require('./ProjectOverviewGenerator.cjs');
-const DevelopmentStatusGenerator = require('./DevelopmentStatusGenerator.cjs');
+const ProjectOverviewGenerator = require('./overview/ProjectOverviewGenerator.cjs');
+const DevelopmentStatusGenerator = require('./development/DevelopmentStatusGenerator.cjs');
 
 /**
  * プロジェクト要約コーディネーター

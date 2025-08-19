@@ -1,5 +1,5 @@
-const BaseGenerator = require('./BaseGenerator.cjs');
-const FileSystemUtils = require('./FileSystemUtils.cjs');
+const BaseGenerator = require('../shared/BaseGenerator.cjs');
+const FileSystemUtils = require('../shared/FileSystemUtils.cjs');
 const CodeAnalyzer = require('./CodeAnalyzer.cjs');
 const ProjectDataCollector = require('./ProjectDataCollector.cjs');
 const TechStackAnalyzer = require('./TechStackAnalyzer.cjs');

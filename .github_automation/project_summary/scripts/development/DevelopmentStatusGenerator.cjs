@@ -1,4 +1,4 @@
-const BaseGenerator = require('./BaseGenerator.cjs');
+const BaseGenerator = require('../shared/BaseGenerator.cjs');
 const IssueTracker = require('./IssueTracker.cjs');
 
 /**
