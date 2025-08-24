@@ -13,14 +13,14 @@ class DevelopmentStatusGenerator extends BaseGenerator {
    */
   constructor(developmentStatusPromptPath, developmentPath, projectRoot) {
     super(projectRoot);
-    
+
     if (!developmentStatusPromptPath) {
       throw new Error('developmentStatusPromptPath is required as the first argument');
     }
     if (!developmentPath) {
       throw new Error('developmentPath is required as the second argument');
     }
-    
+
     this.developmentStatusPromptPath = developmentStatusPromptPath;
     this.developmentPath = developmentPath;
   }
@@ -98,15 +98,38 @@ class DevelopmentStatusGenerator extends BaseGenerator {
   async generateDevelopmentStatus(issues, recentChanges, prompt) {
     console.log('Generating development status with Gemini API...');
 
+    // Issueノート取得関数を利用
+    const IssueTracker = require('./IssueTracker.cjs');
+    const issuesWithNotes = issues.map(issue => ({
+      ...issue,
+      noteContent: IssueTracker.getIssueNoteSync(issue.number, this.projectRoot)
+    }));
+
+    const issuesSection = issuesWithNotes.length === 0
+      ? 'オープン中のIssueはありません'
+      : issuesWithNotes.map(formatIssueSection).join('\n\n');
+
+    // 1Issue分のMarkdown出力を生成
+    function formatIssueSection(issue) {
+      return [
+        `## [Issue #${issue.number}](issue-notes/${issue.number}.md): ${issue.title}`,
+        issue.body,
+        `ラベル: ${issue.labels.join(', ')}`,
+        `--- issue-notes/${issue.number}.md の内容 ---`,
+        '',
+        '```markdown',
+        issue.noteContent,
+        '```'
+      ].join('\n');
+    }
+
     const developmentPrompt = `
 ${prompt}
 
 以下の開発状況情報を参考にして要約を生成してください：
 
 ## 現在のオープンIssues
-${issues.length === 0 ? 'オープン中のIssueはありません' : issues.map(issue =>
-  `[Issue #${issue.number}](issue-notes/${issue.number}.md): ${issue.title}\n${issue.body}\nラベル: ${issue.labels.join(', ')}`
-).join('\n\n')}
+${issuesSection}
 
 ## 最近の変更（過去7日間）
 コミット履歴:

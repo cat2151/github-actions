@@ -60,8 +60,33 @@ async function hasRecentUserCommits(projectRoot) {
   return await gitUtils.hasUserCommitsInLast24Hours();
 }
 
+/**
+ * 指定したIssue番号のノートmdファイル内容を同期取得 ※まず開発しやすさ優先で、決め打ちで必ずノートがある想定で開発する。これによりノート取得失敗バグを検知できる
+ * ノートファイルが存在しない、または読み取りに失敗した場合はエラーメッセージを出力し、プロセスをエラー終了させる。
+ * @param {number|string} issueNumber - Issue番号
+ * @param {string} projectRoot - プロジェクトルートパス
+ * @returns {string} ノート内容
+ */
+function getIssueNoteSync(issueNumber, projectRoot) {
+  const fs = require('fs');
+  const path = require('path');
+  const notePath = path.resolve(projectRoot, 'issue-notes', `${issueNumber}.md`);
+  if (!fs.existsSync(notePath)) {
+    console.error(`Issueノートが存在しません: ${notePath}`);
+    process.exit(1);
+  }
+  try {
+    return fs.readFileSync(notePath, 'utf-8');
+  } catch (e) {
+    console.error(`Issueノートの読み取りに失敗しました: ${notePath}`);
+    console.error(e);
+    process.exit(1);
+  }
+}
+
 module.exports = {
   collectIssues,
   collectRecentChanges,
-  hasRecentUserCommits
+  hasRecentUserCommits,
+  getIssueNoteSync
 };
