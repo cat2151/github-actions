@@ -3,48 +3,48 @@ Last updated: 2025-08-24
 # Development Status
 
 ## 現在のIssues
-- [Issue #17](issue-notes/17.md)では、現在生成される開発状況レポート内のissue-noteへのリンクが404エラーとなる問題の修正が求められています。
-- [Issue #18](issue-notes/18.md)では、`DevelopmentStatusGenerator.cjs`内でGeminiに与えるプロンプトがハードコーディングされており、その外部化による柔軟性の向上が課題です。
-- [Issue #10](issue-notes/10.md), [Issue #11](issue-notes/11.md), [Issue #12](issue-notes/12.md), [Issue #13](issue-notes/13.md), [Issue #16](issue-notes/16.md)などの複数のissueが、既存のGitHub Actions (`callgraph`, `translate`, `project-summary`, `issue-note`) の他プロジェクトからの再利用性を高めることに取り組んでいます。
+- [Issue #19](issue-notes/19.md) は、`development-status`生成の品質向上のため、`issue-notes`ディレクトリのMarkdownファイルの内容を参照させる改修が進められています。
+- [Issue #18](issue-notes/18.md) では、Geminiへのプロンプトが`DevelopmentStatusGenerator.cjs`にハードコーディングされており、外部ファイルへの切り出しが課題となっています。
+- [Issue #17](issue-notes/17.md) は、生成された`development-status`レポート内の`issue-note`へのリンクが404エラーとなる問題を修正する必要があります。
 
 ## 次の一手候補
-1. [Issue #17](issue-notes/17.md) `development-status` が生成したmdに誤りがある。issue-note へのlinkがURL誤りで、404となってしまう
-   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs` 内でissue-noteへのMarkdownリンクを生成している箇所を特定し、現在の出力とGitHubリポジトリのファイルパス構造に基づいた正しいURLパスを比較分析する。
+1. [Issue #17](issue-notes/17.md) development-status内のissue-noteリンクの404エラーを修正する
+   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`内のリンク生成ロジックを確認し、正しいGitHubリポジトリのファイルパスを生成するように修正する。
    - Agent実行プロンプト:
      ```
-     対象ファイル: DevelopmentStatusGenerator.cjs
-
-     実行内容: DevelopmentStatusGenerator.cjs 内でissue-noteへのMarkdownリンクを生成している箇所を特定し、現在の出力と想定される正しいURLパス（GitHubリポジトリのURL構造に基づく）を比較分析してください。
+     対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
      
-     確認事項: GitHub PagesまたはGitHubリポジトリのファイルパス解決の仕組みと、Markdownリンクの相対パス/絶対パスの動作を確認してください。また、issue-notesディレクトリの実際の構造と、生成されるファイルの出力場所との相対関係を考慮してください。
+     実行内容: 対象ファイル内の、生成されるdevelopment-status.md内のissue-noteへのリンクが誤っている箇所を特定し、正しいGitHubリポジトリのファイルパス（例: `https://github.com/cat2151/github-actions/blob/main/issue-notes/17.md`）を生成するように修正してください。特に、`generated-docs/issue-notes/`のような中間ディレクトリがURLに含まれないことを確認してください。
      
-     期待する出力: DevelopmentStatusGenerator.cjs において、`[Issue #番号](issue-notes/番号.md)` 形式のリンクがGitHub上で正しく解決されるために必要な修正案（具体的なコード変更箇所と修正後のコードスニペット）をmarkdown形式で出力してください。
+     確認事項: `issue-notes`ディレクトリがリポジトリのルートに存在すること、および既存のissue-noteリンクが期待する正しいURL形式になっていることを確認してください。変更後にローカルで`development-status.md`を生成し、リンクが正しく機能するか確認してください。
+     
+     期待する出力: 修正された`.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs`ファイルの内容。変更箇所の詳細な説明を含むMarkdown形式のサマリーも生成してください。
      ```
 
-2. [Issue #18](issue-notes/18.md) DevelopmentStatusGenerator.cjs 内に、Geminiに与えるpromptがハードコーディングされてしまっている
-   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs` 内のGeminiプロンプトがハードコーディングされている箇所を特定し、外部ファイルからの読み込みやGitHub Actionsの`with`入力として受け取る形へのリファクタリング方針を検討する。
+2. [Issue #18](issue-notes/18.md) Geminiプロンプトのハードコーディングを解消し、外部ファイルに切り出す
+   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`から、Gemini APIに与える開発状況生成用のプロンプト文字列を、新規ファイル`.github_automation/project_summary/prompts/development_status_prompt.md`として切り出す。
    - Agent実行プロンプト:
      ```
-     対象ファイル: DevelopmentStatusGenerator.cjs
+     対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
      
-     実行内容: DevelopmentStatusGenerator.cjs 内のGeminiプロンプトがハードコーディングされている箇所を特定し、そのプロンプトを外部設定ファイル（例: `prompt-templates/development-status.txt`）から読み込む、あるいはGitHub Actionsの`with`入力として受け取る形にリファクタリングする設計案を分析してください。
+     実行内容: `DevelopmentStatusGenerator.cjs`ファイル内でGemini APIに渡している開発状況生成のメインプロンプト文字列を特定し、その内容を新規ファイル`.github_automation/project_summary/prompts/development_status_prompt.md`として保存してください。その後、`DevelopmentStatusGenerator.cjs`がこの外部ファイルからプロンプトを読み込むように修正してください。
      
-     確認事項: 外部ファイルからの読み込みの場合のファイルパス解決の考慮、または`with`入力の場合のデフォルト値設定やバリデーションの必要性を確認してください。将来的なプロンプトの多様化や多言語化への拡張性を考慮してください。
+     確認事項: 切り出したプロンプトの内容が元のコードと完全に一致していること。`DevelopmentStatusGenerator.cjs`がプロンプトを正しく読み込み、既存のプレースホルダー（例: `{{current_issues_content}}`）が引き続き正しく機能することを確認してください。
      
-     期待する出力: プロンプトのハードコーディングを解消するための具体的なリファクタリング方針と、DevelopmentStatusGenerator.cjs の修正後の主要なコードスニペット、およびもし外部ファイルを採用する場合の新しいファイル構造の提案をmarkdown形式で出力してください。
+     期待する出力: 新規ファイル`.github_automation/project_summary/prompts/development_status_prompt.md`とその内容、および修正された`.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs`ファイルの内容。変更内容のサマリーをMarkdown形式で記述してください。
      ```
 
-3. [Issue #10](issue-notes/10.md) callgraph を他projectから使いやすくする
-   - 最初の小さな一歩: `callgraph` Actionが外部プロジェクトから利用される際の理想的なインターフェース（必要な入力パラメータ、期待される出力、設定方法）を定義する。
+3. [Issue #16](issue-notes/16.md) `tonejs-mml-to-json`リポジトリで`issue-note`ワークフローを最新版に更新する
+   - 最初の小さな一歩: `tonejs-mml-to-json`リポジトリ内の既存の`issue-note`関連ワークフローファイルを特定し、`github-actions`リポジトリの最新の`.github/workflows/call-issue-note.yml`の内容に置き換える。
    - Agent実行プロンプト:
      ```
-     対象ファイル: callgraph/action.yml, callgraph/README.md
+     対象ファイル: tonejs-mml-to-jsonリポジトリ内の既存のissue-note関連ワークフローファイル（例: `.github/workflows/call-issue-note.yml`）と、github-actionsリポジトリの`.github/workflows/call-issue-note.yml`
      
-     実行内容: callgraph Actionが他のリポジトリから呼び出されることを想定し、action.yml の`inputs`および`outputs`を最適化する案を分析してください。具体的には、必要な入力パラメータ（例: 対象ディレクトリ、出力ファイル名）と、期待される出力（例: 生成されたHTMLファイルのパス）を明確化し、README.mdにその利用方法を追記するための内容を検討してください。
+     実行内容: `tonejs-mml-to-json`リポジトリ内で現在利用されている古い`issue-note`関連ワークフローを特定し、その内容を`github-actions`リポジトリの`.github/workflows/call-issue-note.yml`の最新版に完全に置き換えてください。
      
-     確認事項: Actionの入力値が必須か任意か、デフォルト値は必要か、バリデーションは必要かを確認してください。また、外部プロジェクトがActionを呼び出す際の最小限のセットアップと、柔軟なカスタマイズのバランスを考慮してください。
+     確認事項: `tonejs-mml-to-json`リポジトリの現在の`issue-note`関連ワークフローファイルの正確なパスと内容を特定すること。新しいワークフローが`tonejs-mml-to-json`の環境要件（例えば、必要なシークレットや環境変数）と互換性があり、正しく実行できることを確認してください。
      
-     期待する出力: callgraph/action.yml の推奨される`inputs`と`outputs`の定義案、callgraph/README.md に追記すべき「外部プロジェクトからの利用方法」のセクションをmarkdown形式で出力してください。
+     期待する出力: `tonejs-mml-to-json`リポジトリで変更されるワークフローファイルの具体的な内容（更新された`.yml`ファイル）。また、変更手順と期待される動作、確認結果をMarkdown形式で記述してください。
 
 ---
-Generated at: 2025-08-24 07:04:13 JST
+Generated at: 2025-08-24 09:47:19 JST
