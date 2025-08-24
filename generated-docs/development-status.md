@@ -1,50 +1,50 @@
-Last updated: 2025-08-24
+Last updated: 2025-08-25
 
 # Development Status
 
 ## 現在のIssues
-- [Issue #19](issue-notes/19.md) は、`development-status`生成の品質向上のため、`issue-notes`ディレクトリのMarkdownファイルの内容を参照させる改修が進められています。
-- [Issue #18](issue-notes/18.md) では、Geminiへのプロンプトが`DevelopmentStatusGenerator.cjs`にハードコーディングされており、外部ファイルへの切り出しが課題となっています。
-- [Issue #17](issue-notes/17.md) は、生成された`development-status`レポート内の`issue-note`へのリンクが404エラーとなる問題を修正する必要があります。
+- [Issue #19](issue-notes/19.md) を中心に、開発状況生成の際に`issue-notes`や`project-overview`の内容をGeminiに参照させることで、出力品質の向上を目指しています。
+- [Issue #18](issue-notes/18.md) と [Issue #17](issue-notes/17.md) では、`DevelopmentStatusGenerator.cjs`におけるプロンプトのハードコーディング解消と、生成されるMarkdown内のリンク誤りの修正が課題となっています。
+- [Issue #16](issue-notes/16.md), [Issue #13](issue-notes/13.md), [Issue #12](issue-notes/12.md), [Issue #11](issue-notes/11.md) では、`issue-note`や`project-summary`などの各種GitHub Actionsを他プロジェクトで利用しやすくするための改善を進めています。
 
 ## 次の一手候補
-1. [Issue #17](issue-notes/17.md) development-status内のissue-noteリンクの404エラーを修正する
-   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`内のリンク生成ロジックを確認し、正しいGitHubリポジトリのファイルパスを生成するように修正する。
+1. [Issue #19](issue-notes/19.md) issue-notes/ 配下のmdファイルの内容を参照させる
+   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`で、オープン中の各issueに対応する`issue-notes/<issue_number>.md`ファイルを読み込み、その内容をGeminiへのプロンプトに含めるように変更します。
    - Agent実行プロンプト:
      ```
      対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
      
-     実行内容: 対象ファイル内の、生成されるdevelopment-status.md内のissue-noteへのリンクが誤っている箇所を特定し、正しいGitHubリポジトリのファイルパス（例: `https://github.com/cat2151/github-actions/blob/main/issue-notes/17.md`）を生成するように修正してください。特に、`generated-docs/issue-notes/`のような中間ディレクトリがURLに含まれないことを確認してください。
+     実行内容: `generateDevelopmentStatus`関数内で、オープン中のIssueリストを取得した後、各Issue番号に対応する`issue-notes/<issue_number>.md`ファイルを読み込む処理を追加してください。読み込んだ内容を、Geminiに渡すプロンプトの一部として含めるように変更してください。
      
-     確認事項: `issue-notes`ディレクトリがリポジトリのルートに存在すること、および既存のissue-noteリンクが期待する正しいURL形式になっていることを確認してください。変更後にローカルで`development-status.md`を生成し、リンクが正しく機能するか確認してください。
+     確認事項: `issue-notes/`ディレクトリが存在し、指定された形式のファイルが読み込み可能であることを確認してください。ファイルが見つからない場合の挙動（エラーハンドリング、スキップなど）も考慮してください。
      
-     期待する出力: 修正された`.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs`ファイルの内容。変更箇所の詳細な説明を含むMarkdown形式のサマリーも生成してください。
+     期待する出力: 修正された`DevelopmentStatusGenerator.cjs`ファイル。`issue-notes`の内容がGeminiプロンプトに含まれることを示すテスト結果または説明。
      ```
 
-2. [Issue #18](issue-notes/18.md) Geminiプロンプトのハードコーディングを解消し、外部ファイルに切り出す
-   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`から、Gemini APIに与える開発状況生成用のプロンプト文字列を、新規ファイル`.github_automation/project_summary/prompts/development_status_prompt.md`として切り出す。
+2. [Issue #18](issue-notes/18.md) Geminiに与えるpromptのハードコーディングを解消する
+   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`内のハードコードされたプロンプト文字列を、外部ファイル（例: `prompts/development_status_prompt.md`）として切り出し、それを読み込むように変更します。
+   - Agent実行プロンプト:
+     ```
+     対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs と新規作成するプロンプトファイル（例: prompts/development_status_prompt.md）
+     
+     実行内容: `DevelopmentStatusGenerator.cjs`内の`generateDevelopmentStatus`関数にあるGeminiへのプロンプト文字列を、新しい`prompts/development_status_prompt.md`ファイルに移動してください。`DevelopmentStatusGenerator.cjs`は、この外部プロンプトファイルを読み込み、テンプレートリテラルで動的な情報を埋め込む形に修正してください。
+     
+     確認事項: `prompts/`ディレクトリが存在するか、また新しいプロンプトファイルの読み込みパスが正しいことを確認してください。既存のプロンプトの構造が外部ファイルでも適切に機能するか検証してください。
+     
+     期待する出力: `DevelopmentStatusGenerator.cjs`と`prompts/development_status_prompt.md`の変更ファイル。プロンプトが外部化され、動作に影響がないことを示す説明。
+     ```
+
+3. [Issue #17](issue-notes/17.md) development-status 生成mdのリンク誤りを修正する
+   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`内で、生成されるMarkdownのissue-noteリンクのURLが正しい形式になるように文字列操作を修正します。
    - Agent実行プロンプト:
      ```
      対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
      
-     実行内容: `DevelopmentStatusGenerator.cjs`ファイル内でGemini APIに渡している開発状況生成のメインプロンプト文字列を特定し、その内容を新規ファイル`.github_automation/project_summary/prompts/development_status_prompt.md`として保存してください。その後、`DevelopmentStatusGenerator.cjs`がこの外部ファイルからプロンプトを読み込むように修正してください。
+     実行内容: `generateDevelopmentStatus`関数内で、生成される`development-status.md`内の`issue-notes`へのリンク（例: `[Issue #16](issue-notes/16.md)`）が、リポジトリのルートからの相対パスとして正しく解決されるように修正してください。現在の`generated-docs/issue-notes/16.md`のようなパスではなく、`issue-notes/16.md`のように調整してください。
      
-     確認事項: 切り出したプロンプトの内容が元のコードと完全に一致していること。`DevelopmentStatusGenerator.cjs`がプロンプトを正しく読み込み、既存のプレースホルダー（例: `{{current_issues_content}}`）が引き続き正しく機能することを確認してください。
+     確認事項: 生成される`development-status.md`が`generated-docs/`に配置されることを考慮し、そこから`issue-notes/`への相対パスが正しくなるように調整してください。他のリンクへの影響がないことを確認してください。
      
-     期待する出力: 新規ファイル`.github_automation/project_summary/prompts/development_status_prompt.md`とその内容、および修正された`.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs`ファイルの内容。変更内容のサマリーをMarkdown形式で記述してください。
-     ```
-
-3. [Issue #16](issue-notes/16.md) `tonejs-mml-to-json`リポジトリで`issue-note`ワークフローを最新版に更新する
-   - 最初の小さな一歩: `tonejs-mml-to-json`リポジトリ内の既存の`issue-note`関連ワークフローファイルを特定し、`github-actions`リポジトリの最新の`.github/workflows/call-issue-note.yml`の内容に置き換える。
-   - Agent実行プロンプト:
-     ```
-     対象ファイル: tonejs-mml-to-jsonリポジトリ内の既存のissue-note関連ワークフローファイル（例: `.github/workflows/call-issue-note.yml`）と、github-actionsリポジトリの`.github/workflows/call-issue-note.yml`
-     
-     実行内容: `tonejs-mml-to-json`リポジトリ内で現在利用されている古い`issue-note`関連ワークフローを特定し、その内容を`github-actions`リポジトリの`.github/workflows/call-issue-note.yml`の最新版に完全に置き換えてください。
-     
-     確認事項: `tonejs-mml-to-json`リポジトリの現在の`issue-note`関連ワークフローファイルの正確なパスと内容を特定すること。新しいワークフローが`tonejs-mml-to-json`の環境要件（例えば、必要なシークレットや環境変数）と互換性があり、正しく実行できることを確認してください。
-     
-     期待する出力: `tonejs-mml-to-json`リポジトリで変更されるワークフローファイルの具体的な内容（更新された`.yml`ファイル）。また、変更手順と期待される動作、確認結果をMarkdown形式で記述してください。
+     期待する出力: 修正された`DevelopmentStatusGenerator.cjs`ファイル。生成された`development-status.md`内のリンクが正しく機能することを確認するための手順または結果。
 
 ---
-Generated at: 2025-08-24 09:47:19 JST
+Generated at: 2025-08-25 07:04:23 JST
