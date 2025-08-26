@@ -14,7 +14,7 @@ class BaseGenerator {
     if (!projectRoot) {
       throw new Error('projectRoot is required');
     }
-    
+
     this.projectRoot = projectRoot;
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
@@ -72,7 +72,7 @@ class BaseGenerator {
     const fileContent = `Last updated: ${dateStr}\n\n${content}\n\n---\nGenerated at: ${timeStr} JST\n`;
     await fs.writeFile(outputPath, fileContent, 'utf-8');
     console.log(`Content saved to: ${path.resolve(outputPath)}`);
-    
+
     return outputPath;
   }
 
