@@ -10,9 +10,10 @@ env:
   PROMPT_DIR: .github/actions-tmp/.github_automation/project_summary/prompts
   DOCS_DIR: generated-docs
   OVERVIEW_PROMPT: project-overview-prompt.md
-  DEVELOPMENT_STATUS_PROMPT: development-status-prompt.md
+  DEVELOPMENT_STATUS_BASE_PROMPT: development-status-prompt.md
   OUT_OVERVIEW: project-overview.md
   OUT_DEVELOPMENT_STATUS: development-status.md
+  OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT: development-status-generated-prompt.md
 
 jobs:
   generate-summary:
@@ -65,7 +66,7 @@ jobs:
           mkdir -p ${{ env.DOCS_DIR }}
           node ${{ env.SCRIPT_DIR }}/generate-project-summary.cjs \
             ${{ env.PROMPT_DIR }}/${{ env.OVERVIEW_PROMPT }} \
-            ${{ env.PROMPT_DIR }}/${{ env.DEVELOPMENT_STATUS_PROMPT }} \
+            ${{ env.PROMPT_DIR }}/${{ env.DEVELOPMENT_STATUS_BASE_PROMPT }} \
             ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }} \
             ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }} \
             ${{ env.TMP_DIR }}
@@ -91,6 +92,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
+          git add ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else

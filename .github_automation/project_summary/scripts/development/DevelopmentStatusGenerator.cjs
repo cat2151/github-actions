@@ -142,6 +142,12 @@ ${recentChanges.changedFiles.join('\n')}
 Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
 `;
 
+    // プロンプトをファイルに保存する。開発効率化用。
+    const path = require('path');
+    const promptFilePath = path.join(this.projectRoot, 'generated-docs', 'development-status-generated-prompt.md');
+    await this.saveToFile(developmentPrompt, promptFilePath);
+    console.log(`Development status prompt saved to: ${promptFilePath}`);
+
     try {
       const result = await this.model.generateContent(developmentPrompt);
       return this.cleanMarkdownCodeBlock(result.response.text());
