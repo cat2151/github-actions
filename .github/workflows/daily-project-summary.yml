@@ -55,6 +55,7 @@ jobs:
         run: |
           rm -f ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}
           rm -f ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
+          rm -f ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}
 
       - name: Generate project summary
         env:
@@ -69,17 +70,19 @@ jobs:
             ${{ env.PROMPT_DIR }}/${{ env.DEVELOPMENT_STATUS_BASE_PROMPT }} \
             ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }} \
             ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }} \
+            ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }} \
             ${{ env.TMP_DIR }}
 
       - name: Verify generated files # 生成後のtimestampやfilesizeのチェック用
         run: |
           ls -la ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}
           ls -la ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
+          ls -la ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}
 
       - name: Check for generated summaries
         id: check_summaries
         run: |
-          if [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}" ] && [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}" ]; then
+          if [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}" ] && [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}" ] && [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}" ]; then
             echo "summaries_generated=true" >> $GITHUB_OUTPUT
           else
             echo "summaries_generated=false" >> $GITHUB_OUTPUT
@@ -104,7 +107,7 @@ jobs:
         run: |
           if [ "${{ steps.check_summaries.outputs.summaries_generated }}" == "true" ]; then
             echo "✅ Project summaries updated successfully"
-            echo "📊 Generated: ${{ env.OUT_OVERVIEW }} & ${{ env.OUT_DEVELOPMENT_STATUS }}"
+            echo "📊 Generated: ${{ env.OUT_OVERVIEW }} & ${{ env.OUT_DEVELOPMENT_STATUS }} & ${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}"
           else
             echo "ℹ️ No summaries generated (likely no user commits in the last 24 hours)"
           fi

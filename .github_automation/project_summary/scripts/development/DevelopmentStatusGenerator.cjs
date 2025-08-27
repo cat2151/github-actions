@@ -11,7 +11,7 @@ class DevelopmentStatusGenerator extends BaseGenerator {
    * @param {string} developmentPath - 開発状況出力先パス（必須）
    * @param {string} projectRoot - プロジェクトルートパス（必須）
    */
-  constructor(developmentStatusPromptPath, developmentPath, projectRoot) {
+  constructor(developmentStatusPromptPath, developmentPath, developmentGeneratedPath, projectRoot) {
     super(projectRoot);
 
     if (!developmentStatusPromptPath) {
@@ -20,9 +20,13 @@ class DevelopmentStatusGenerator extends BaseGenerator {
     if (!developmentPath) {
       throw new Error('developmentPath is required as the second argument');
     }
+    if (!developmentGeneratedPath) {
+      throw new Error('developmentGeneratedPath is required as the third argument');
+    }
 
     this.developmentStatusPromptPath = developmentStatusPromptPath;
     this.developmentPath = developmentPath;
+    this.developmentGeneratedPath = developmentGeneratedPath;
   }
 
   /**
@@ -143,10 +147,8 @@ Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md)
 `;
 
     // プロンプトをファイルに保存する。開発効率化用。
-    const path = require('path');
-    const promptFilePath = path.join(this.projectRoot, 'generated-docs', 'development-status-generated-prompt.md');
-    await this.saveToFile(developmentPrompt, promptFilePath);
-    console.log(`Development status prompt saved to: ${promptFilePath}`);
+    await this.saveToFile(developmentPrompt, this.developmentGeneratedPath);
+    console.log(`Development status prompt saved to: ${this.developmentGeneratedPath}`);
 
     try {
       const result = await this.model.generateContent(developmentPrompt);
