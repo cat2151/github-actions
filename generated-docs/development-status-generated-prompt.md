@@ -1,4 +1,4 @@
-Last updated: 2025-08-28
+Last updated: 2025-08-29
 
 
 # 開発状況生成プロンプト（開発者向け）
@@ -102,40 +102,6 @@ Last updated: 2025-08-28
 以下の開発状況情報を参考にして要約を生成してください：
 
 ## 現在のオープンIssues
-## [Issue #22](issue-notes/22.md): project-summary の development-status 生成時、Geminiに与えたprompt、もcommit push、を試す
-[issue-notes/22.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/22.md)
-
-...
-ラベル: 
---- issue-notes/22.md の内容 ---
-
-```markdown
-# issue project-summary の development-status 生成時、Geminiに与えたprompt、もcommit push、を試す #22
-[issues #22](https://github.com/cat2151/github-actions/issues/22)
-
-# 何が困るの？
-- 生成された development-status.md の妥当性がわかりづらいし、バグった場合の原因調査がしづらい
-
-# 対策案
-- Geminiに与えたpromptをfileにしてcommit pushしておくと、デバッグに役立つ可能性がある。
-
-# 方法案
-- Geminiに与えるprompt を生成時、それをfileにsaveし、commit push対象にする。
-- ひとまずgenerated-docs/ に保存する。落ち着いたら移動先を検討する。
-    - generated-docs/ 配下のまま、も有力な候補である。
-        - なぜなら、cjsによってgenerateされたdocなので。
-
-# 日次バッチでpromptを生成させ、agentに投げた
-- レビューした
-- 修正させた
-
-# 結果
-- エラー。pathのミス。呼び出し元側に保存したいのに、共通ワークフロー側に保存となってしまった。
-- 対策、ymlで引数を指定するようにした。
-- testする。
-
-```
-
 ## [Issue #21](issue-notes/21.md): project-summary の development-status 生成時、project-overviewが生成済みのproject-overview.mdもpromptに添付、を試す
 [issue-notes/21.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/21.md)
 
@@ -387,8 +353,43 @@ Last updated: 2025-08-28
 
 ```
 
+## [Issue #10](issue-notes/10.md): callgraph を他projectから使いやすくする
+[issue-notes/10.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/10.md)
+
+...
+ラベル: 
+--- issue-notes/10.md の内容 ---
+
+```markdown
+# issue callgraph を他projectから使いやすくする #10
+[issues #10](https://github.com/cat2151/github-actions/issues/10)
+
+# ブレインストーミング
+- 洗い出し
+    - 他projectから使う場合の問題を洗い出す、今見えている範囲で、手早く、このnoteに可視化する
+    - 洗い出したものは、一部は別issueに切り分ける
+- close条件
+    - まずは4つそれぞれを個別のdirに切り分けてtest greenとなること、とするつもり
+    - それ以外は別issueに切り分けるつもり
+- 切り分け
+    - 別dirに切り分ける
+        - 課題、`codeql-queries/` が `.github/` 配下にある。対策、`.github_automation/callgraph_enhanced/codeql-queries/` とする
+        - 課題、scriptも、`.github/`配下にある。対策、移動する
+        - 方法、agentを試し、ハルシネーションで時間が取られるなら人力に切り替える
+- test
+    - local WSL + act でtestする
+- 名前
+    - 課題、名前 enhanced が不要。対策、名前から enhanced を削除してymlなどもそれぞれ同期して修正すべし
+- docs
+    - call導入手順を書く
+
+```
+
 ## 最近の変更（過去7日間）
 コミット履歴:
+e97ea82 Update callgraph.html [auto]
+71740e8 fix #22 プロンプトファイルをcommitできたことを確認した。closeする
+f88d7c0 Update project summaries (overview & development status)
 5c4d14f Update callgraph.html [auto]
 70c2489 #22 バグ修正。プロンプトファイルの保存pathを修正したつもり。
 4e0fd08 Update callgraph.html [auto]
@@ -396,18 +397,14 @@ Last updated: 2025-08-28
 a59c9a6 trim trailing white space
 3408c2d vscode設定 : trim trailing white space : true
 1672d80 #22 Geminiに投げる直前の、issue情報反映済みpromptを、ファイルsaveしcommit pushするようにしたつもり
-5569c8a Update project summaries (overview & development status)
-d05a619 Update callgraph.html [auto]
-a6e15ae #19 状況を整理した
 
 変更されたファイル:
 .github/workflows/daily-project-summary.yml
 .github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs
 .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
 .github_automation/project_summary/scripts/generate-project-summary.cjs
-.github_automation/project_summary/scripts/shared/BaseGenerator.cjs
-.vscode/settings.json
 generated-docs/callgraph.html
+generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
 issue-notes/22.md
@@ -417,4 +414,4 @@ Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md)
 
 
 ---
-Generated at: 2025-08-28 07:04:08 JST
+Generated at: 2025-08-29 07:04:14 JST
