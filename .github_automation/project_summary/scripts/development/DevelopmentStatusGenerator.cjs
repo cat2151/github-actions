@@ -115,8 +115,10 @@ class DevelopmentStatusGenerator extends BaseGenerator {
 
     // 1Issue分のMarkdown出力を生成
     function formatIssueSection(issue) {
+      // generated-docs/ からの相対パスでリンクを生成
+      const relativeIssueNoteUrl = `../issue-notes/${issue.number}.md`;
       return [
-        `## [Issue #${issue.number}](issue-notes/${issue.number}.md): ${issue.title}`,
+        `## [Issue #${issue.number}](${relativeIssueNoteUrl}): ${issue.title}`,
         issue.body,
         `ラベル: ${issue.labels.join(', ')}`,
         `--- issue-notes/${issue.number}.md の内容 ---`,
