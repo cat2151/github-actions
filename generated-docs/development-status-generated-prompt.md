@@ -1,4 +1,4 @@
-Last updated: 2025-08-29
+Last updated: 2025-08-30
 
 
 # 開発状況生成プロンプト（開発者向け）
@@ -102,7 +102,7 @@ Last updated: 2025-08-29
 以下の開発状況情報を参考にして要約を生成してください：
 
 ## 現在のオープンIssues
-## [Issue #21](issue-notes/21.md): project-summary の development-status 生成時、project-overviewが生成済みのproject-overview.mdもpromptに添付、を試す
+## [Issue #21](../issue-notes/21.md): project-summary の development-status 生成時、project-overviewが生成済みのproject-overview.mdもpromptに添付、を試す
 [issue-notes/21.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/21.md)
 
 ...
@@ -127,7 +127,7 @@ Last updated: 2025-08-29
 
 ```
 
-## [Issue #20](issue-notes/20.md): project-summary の development-status 生成時、issue-notes/ 配下のmdにファイル名が書いてあれば、そのファイル内容もpromptに添付、を試す
+## [Issue #20](../issue-notes/20.md): project-summary の development-status 生成時、issue-notes/ 配下のmdにファイル名が書いてあれば、そのファイル内容もpromptに添付、を試す
 [issue-notes/20.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/20.md)
 
 ...
@@ -152,7 +152,7 @@ Last updated: 2025-08-29
 
 ```
 
-## [Issue #19](issue-notes/19.md): project-summary の development-status 生成時、issue-notes/ 配下のmdファイルの内容を参照させる
+## [Issue #19](../issue-notes/19.md): project-summary の development-status 生成時、issue-notes/ 配下のmdファイルの内容を参照させる
 [issue-notes/19.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/19.md)
 
 ...
@@ -188,7 +188,7 @@ Last updated: 2025-08-29
 
 ```
 
-## [Issue #18](issue-notes/18.md): DevelopmentStatusGenerator.cjs 内に、Geminiに与えるpromptがハードコーディングされてしまっている
+## [Issue #18](../issue-notes/18.md): DevelopmentStatusGenerator.cjs 内に、Geminiに与えるpromptがハードコーディングされてしまっている
 [issue-notes/18.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/18.md)
 
 ...
@@ -211,7 +211,7 @@ Last updated: 2025-08-29
 
 ```
 
-## [Issue #17](issue-notes/17.md): development-status が生成したmdに誤りがある。issue-note へのlinkがURL誤りで、404となってしまう
+## [Issue #17](../issue-notes/17.md): development-status が生成したmdに誤りがある。issue-note へのlinkがURL誤りで、404となってしまう
 [issue-notes/17.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/17.md)
 
 ...
@@ -225,8 +225,14 @@ Last updated: 2025-08-29
 # 事例
 - 生成したmdのURL：
     - https://github.com/cat2151/github-actions/blob/main/generated-docs/development-status.md
-- そのmdに含まれるlink、404である：
+- そのmdをGitHub上でdecodeして閲覧したときのURL、404である：
     - https://github.com/cat2151/github-actions/blob/main/generated-docs/issue-notes/16.md
+- そのmdに実際に含まれるURL：
+    - issue-notes/16.md
+- あるべきURL：
+    - https://github.com/cat2151/github-actions/blob/main/issue-notes/16.md
+- あるべきURLがmdにどう含まれているべきか：
+    - ../issue-notes/16.md
 
 # どうする？
 - 案
@@ -235,9 +241,19 @@ Last updated: 2025-08-29
         - .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
     - 備考、cjs内にpromptがハードコーディングされており、promptをメンテしづらいので別途対処する : [issues #18](https://github.com/cat2151/github-actions/issues/18)
 
+# 結果
+- agentにpromptを投げた
+    - ※promptは、development-statusで生成したもの
+- レビューした
+    - agentがフルパスで実装した、ことがわかった
+- userが分析し、 ../ のほうが適切と判断した
+    - ※「事例」コーナーを、あわせて修正した
+- そのように指示してagentに修正させた
+- testする
+
 ```
 
-## [Issue #16](issue-notes/16.md): issue-note / project-summary / translate / callgraph をtonejs-mml-to-jsonから呼び出す
+## [Issue #16](../issue-notes/16.md): issue-note / project-summary / translate / callgraph をtonejs-mml-to-jsonから呼び出す
 [issue-notes/16.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/16.md)
 
 ...
@@ -282,7 +298,7 @@ Last updated: 2025-08-29
 
 ```
 
-## [Issue #13](issue-notes/13.md): issue-note を他projectから使いやすくする
+## [Issue #13](../issue-notes/13.md): issue-note を他projectから使いやすくする
 [issue-notes/13.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/13.md)
 
 ...
@@ -298,7 +314,7 @@ Last updated: 2025-08-29
 
 ```
 
-## [Issue #12](issue-notes/12.md): project-summary を他projectから使いやすくする
+## [Issue #12](../issue-notes/12.md): project-summary を他projectから使いやすくする
 [issue-notes/12.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/12.md)
 
 ...
@@ -328,7 +344,7 @@ Last updated: 2025-08-29
 
 ```
 
-## [Issue #11](issue-notes/11.md): translate を他projectから使いやすくする
+## [Issue #11](../issue-notes/11.md): translate を他projectから使いやすくする
 [issue-notes/11.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/11.md)
 
 ...
@@ -353,7 +369,7 @@ Last updated: 2025-08-29
 
 ```
 
-## [Issue #10](issue-notes/10.md): callgraph を他projectから使いやすくする
+## [Issue #10](../issue-notes/10.md): callgraph を他projectから使いやすくする
 [issue-notes/10.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/10.md)
 
 ...
@@ -387,16 +403,16 @@ Last updated: 2025-08-29
 
 ## 最近の変更（過去7日間）
 コミット履歴:
+b4bd766 Update callgraph.html [auto]
+b97acac Merge branch 'main' of github.com:cat2151/github-actions into main
+88ba294 #17 link 404とならないよう修正したつもり
+9f7126f Update project summaries (overview & development status)
 e97ea82 Update callgraph.html [auto]
 71740e8 fix #22 プロンプトファイルをcommitできたことを確認した。closeする
 f88d7c0 Update project summaries (overview & development status)
 5c4d14f Update callgraph.html [auto]
 70c2489 #22 バグ修正。プロンプトファイルの保存pathを修正したつもり。
 4e0fd08 Update callgraph.html [auto]
-4c832d8 Merge branches 'main' and 'main' of github.com:cat2151/github-actions into main
-a59c9a6 trim trailing white space
-3408c2d vscode設定 : trim trailing white space : true
-1672d80 #22 Geminiに投げる直前の、issue情報反映済みpromptを、ファイルsaveしcommit pushするようにしたつもり
 
 変更されたファイル:
 .github/workflows/daily-project-summary.yml
@@ -407,6 +423,7 @@ generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
+issue-notes/17.md
 issue-notes/22.md
 
 上記の情報を基に、プロンプトで指定された形式で開発状況を生成してください。
@@ -414,4 +431,4 @@ Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md)
 
 
 ---
-Generated at: 2025-08-29 07:04:14 JST
+Generated at: 2025-08-30 07:04:20 JST
