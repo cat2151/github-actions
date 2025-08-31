@@ -1,50 +1,50 @@
-Last updated: 2025-08-30
+Last updated: 2025-08-31
 
 # Development Status
 
 ## 現在のIssues
-- `development-status`生成時のGeminiプロンプト品質向上を目指し、[Issue #19](../issue-notes/19.md)、[Issue #20](../issue-notes/20.md)、[Issue #21](../issue-notes/21.md)ではissue-notesやproject-overviewの内容参照を検討中。
-- プロンプトのハードコーディング ([Issue #18](../issue-notes/18.md)) や、生成レポート内のリンクエラー ([Issue #17](../issue-notes/17.md)) といった、`development-status`機能自体の改善も進行中。
-- `issue-note`、`project-summary`、`translate`、`callgraph`といった主要ワークフローを汎用化し、他プロジェクト（[Issue #16](../issue-notes/16.md)）から利用しやすくする ([Issue #10](../issue-notes/10.md), [Issue #11](../issue-notes/11.md), [Issue #12](../issue-notes/12.md), [Issue #13](../issue-notes/13.md)) 取り組みも進められています。
+- [Issue #19](../issue-notes/19.md), [Issue #20](../issue-notes/20.md), [Issue #21](../issue-notes/21.md)は、開発状況生成時のGeminiプロンプトに、関連Issueノートやプロジェクト概要、関連ファイル内容を添付することで生成品質を高めることを目指しています。
+- [Issue #18](../issue-notes/18.md)は、`DevelopmentStatusGenerator.cjs`内のGeminiプロンプトがハードコーディングされている問題を解決し、コードの保守性を向上させます。
+- [Issue #16](../issue-notes/16.md)および[Issue #10](../issue-notes/10.md), [Issue #11](../issue-notes/11.md), [Issue #12](../issue-notes/12.md), [Issue #13](../issue-notes/13.md)は、issue-note, project-summary, translate, callgraphといった各種GitHub Actionsを他プロジェクトで利用しやすくするための改善と、既存ワークフローの更新を進めます。
 
 ## 次の一手候補
-1. `development-status`生成プロンプトのハードコーディングを解消し、外部ファイル化する [Issue #18](../issue-notes/18.md)
-   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`内のGeminiに与えるプロンプト文字列を抽出し、`prompts/development-status-prompt.md`として新規作成し、`DevelopmentStatusGenerator.cjs`からそのファイルを読み込むように修正する。
+1. [Issue #19](../issue-notes/19.md) issue-notes/配下のmdファイル内容参照の実装確認
+   - 最初の小さな一歩: `generated-docs/development-status-generated-prompt.md` を確認し、[Issue #19](../issue-notes/19.md)で参照されるべき `issue-notes/` 配下のmdファイルの内容が実際にプロンプトに添付されていることを確認する。
+   - Agent実行プロンプト:
+     ```
+     対象ファイル: generated-docs/development-status-generated-prompt.md, issue-notes/19.md, issue-notes/20.md, issue-notes/21.md
+     
+     実行内容: generated-docs/development-status-generated-prompt.md の内容を分析し、[Issue #19](../issue-notes/19.md)のclose条件に記載されている「commitされたpromptを確認し、issue-notes/ 配下のmdファイルがpromptに添付されていること」が満たされているかを確認してください。特に、[Issue #19](../issue-notes/19.md)自体や関連する[Issue #20](../issue-notes/20.md)、[Issue #21](../issue-notes/21.md)の`issue-notes/`ファイルの本文がプロンプトに含まれているかを確認してください。
+     
+     確認事項: DevelopmentStatusGenerator.cjsが正しく`issue-notes/`ファイルの内容を読み込み、プロンプトに含めるように実装されていることを前提とします。
+     
+     期待する出力: `issue-notes/`配下のmdファイルの内容がプロンプトに添付されているかの確認結果と、もし添付されていない場合はその原因に関する推測をmarkdown形式で出力してください。
+     ```
+
+2. [Issue #18](../issue-notes/18.md) DevelopmentStatusGenerator.cjs内のプロンプトハードコーディング解消
+   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`内のハードコーディングされたプロンプト部分を特定し、外部ファイル（例: `prompts/`ディレクトリ）に切り出すための計画を立てる。
    - Agent実行プロンプト:
      ```
      対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
      
-     実行内容: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs 内の generateDevelopmentStatus 関数にあるGeminiに与えるプロンプト文字列を抽出します。抽出したプロンプトを prompts/development-status-prompt.md という新しいファイルに保存し、元の DevelopmentStatusGenerator.cjs からはこのファイルを読み込んで利用するように修正してください。
+     実行内容: DevelopmentStatusGenerator.cjs内の`generateDevelopmentStatus`関数を分析し、Geminiに与えるプロンプトが記述されている箇所を特定してください。その上で、そのプロンプトを外部ファイルに切り出すための具体的な修正方針をmarkdown形式で提案してください。提案には、新しいプロンプトファイルのパス、およびDevelopmentStatusGenerator.cjs内でのそのファイルの読み込み方法を含めてください。
      
-     確認事項: プロンプトのプレースホルダー（例: `${currentIssuesSummary}`）が正しく機能するように、ファイル読み込み後の文字列置換ロジックを維持または再実装してください。新しい prompts/development-status-prompt.md ファイルのパスが正しく指定されていることを確認してください。
+     確認事項: 現在のDevelopmentStatusGenerator.cjsの動作に影響を与えないこと。また、`prompts/`ディレクトリへの新規ファイル追加を想定します。
      
-     期待する出力: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs と prompts/development-status-prompt.md の変更内容。DevelopmentStatusGenerator.cjs が正しく外部プロンプトを読み込み、これまでと同じ形式で development-status を生成できることを示すコード。
+     期待する出力: プロンプト切り出しのための修正方針（ファイルパス、コード変更の概要）をmarkdown形式で出力してください。
      ```
 
-2. `development-status`が生成するIssueノートへのリンクの誤りを修正する [Issue #17](../issue-notes/17.md)
-   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`が生成するissue-noteへのリンクを、現在のURL形式から相対パス`../issue-notes/番号.md`に修正する。
+3. [Issue #16](../issue-notes/16.md) tonejs-mml-to-jsonへのissue-noteワークフロー統合の検討
+   - 最初の小さな一歩: `github-actions`リポジトリの`call-issue-note.yml`を`tonejs-mml-to-json`リポジトリにコピーし、基本的な動作が可能かを確認する手順を策定する。
    - Agent実行プロンプト:
      ```
-     対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
+     対象ファイル: .github/workflows/call-issue-note.yml
      
-     実行内容: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs 内のissue-noteへのリンク生成部分を特定し、生成されるMarkdownリンクの形式を `[Issue #番号](issue-notes/番号.md)` ではなく、`[Issue #番号](../issue-notes/番号.md)` となるように修正してください。
+     実行内容: `github-actions`リポジトリの`.github/workflows/call-issue-note.yml`の内容を分析し、これを他のリポジトリ（例: `tonejs-mml-to-json`）にコピーして利用する際に、必要な変更点や前提条件（例: `issue-notes/`ディレクトリの有無、スクリプトのパス、必要な入力パラメータなど）を洗い出してください。特に、[Issue #13](../issue-notes/13.md)で言及されている「call導入手順」の最初のステップとして、必要なファイルパスや設定項目を特定してください。
      
-     確認事項: 修正後、生成される `development-status.md` 内のリンクがGitHub上で正しく機能し、404エラーとならないことを確認してください。また、`issue-notes/` ディレクトリの構造に変更がないことを前提とします。
+     確認事項: `tonejs-mml-to-json`プロジェクトの具体的なファイル構造は不明であるため、一般的なGitHub Actionsの呼び出しパターンに基づいた提案としてください。また、`issue-note`のスクリプトやプロンプトファイルへのパスが相対パスで適切に解決されることを考慮してください。
      
-     期待する出力: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs の修正内容。特に、Issueリンクを生成する箇所のコード変更。
-     ```
-
-3. 主要ワークフローの汎用化に向け、まず`issue-note`の呼び出し元を更新する [Issue #16](../issue-notes/16.md) [Issue #13](../issue-notes/13.md)
-   - 最初の小さな一歩: `tonejs-mml-to-json`プロジェクトで利用されている`issue-note`関連ワークフローを、`github-actions`リポジトリにある`call-issue-note.yml`の最新版に単純コピーして置き換え、動作確認する。
-   - Agent実行プロンプト:
-     ```
-     対象ファイル: .github/workflows/call-issue-note.yml (github-actionsリポジトリ内) と、tonejs-mml-to-jsonリポジトリ内の issue-note 関連ワークフローファイル（例: .github/workflows/issue-note.yml または .github/workflows/call-issue-note.yml）
-     
-     実行内容: github-actionsリポジトリの `.github/workflows/call-issue-note.yml` の内容を、tonejs-mml-to-jsonリポジトリの適切なワークフローパス（例えば `.github/workflows/call-issue-note.yml`）にコピーする手順を記述してください。この際、tonejs-mml-to-json側で必要な設定変更（例: `uses`パスの調整、環境変数、シークレットの設定）も洗い出してください。
-     
-     確認事項: コピー後にtonejs-mml-to-jsonリポジトリでworkflowが正常に動作するか、既存の機能が損なわれないかを確認する必要があります。call-issue-note.yml が外部リポジトリから呼び出されることを前提とした設定がされているか確認してください。
-     
-     期待する出力: `call-issue-note.yml` を tonejs-mml-to-json プロジェクトに導入するための具体的な手順書（markdown形式）。これには、ファイルの配置、必要な入力パラメータ、シークレット、およびその他の設定変更が含まれるようにしてください。
+     期待する出力: `call-issue-note.yml`を他のリポジトリに導入するための最初のステップとしての手順書（コピーすべきファイル、修正すべき箇所、必要な設定）をmarkdown形式で出力してください。
 
 ---
-Generated at: 2025-08-30 07:04:39 JST
+Generated at: 2025-08-31 07:04:12 JST

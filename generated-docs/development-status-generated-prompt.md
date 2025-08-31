@@ -1,4 +1,4 @@
-Last updated: 2025-08-30
+Last updated: 2025-08-31
 
 
 # 開発状況生成プロンプト（開発者向け）
@@ -211,48 +211,6 @@ Last updated: 2025-08-30
 
 ```
 
-## [Issue #17](../issue-notes/17.md): development-status が生成したmdに誤りがある。issue-note へのlinkがURL誤りで、404となってしまう
-[issue-notes/17.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/17.md)
-
-...
-ラベル: 
---- issue-notes/17.md の内容 ---
-
-```markdown
-# issue development-status が生成したmdに誤りがある。issue-note へのlinkがURL誤りで、404となってしまう #17
-[issues #17](https://github.com/cat2151/github-actions/issues/17)
-
-# 事例
-- 生成したmdのURL：
-    - https://github.com/cat2151/github-actions/blob/main/generated-docs/development-status.md
-- そのmdをGitHub上でdecodeして閲覧したときのURL、404である：
-    - https://github.com/cat2151/github-actions/blob/main/generated-docs/issue-notes/16.md
-- そのmdに実際に含まれるURL：
-    - issue-notes/16.md
-- あるべきURL：
-    - https://github.com/cat2151/github-actions/blob/main/issue-notes/16.md
-- あるべきURLがmdにどう含まれているべきか：
-    - ../issue-notes/16.md
-
-# どうする？
-- 案
-    - promptを修正する
-    - promptの場所は：
-        - .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
-    - 備考、cjs内にpromptがハードコーディングされており、promptをメンテしづらいので別途対処する : [issues #18](https://github.com/cat2151/github-actions/issues/18)
-
-# 結果
-- agentにpromptを投げた
-    - ※promptは、development-statusで生成したもの
-- レビューした
-    - agentがフルパスで実装した、ことがわかった
-- userが分析し、 ../ のほうが適切と判断した
-    - ※「事例」コーナーを、あわせて修正した
-- そのように指示してagentに修正させた
-- testする
-
-```
-
 ## [Issue #16](../issue-notes/16.md): issue-note / project-summary / translate / callgraph をtonejs-mml-to-jsonから呼び出す
 [issue-notes/16.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/16.md)
 
@@ -403,22 +361,19 @@ Last updated: 2025-08-30
 
 ## 最近の変更（過去7日間）
 コミット履歴:
+7961818 Update callgraph.html [auto]
+2b74bc2 Merge branch 'main' of github.com:cat2151/github-actions into main
+da403ec fix #17 test greenなのでcloseする
+cba0680 Update project summaries (overview & development status)
 b4bd766 Update callgraph.html [auto]
 b97acac Merge branch 'main' of github.com:cat2151/github-actions into main
 88ba294 #17 link 404とならないよう修正したつもり
 9f7126f Update project summaries (overview & development status)
 e97ea82 Update callgraph.html [auto]
 71740e8 fix #22 プロンプトファイルをcommitできたことを確認した。closeする
-f88d7c0 Update project summaries (overview & development status)
-5c4d14f Update callgraph.html [auto]
-70c2489 #22 バグ修正。プロンプトファイルの保存pathを修正したつもり。
-4e0fd08 Update callgraph.html [auto]
 
 変更されたファイル:
-.github/workflows/daily-project-summary.yml
-.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs
 .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
-.github_automation/project_summary/scripts/generate-project-summary.cjs
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
@@ -431,4 +386,4 @@ Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md)
 
 
 ---
-Generated at: 2025-08-30 07:04:20 JST
+Generated at: 2025-08-31 07:03:55 JST
