@@ -1,4 +1,4 @@
-Last updated: 2025-08-31
+Last updated: 2025-09-01
 
 
 # 開発状況生成プロンプト（開発者向け）
@@ -149,42 +149,6 @@ Last updated: 2025-08-31
 - 課題、issue-notes/ 配下のmdファイルの内容、からファイル名を得る方法が曖昧。
     - 案、.yml と .cjs がある部分で、space区切り。
     - 案、agentに方法を検討させる。
-
-```
-
-## [Issue #19](../issue-notes/19.md): project-summary の development-status 生成時、issue-notes/ 配下のmdファイルの内容を参照させる
-[issue-notes/19.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/19.md)
-
-...
-ラベル: 
---- issue-notes/19.md の内容 ---
-
-```markdown
-# issue project-summary の development-status 生成時、issue-notes/ 配下のmdファイルの内容を参照させる #19
-[issues #19](https://github.com/cat2151/github-actions/issues/19)
-
-# 何が困るの？
-- issue解決に向けての次の一手の内容が実態に即していないことが多い。
-
-# 対策案
-- issue-notes/ 配下のmdファイルの内容を参照させる
-
-# 備考
-- さらにmd内に書かれているfileも、project内をcjsに検索させて添付させると、よりGeminiの生成品質が向上する可能性がある。
-    - [issues #20](https://github.com/cat2151/github-actions/issues/20)
-- さらにproject overviewでGeminiがまとめたmdも、Geminiに与えると、よりGeminiの生成品質が向上する可能性がある。
-    - [issues #21](https://github.com/cat2151/github-actions/issues/21)
-- さらに、Geminiに与えたpromptをfileにしてcommit pushしておくと、デバッグに役立つ可能性がある。
-    - [issues #22](https://github.com/cat2151/github-actions/issues/22)
-
-# close条件
-- issues #22 がcloseされること。
-- commitされたpromptを確認し、issue-notes/ 配下のmdファイルがpromptに添付されていること、が確認できること。
-
-# 状況
-- 課題、実装したがtestができていない
-- 対策、issues #22 が実装されれば、testができる
-- 対策、issues #22 のcloseを待つ
 
 ```
 
@@ -361,16 +325,16 @@ Last updated: 2025-08-31
 
 ## 最近の変更（過去7日間）
 コミット履歴:
+5e6dc06 Update callgraph.html [auto]
+68c29dc Merge branch 'main' of github.com:cat2151/github-actions into main
+14a5f04 fix #19 test greenなのでcloseする
+3ea0c5d Update project summaries (overview & development status)
 7961818 Update callgraph.html [auto]
 2b74bc2 Merge branch 'main' of github.com:cat2151/github-actions into main
 da403ec fix #17 test greenなのでcloseする
 cba0680 Update project summaries (overview & development status)
 b4bd766 Update callgraph.html [auto]
 b97acac Merge branch 'main' of github.com:cat2151/github-actions into main
-88ba294 #17 link 404とならないよう修正したつもり
-9f7126f Update project summaries (overview & development status)
-e97ea82 Update callgraph.html [auto]
-71740e8 fix #22 プロンプトファイルをcommitできたことを確認した。closeする
 
 変更されたファイル:
 .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
@@ -379,11 +343,11 @@ generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
 issue-notes/17.md
-issue-notes/22.md
+issue-notes/19.md
 
 上記の情報を基に、プロンプトで指定された形式で開発状況を生成してください。
 Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
 
 
 ---
-Generated at: 2025-08-31 07:03:55 JST
+Generated at: 2025-09-01 07:04:14 JST
