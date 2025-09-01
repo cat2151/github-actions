@@ -145,7 +145,7 @@ ${recentChanges.commits.join('\n')}
 ${recentChanges.changedFiles.join('\n')}
 
 上記の情報を基に、プロンプトで指定された形式で開発状況を生成してください。
-Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
+Issue番号を記載する際は、必ず [Issue #番号](../issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
 `;
 
     // プロンプトをファイルに保存する。開発効率化用。
