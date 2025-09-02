@@ -1,4 +1,4 @@
-Last updated: 2025-09-02
+Last updated: 2025-09-03
 
 
 # 開発状況生成プロンプト（開発者向け）
@@ -113,7 +113,15 @@ Last updated: 2025-09-02
 # issue issue 17が再発してしまっている #23
 [issues #23](https://github.com/cat2151/github-actions/issues/23)
 
+# 症状は？
+- issue 17と同じ
 
+# どうする？
+- development-status-generated-prompt.md を確認する
+- 結果
+    - >Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
+    - 仮説、これが残っており、ほかの ../ 指定と競合し、どちらかがランダムで選ばれていた
+    - 対策、ここを ../ 指定にする
 
 ```
 
@@ -340,6 +348,9 @@ Last updated: 2025-09-02
 
 ## 最近の変更（過去7日間）
 コミット履歴:
+29c2a00 Update callgraph.html [auto]
+86f1538 #23 バグ修正、prompt修正、issue notesへのリンクを404にしないよう修正したつもり
+1778cd2 Update project summaries (overview & development status)
 acc857b Update callgraph.html [auto]
 ae72232 Add issue note for #23
 6151ec1 Update project summaries (overview & development status)
@@ -347,21 +358,18 @@ ae72232 Add issue note for #23
 68c29dc Merge branch 'main' of github.com:cat2151/github-actions into main
 14a5f04 fix #19 test greenなのでcloseする
 3ea0c5d Update project summaries (overview & development status)
-7961818 Update callgraph.html [auto]
-2b74bc2 Merge branch 'main' of github.com:cat2151/github-actions into main
-da403ec fix #17 test greenなのでcloseする
 
 変更されたファイル:
+.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
-issue-notes/19.md
 issue-notes/23.md
 
 上記の情報を基に、プロンプトで指定された形式で開発状況を生成してください。
-Issue番号を記載する際は、必ず [Issue #番号](issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
+Issue番号を記載する際は、必ず [Issue #番号](../issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
 
 
 ---
-Generated at: 2025-09-02 07:04:10 JST
+Generated at: 2025-09-03 07:04:33 JST
