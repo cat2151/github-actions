@@ -129,24 +129,21 @@ class DevelopmentStatusGenerator extends BaseGenerator {
       ].join('\n');
     }
 
-    const developmentPrompt = `
-${prompt}
+    // プロンプト内のプレースホルダーを置換し、最終的なプロンプトを生成する。具体的には、projectのissuesとrecentChangesを埋め込む。
+    const developmentPrompt = generatePrompt(prompt, issuesSection, recentChanges);
 
-以下の開発状況情報を参考にして要約を生成してください：
-
-## 現在のオープンIssues
-${issuesSection}
-
-## 最近の変更（過去7日間）
-コミット履歴:
-${recentChanges.commits.join('\n')}
-
-変更されたファイル:
-${recentChanges.changedFiles.join('\n')}
-
-上記の情報を基に、プロンプトで指定された形式で開発状況を生成してください。
-Issue番号を記載する際は、必ず [Issue #番号](../issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
-`;
+    function generatePrompt(prompt, issuesSection, recentChanges) {
+      function fillTemplate(template, values) {
+        return template.replace(/\$\{(\w+)\}/g, (match, key) => {
+          return key in values ? values[key] : match;
+        });
+      }
+      return fillTemplate(prompt, {
+        issuesSection,
+        commits: recentChanges.commits.join('\n'),
+        changedFiles: recentChanges.changedFiles.join('\n')
+      });
+    }
 
     // プロンプトをファイルに保存する。開発効率化用。
     await this.saveToFile(developmentPrompt, this.developmentGeneratedPath);
