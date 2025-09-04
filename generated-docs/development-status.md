@@ -1,73 +1,50 @@
-Last updated: 2025-09-03
+Last updated: 2025-09-04
 
 # Development Status
 
 ## 現在のIssues
-- [Issue #23](../issue-notes/23.md)は、issue 17のMarkdownリンク形式のバグが再発し、その修正に取り組んでいます。
-- [Issue #21](../issue-notes/21.md)と[Issue #20](../issue-notes/20.md)は、Geminiの生成品質向上のため、関連ファイルの内容をプロンプトに添付する機能拡張を検討しています。
-- [Issue #18](../issue-notes/18.md)ではプロンプトのハードコーディングを解消し、[Issue #16](../issue-notes/16.md)、[Issue #13](../issue-notes/13.md)、[Issue #12](../issue-notes/12.md)、[Issue #11](../issue-notes/11.md)、[Issue #10](../issue-notes/10.md)では各ワークフローの汎用化と他プロジェクトからの利用を促進する課題に取り組んでいます。
+- [Issue #21](../issue-notes/21.md) および [Issue #20](../issue-notes/20.md) にて、AI生成品質向上のため、`project-summary`の`development-status`生成時にプロンプトに渡す情報（プロジェクト概要や関連ファイル内容）の選定と添付方法を改善する課題に取り組んでいます。
+- [Issue #16](../issue-notes/16.md) を含む複数のIssue ([#13](../issue-notes/13.md), [#12](../issue-notes/12.md), [#11](../issue-notes/11.md), [#10](../issue-notes/10.md)) では、`issue-note`、`project-summary`などの既存ワークフローを他プロジェクトから利用しやすくするための共通化、構造改善、ドキュメント化が進行中です。
+- [Issue #18](../issue-notes/18.md) では、`DevelopmentStatusGenerator.cjs` 内にハードコードされているGeminiへのプロンプトを外部ファイルに切り出し、コードの可読性と保守性を向上させることを目指しています。
 
 ## 次の一手候補
-1. [Issue #18](../issue-notes/18.md) Geminiプロンプトのハードコーディング解消
-   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`内の`generateDevelopmentStatus`関数にあるプロンプト文字列を別ファイル（例: `prompts/development-status-prompt.md`）に切り出す。
+1. [Issue #18](../issue-notes/18.md) `DevelopmentStatusGenerator.cjs`のプロンプトを外部ファイルに切り出す
+   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`内のGeminiへのプロンプト文字列を特定し、`prompts/development_status_prompt.md`として新規ファイルに保存する。
    - Agent実行プロンプト:
      ```
      対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
      
-     実行内容:
-     1. DevelopmentStatusGenerator.cjs ファイル内のgenerateDevelopmentStatus関数内で定義されているGeminiに与えるプロンプト文字列を特定してください。
-     2. そのプロンプト文字列を新規ファイル `.github_automation/project_summary/prompts/development-status-prompt.md` として作成し、内容を記述してください。
-     3. DevelopmentStatusGenerator.cjs ファイルを修正し、新しいプロンプトファイルから内容を読み込むように変更してください。プロンプト文字列内に存在するプレースホルダー（例: `{{openIssuesSummary}}`）は、ファイル読み込み後に適切に置換されるように修正してください。
+     実行内容: `DevelopmentStatusGenerator.cjs`内の`generateDevelopmentStatus`関数にあるGeminiへのプロンプト文字列を抽出し、`prompts/development_status_prompt.md`という新しいMarkdownファイルとして作成してください。抽出後、元の`DevelopmentStatusGenerator.cjs`ではその新しいファイルの内容を読み込むように修正してください。
      
-     確認事項:
-     - 既存のプロンプトの内容が完全に新しいファイルに移動され、意味が変わらないことを確認してください。
-     - プロンプトのプレースホルダーが正しく読み込まれ、置き換えられることを確認してください。
-     - 変更後もDevelopmentStatusGenerator.cjsが正しく動作し、期待される出力を生成することを確認するために、テストケースがあれば実行してください。
+     確認事項: プロンプトの切り出し後も、正しくプロンプトが読み込まれ、Geminiに渡されることを確認してください。また、元のプロンプトの変数埋め込み（テンプレートリテラル部分）が正しく機能するように考慮してください。
      
-     期待する出力:
-     - `.github_automation/project_summary/prompts/development-status-prompt.md` ファイルの新規作成。
-     - `.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs` ファイルの修正内容（差分）をMarkdown形式で出力。
+     期待する出力: 新しいプロンプトファイル（`prompts/development_status_prompt.md`）と、それを読み込むように修正された`DevelopmentStatusGenerator.cjs`の変更内容をmarkdown形式で出力してください。
      ```
 
-2. [Issue #23](../issue-notes/23.md) Markdownリンクの再発バグ修正
-   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`または関連する生成ロジックが、誤って絶対パスのような指定（例: `[Issue #番号](issue-notes/番号.md)`）をしている箇所を特定し、相対パス（例: `[Issue #番号](../issue-notes/番号.md)`）に修正する。
-   - Agent実行プロンプト:
-     ```
-     対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
-     
-     実行内容:
-     1. DevelopmentStatusGenerator.cjs のgenerateDevelopmentStatus関数において、issue番号をMarkdownリンクとして生成するロジックを分析してください。
-     2. `[Issue #番号](issue-notes/番号.md)` の形式でリンクが生成される箇所を特定し、正しく相対パス `[Issue #番号](../issue-notes/番号.md)` になるよう修正してください。
-     
-     確認事項:
-     - 修正後、生成されるMarkdownリンクが常に期待される相対パス形式（`../issue-notes/番号.md`）であることを確認してください。
-     - 過去のIssueノートへのリンクが壊れていないことを確認してください。
-     - 変更が他のMarkdown生成ロジックに悪影響を与えないことを確認してください。
-     
-     期待する出力:
-     - `.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs` の修正内容（差分）をMarkdown形式で出力。
-     - 修正後のロジックで生成されるサンプルMarkdownリンクをいくつか提示。
-     ```
-
-3. [Issue #16](../issue-notes/16.md) `tonejs-mml-to-json`での`call-issue-note`ワークフロー最新化と動作確認
-   - 最初の小さな一歩: まず `tonejs-mml-to-json` リポジトリの`.github/workflows/call-issue-note.yml`を、この`github-actions`リポジトリの最新版にコピーし、CIがグリーンになるか確認する。
+2. [Issue #16](../issue-notes/16.md) `tonejs-mml-to-json`で`issue-note`ワークフローを最新版に更新する
+   - 最初の小さな一歩: `github-actions`リポジトリの`.github/workflows/call-issue-note.yml`を分析し、`tonejs-mml-to-json`リポジトリにコピーする際の変更点を洗い出す。
    - Agent実行プロンプト:
      ```
      対象ファイル: .github/workflows/call-issue-note.yml
+     
+     実行内容: `github-actions`リポジトリの`.github/workflows/call-issue-note.yml`の内容を分析し、これを`tonejs-mml-to-json`リポジトリにコピーして使用する際に、特定のプロジェクト依存関係（例: リポジトリのcheckout方法、スクリプトのパス、環境変数など）で変更が必要となる箇所を特定してください。
+     
+     確認事項: 既存の`call-issue-note.yml`が他のプロジェクトから呼び出されることを想定した汎用的な設計になっているかを確認してください。また、`tonejs-mml-to-json`リポジトリの現在のCI/CD設定との競合がないかを確認してください。
+     
+     期待する出力: `call-issue-note.yml`を`tonejs-mml-to-json`リポジトリに導入するための手順書をmarkdown形式で生成してください。具体的には、コピーするファイルの内容、変更すべきパラメータ、および導入後のテスト計画を含めてください。
+     ```
 
-     実行内容:
-     1. 現在のgithub-actionsリポジトリ内の`.github/workflows/call-issue-note.yml`の最新内容を取得してください。
-     2. `tonejs-mml-to-json`リポジトリ（外部プロジェクト）の`.github/workflows/call-issue-note.yml`を、取得した最新内容で上書き（または新規作成）する手順を記述してください。
-     3. 上書き後、`tonejs-mml-to-json`リポジトリでCI/CDパイプラインを実行し、issue-noteワークフローが正しく動作し、テストがグリーンになるか確認する手順を記述してください。
+3. [Issue #20](../issue-notes/20.md) `issue-notes`内の関連ファイル名抽出ロジックの検討
+   - 最初の小さな一歩: `issue-notes/`配下のMDテキストから、`.cjs`または`.yml`拡張子を持つファイル名を抽出するための正規表現またはパターンを定義する。
+   - Agent実行プロンプト:
+     ```
+     対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
      
-     確認事項:
-     - コピー元とコピー先のパスが正しいことを確認してください。
-     - ワークフローファイル内でハードコードされているパスや環境変数、シークレット等に`tonejs-mml-to-json`リポジトリ固有の調整が必要ないか確認してください。
-     - `tonejs-mml-to-json`リポジトリに依存するファイルや設定（例: `issue-notes/`ディレクトリなど）が適切に配置されているか確認してください。
+     実行内容: `DevelopmentStatusGenerator.cjs`に、与えられた`issue-notes`のMarkdownテキストから、`.cjs`または`.yml`拡張子を持つファイル名を抽出する関数を実装してください。抽出ロジックは、まず完全なファイルパスで検索し、見つからない場合はパス部分を削除したファイル名でプロジェクト内のファイルを検索するようにしてください。この関数の目的は、関連ファイルの内容をGeminiへのプロンプトに添付するためです。
      
-     期待する出力:
-     - `tonejs-mml-to-json/.github/workflows/call-issue-note.yml` にコピーする内容をMarkdownコードブロックで出力。
-     - `tonejs-mml-to-json`リポジトリでのCI実行とテスト結果確認の手順をMarkdown形式で記述。
+     確認事項: ファイル名の抽出ロジックが、誤って関連性のないファイルを抽出したり、必要なファイルを漏らしたりしないことを確認してください。また、抽出されたファイル内容をプロンプトに添付する際の文字数制限やAPIコストへの影響を考慮してください。
+     
+     期待する出力: 新しく実装されたファイル名抽出関数のコードスニペットと、その関数のテストケースをmarkdown形式で出力してください。
 
 ---
-Generated at: 2025-09-03 07:04:56 JST
+Generated at: 2025-09-04 07:04:44 JST
