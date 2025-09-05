@@ -1,5 +1,4 @@
-Last updated: 2025-09-04
-
+Last updated: 2025-09-06
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -63,11 +62,11 @@ Last updated: 2025-09-04
    - Agent実行プロンプト:
      ```
      対象ファイル: [分析/編集する具体的なファイルパス]
-     
+
      実行内容: [具体的な分析や変更内容を記述]
-     
+
      確認事項: [変更前に確認すべき依存関係や制約]
-     
+
      期待する出力: [markdown形式での結果や、具体的なファイル変更の説明]
      ```
 
@@ -76,11 +75,11 @@ Last updated: 2025-09-04
    - Agent実行プロンプト:
      ```
      対象ファイル: [分析/編集する具体的なファイルパス]
-     
+
      実行内容: [具体的な分析や変更内容を記述]
-     
+
      確認事項: [変更前に確認すべき依存関係や制約]
-     
+
      期待する出力: [markdown形式での結果や、具体的なファイル変更の説明]
      ```
 
@@ -89,19 +88,34 @@ Last updated: 2025-09-04
    - Agent実行プロンプト:
      ```
      対象ファイル: [分析/編集する具体的なファイルパス]
-     
+
      実行内容: [具体的な分析や変更内容を記述]
-     
+
      確認事項: [変更前に確認すべき依存関係や制約]
-     
+
      期待する出力: [markdown形式での結果や、具体的なファイル変更の説明]
      ```
 ```
 
-
+# 開発状況情報
 以下の開発状況情報を参考にして要約を生成してください：
 
 ## 現在のオープンIssues
+## [Issue #24](../issue-notes/24.md): Geminiが503で落ちたのでretryを実装する
+[issue-notes/24.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/24.md)
+
+...
+ラベル: 
+--- issue-notes/24.md の内容 ---
+
+```markdown
+# issue Geminiが503で落ちたのでretryを実装する #24
+[issues #24](https://github.com/cat2151/github-actions/issues/24)
+
+
+
+```
+
 ## [Issue #21](../issue-notes/21.md): project-summary の development-status 生成時、project-overviewが生成済みのproject-overview.mdもpromptに添付、を試す
 [issue-notes/21.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/21.md)
 
@@ -172,6 +186,11 @@ Last updated: 2025-09-04
 # 問題のcjsの場所は？
 - ファイルパス : .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
 - 関数 : generateDevelopmentStatus
+
+# 結果
+- Geminiに生成させたpromptを、agentに投げて、リファクタリングさせてみた
+- ハルシネーションした。使い物にならなかった
+- 人力でやる
 
 ```
 
@@ -325,28 +344,14 @@ Last updated: 2025-09-04
 
 ## 最近の変更（過去7日間）
 コミット履歴:
-a045648 Update callgraph.html [auto]
-8b88a8c Merge branch 'main' of github.com:cat2151/github-actions into main
-e7241bd fix #23 test greenなのでcloseとする
-30e6caf Update project summaries (overview & development status)
-29c2a00 Update callgraph.html [auto]
-86f1538 #23 バグ修正、prompt修正、issue notesへのリンクを404にしないよう修正したつもり
-1778cd2 Update project summaries (overview & development status)
-acc857b Update callgraph.html [auto]
-ae72232 Add issue note for #23
-6151ec1 Update project summaries (overview & development status)
+${recentChanges}
 
 変更されたファイル:
-.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
-generated-docs/callgraph.html
-generated-docs/development-status-generated-prompt.md
-generated-docs/development-status.md
-generated-docs/project-overview.md
-issue-notes/23.md
+${recentChanges}
 
 上記の情報を基に、プロンプトで指定された形式で開発状況を生成してください。
 Issue番号を記載する際は、必ず [Issue #番号](../issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
 
 
 ---
-Generated at: 2025-09-04 07:04:25 JST
+Generated at: 2025-09-06 07:04:26 JST
