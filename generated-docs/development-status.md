@@ -1,72 +1,50 @@
-Last updated: 2025-09-06
+Last updated: 2025-09-07
 
 # Development Status
 
 ## 現在のIssues
-現在オープン中の課題は、`project-summary`の生成品質とプロンプト管理の改善に焦点を当てています。[Issue #21](../issue-notes/21.md)では、ファイル一覧や関数一覧をプロンプトに添付することで、[Issue #20](../issue-notes/20.md)では`issue-notes/`に記載された関連ファイルの具体的な内容をプロンプトに含めることで、Geminiの生成品質向上を目指しています。また、[Issue #18](../issue-notes/18.md)では、`DevelopmentStatusGenerator.cjs`内のGeminiプロンプトのハードコーディングを解消し、管理性と可読性を高めるリファクタリングを計画しています。
+- [Issue #24](../issue-notes/24.md): Gemini APIの503エラー発生時に、開発状況生成の安定性を向上させるためリトライ処理の実装が検討されています。
+- [Issue #16](../issue-notes/16.md): `issue-note`、`project-summary`、`translate`、`callgraph` の主要ワークフローを `tonejs-mml-to-json` リポジトリで最新版に更新し、他プロジェクトでの動作検証を進めています。
+- [Issue #12](../issue-notes/12.md): `project-summary` ワークフローの他プロジェクトからの再利用性を高めるため、スクリプトやプロンプトの外部化、checkout処理の改善が課題となっています。
 
 ## 次の一手候補
-1. [Issue #18](../issue-notes/18.md): DevelopmentStatusGenerator.cjs内のプロンプトを外部ファイル化する
-   - 最初の小さな一歩: `.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs`から、`generateDevelopmentStatus`関数内で使用されているGeminiプロンプトの文字列を抽出し、`.github_automation/project_summary/prompts/development_status_prompt.md`として保存する。
+1. [Issue #24](../issue-notes/24.md): Gemini APIの503エラーに対するリトライ処理を実装する
+   - 最初の小さな一歩: `.github_automation/project_summary/scripts/utils/BaseGenerator.cjs` に、Gemini API呼び出し時に503エラーが発生した場合に指数バックオフでリトライする `generateContent` 関数を実装します。
    - Agent実行プロンプト:
      ```
-     対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
-     対象ディレクトリ: .github_automation/project_summary/prompts/
+     対象ファイル: `.github_automation/project_summary/scripts/utils/BaseGenerator.cjs`
 
-     実行内容:
-     1. .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs内の`generateDevelopmentStatus`関数から、Geminiに与えるプロンプト文字列（テンプレートリテラル部分）を特定し、抽出してください。
-     2. 抽出したプロンプト文字列を、`.github_automation/project_summary/prompts/development_status_prompt.md`という名前で新規作成し、そのファイルに保存してください。
-     3. `DevelopmentStatusGenerator.cjs`を修正し、上記の新規プロンプトファイルを`fs.readFileSync`で読み込み、読み込んだ内容をテンプレートリテラルの代わりに`replace`メソッドでプレースホルダーを置換する形に変更してください。
+     実行内容: Geminiの`model.generateContent`呼び出しをラップし、503エラー時に指数バックオフ（Exponential Backoff）を用いたリトライロジックを実装してください。具体的には、`generateContent` メソッドを新しく定義し、その中で既存の `this.model.generateContent` を呼び出す形にしてください。
 
-     確認事項:
-     - `DevelopmentStatusGenerator.cjs`がプロンプトを正しく外部ファイルから読み込み、これまでと同様に機能するか確認してください。
-     - 新しいプロンプトファイルが`prompts/`ディレクトリに正しく配置されているか確認してください。
-     - プロンプト内のプレースホルダー（例: `${currentIssuesSummary}`など）が正しく置換されるように`replace`メソッドが実装されているか確認してください。
+     確認事項: リトライ回数、初期遅延時間、最大遅延時間の設定が適切であること。また、リトライ処理が意図しない無限ループに陥らないようにすること。
 
-     期待する出力:
-     - `development_status_prompt.md`ファイルの新規作成とその内容。
-     - `DevelopmentStatusGenerator.cjs`の修正前後の差分を示すmarkdown形式の出力。修正後のコードが、外部プロンプトファイルを読み込んで使用する形式になっていること。
+     期待する出力: `BaseGenerator.cjs` ファイルの変更内容を、リトライロジックが追加された状態でmarkdown形式のコードブロックとして出力してください。
      ```
 
-2. [Issue #20](../issue-notes/20.md): project-summary生成時にissue-notesから関連ファイル内容を添付する
-   - 最初の小さな一歩: `project-summary`を生成するスクリプト（例: `.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs`）において、現在処理中の`issue-notes/`配下のMDファイルの内容から、`.yml`または`.cjs`拡張子を持つファイル名を抽出する正規表現または文字列パースロジックを実装し、抽出したファイル名の一覧をログに出力する。
+2. [Issue #16](../issue-notes/16.md): `issue-note` ワークフローを `tonejs-mml-to-json` で利用できるよう更新する
+   - 最初の小さな一歩: `github-actions` リポジトリの `.github/workflows/call-issue-note.yml` を `tonejs-mml-to-json` リポジトリの適切なパスにコピーし、GitHub Actionsが正常に実行されるか確認します。
    - Agent実行プロンプト:
      ```
-     対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
+     対象ファイル: `github-actions/.github/workflows/call-issue-note.yml` と `tonejs-mml-to-json` リポジトリ内のワークフローディレクトリ
 
-     実行内容:
-     1. `DevelopmentStatusGenerator.cjs`の`generateDevelopmentStatus`関数内で、`issue-notes/`配下の個々のMDファイルの内容を引数として受け取る部分を特定してください。
-     2. 受け取ったMDファイルの内容から、テキスト中に記載されている`.yml`または`.cjs`拡張子を持つファイル名（例: `path/to/file.yml`や`script.cjs`）を抽出する関数`extractRelatedFiles`を実装してください。この関数は抽出したファイル名の配列を返すものとします。
-     3. `generateDevelopmentStatus`関数内で、各issue-noteに対してこの`extractRelatedFiles`関数を呼び出し、抽出されたファイル名を一時的にログ出力する処理を追加してください。
+     実行内容: `github-actions` リポジトリの `call-issue-note.yml` の内容を、`tonejs-mml-to-json` リポジトリにコピーし、そのリポジトリで新しいワークフローとして設定してください。
 
-     確認事項:
-     - 抽出ロジックが、Issue #20の「案、.yml と .cjs がある部分で、space区切り。」や「agentに方法を検討させる。」といったヒントを考慮しているか確認してください。
-     - MDファイル内容から正確にファイル名を抽出できるか（例：パスを含む場合、含まない場合など）。
-     - 不要な文字列（例：単なる拡張子の言及）がファイル名として抽出されないか確認してください。
+     確認事項: コピー後、`tonejs-mml-to-json` リポジトリでワークフローが正常にトリガーされ、意図した動作（issue noteの生成）が行われるかを確認してください。パスの調整や必要なシークレットの有無も確認します。
 
-     期待する出力:
-     - `DevelopmentStatusGenerator.cjs`の修正前後の差分を示すmarkdown形式の出力。特に`extractRelatedFiles`関数の実装と、それが`generateDevelopmentStatus`関数内で呼び出され、抽出結果をログに出力する部分が明記されていること。
+     期待する出力: `tonejs-mml-to-json` リポジトリに追加される `call-issue-note.yml` の内容と、その導入手順をmarkdown形式で出力してください。
      ```
 
-3. [Issue #21](../issue-notes/21.md): project-summary生成時にファイル一覧と関数一覧をプロンプトに含める
-   - 最初の小さな一歩: `project-overview.md`に依存せず、プロジェクト内のすべてのファイルパスを再帰的に取得するヘルパー関数を`.github_automation/project_summary/scripts/lib/`ディレクトリに`file_system_utils.cjs`として新規作成する。この関数は特定のディレクトリ（例：`.git`, `node_modules`など）を無視するオプションを持つものとする。
+3. [Issue #12](../issue-notes/12.md): `project-summary` 関連ファイルを専用ディレクトリに移動する
+   - 最初の小さな一歩: `project-summary` 関連のスクリプト（例: `DevelopmentStatusGenerator.cjs`）とプロンプトファイルを、他プロジェクトでの利用を考慮した専用ディレクトリ（例: `.github_automation/project_summary/scripts/` と `.github_automation/project_summary/prompts/`）に移動し、既存の参照パスを更新します。
    - Agent実行プロンプト:
      ```
-     対象ファイル: .github_automation/project_summary/scripts/lib/
+     対象ファイル: `.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs`, `.github_automation/project_summary/prompts/development.prompt` および関連ファイル
 
-     実行内容:
-     1. .github_automation/project_summary/scripts/lib/ディレクトリに`file_system_utils.cjs`という名前で新しいファイルを新規作成してください。
-     2. `file_system_utils.cjs`内に、指定されたディレクトリ以下のすべてのファイルパスを再帰的に取得する非同期関数`getAllFilePaths(baseDir, excludeDirs = [])`を実装してください。
-     3. `excludeDirs`引数には、検索から除外したいディレクトリの配列を指定できるようにしてください（例: `.git`, `node_modules`など）。
-     4. この関数はファイルパスの配列をPromiseとして返すようにしてください。
+     実行内容: `DevelopmentStatusGenerator.cjs` と `development.prompt` を、より汎用的なディレクトリ構造（例: `.github_automation/project_summary/scripts/` と `.github_automation/project_summary/prompts/`）に移動し、移動に伴うファイルパスの変更を`DevelopmentStatusGenerator.cjs` および関連するワークフローファイル内で適切に更新してください。
 
-     確認事項:
-     - 関数が非同期であり、`fs/promises`モジュールを使用しているか確認してください。
-     - 除外ディレクトリが正しく機能するか確認してください。
-     - 再帰的なファイル検索が無限ループに陥らないこと、シンボリックリンクの扱いなどを考慮しているか確認してください（必要であればシンプルな実装で構いません）。
+     確認事項: ファイル移動後、`project-summary` の生成ワークフローが引き続き正常に動作すること。特に、スクリプトやプロンプトへのパスが正しく解決されていることを確認してください。
 
-     期待する出力:
-     - `file_system_utils.cjs`ファイルの新規作成とその内容を示すmarkdown形式の出力。関数定義、使用されるモジュール、簡単な使用例を含めてください。
+     期待する出力: 移動後のファイルパスと、それに対応する変更が加えられた `DevelopmentStatusGenerator.cjs` のコードスニペット、および変更が必要なワークフローファイル（もしあれば）の変更点をmarkdown形式で出力してください。
 
 ---
-Generated at: 2025-09-06 07:04:53 JST
+Generated at: 2025-09-07 07:04:36 JST

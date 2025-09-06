@@ -1,4 +1,4 @@
-Last updated: 2025-09-06
+Last updated: 2025-09-07
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -112,6 +112,22 @@ Last updated: 2025-09-06
 # issue Geminiが503で落ちたのでretryを実装する #24
 [issues #24](https://github.com/cat2151/github-actions/issues/24)
 
+# 何が困るの？
+- 朝起きて、development statusがgenerateされてないのは困る
+    - それをタスク実施のヒントにしているので
+    - 毎朝generatedな状態を維持したい
+
+# 方法
+- retryを実装する
+    - 現在は `this.model.generateContent(developmentPrompt);`
+    - 実装後は `this.generateContent(developmentPrompt);`
+    - BaseGenerator 側に、
+        - generateContent関数を実装する
+            - そこで、
+                - `this.model.generateContent(developmentPrompt);` する
+                - 503のとき、
+                    - retryあり
+                    - Exponential Backoff
 
 
 ```
@@ -354,4 +370,4 @@ Issue番号を記載する際は、必ず [Issue #番号](../issue-notes/番号.
 
 
 ---
-Generated at: 2025-09-06 07:04:26 JST
+Generated at: 2025-09-07 07:04:24 JST
