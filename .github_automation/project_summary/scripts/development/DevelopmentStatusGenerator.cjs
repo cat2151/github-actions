@@ -5,6 +5,9 @@ const IssueTracker = require('./IssueTracker.cjs');
  * 開発状況生成器
  * 開発者向けの進捗状況を生成
  */
+const fs = require('fs');
+const path = require('path');
+
 class DevelopmentStatusGenerator extends BaseGenerator {
   /**
    * @param {string} developmentStatusPromptPath - 開発状況プロンプトのパス（必須）
@@ -99,6 +102,25 @@ class DevelopmentStatusGenerator extends BaseGenerator {
    * @param {string} prompt - プロンプト内容
    * @returns {Promise<string>} 生成された開発状況
    */
+  async getProjectFiles(dir = this.projectRoot) {
+    // 再帰的にファイル一覧を取得し、Markdownリスト形式で返す
+    const results = [];
+    function walk(currentDir, base = '') {
+      const entries = fs.readdirSync(currentDir, { withFileTypes: true });
+      for (const entry of entries) {
+        const relPath = path.join(base, entry.name).replace(/\\/g, '/');
+        if (entry.isDirectory()) {
+          walk(path.join(currentDir, entry.name), relPath + '/');
+        } else {
+          results.push(relPath);
+        }
+      }
+    }
+    walk(dir);
+    // Markdownリスト形式で返す
+    return results.length === 0 ? '（ファイルなし）' : results.map(f => `- ${f}`).join('\n');
+  }
+
   async generateDevelopmentStatus(issues, recentChanges, prompt) {
     console.log('Generating development status with Gemini API...');
 
@@ -129,10 +151,13 @@ class DevelopmentStatusGenerator extends BaseGenerator {
       ].join('\n');
     }
 
-    // プロンプト内のプレースホルダーを置換し、最終的なプロンプトを生成する。具体的には、projectのissuesとrecentChangesを埋め込む。
-    const developmentPrompt = generatePrompt(prompt, issuesSection, recentChanges);
+    // プロジェクトファイル一覧を取得
+    const projectFiles = await this.getProjectFiles();
 
-    function generatePrompt(prompt, issuesSection, recentChanges) {
+    // プロンプト内のプレースホルダーを置換し、最終的なプロンプトを生成する。具体的には、projectのissuesとrecentChangesを埋め込む。
+    const developmentPrompt = generatePrompt(prompt, issuesSection, recentChanges, projectFiles);
+
+    function generatePrompt(prompt, issuesSection, recentChanges, projectFiles) {
       function fillTemplate(template, values) {
         return template.replace(/\$\{(\w+)\}/g, (match, key) => {
           return key in values ? values[key] : match;
@@ -141,7 +166,8 @@ class DevelopmentStatusGenerator extends BaseGenerator {
       return fillTemplate(prompt, {
         issuesSection,
         commits: recentChanges.commits.join('\n'),
-        changedFiles: recentChanges.changedFiles.join('\n')
+        changedFiles: recentChanges.changedFiles.join('\n'),
+        projectFiles
       });
     }
 
