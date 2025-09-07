@@ -1,4 +1,4 @@
-Last updated: 2025-09-07
+Last updated: 2025-09-08
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -97,8 +97,423 @@ Last updated: 2025-09-07
      ```
 ```
 
+
 # 開発状況情報
 以下の開発状況情報を参考にして要約を生成してください：
+
+## プロジェクトのファイル一覧
+- .git/FETCH_HEAD
+- .git/HEAD
+- .git/config
+- .git/config.worktree
+- .git/description
+- .git/hooks/applypatch-msg.sample
+- .git/hooks/commit-msg.sample
+- .git/hooks/fsmonitor-watchman.sample
+- .git/hooks/post-update.sample
+- .git/hooks/pre-applypatch.sample
+- .git/hooks/pre-commit.sample
+- .git/hooks/pre-merge-commit.sample
+- .git/hooks/pre-push.sample
+- .git/hooks/pre-rebase.sample
+- .git/hooks/pre-receive.sample
+- .git/hooks/prepare-commit-msg.sample
+- .git/hooks/push-to-checkout.sample
+- .git/hooks/sendemail-validate.sample
+- .git/hooks/update.sample
+- .git/index
+- .git/info/exclude
+- .git/logs/HEAD
+- .git/logs/refs/heads/main
+- .git/logs/refs/remotes/origin/main
+- .git/objects/pack/pack-d9dc01d66cd6ffb9cfdb63bb11d471fa3519d651.idx
+- .git/objects/pack/pack-d9dc01d66cd6ffb9cfdb63bb11d471fa3519d651.pack
+- .git/objects/pack/pack-d9dc01d66cd6ffb9cfdb63bb11d471fa3519d651.rev
+- .git/refs/heads/main
+- .git/refs/remotes/origin/main
+- .github/workflows/call-callgraph.yml
+- .github/workflows/call-daily-project-summary.yml
+- .github/workflows/call-issue-note.yml
+- .github/workflows/call-translate-readme.yml
+- .github/workflows/callgraph.yml
+- .github/workflows/daily-project-summary.yml
+- .github/workflows/issue-note.yml
+- .github/workflows/translate-readme.yml
+- .github_automation/callgraph/codeql-queries/callgraph.ql
+- .github_automation/callgraph/codeql-queries/codeql-pack.lock.yml
+- .github_automation/callgraph/codeql-queries/qlpack.yml
+- .github_automation/callgraph/config/example.json
+- .github_automation/callgraph/docs/callgraph.md
+- .github_automation/callgraph/presets/callgraph.js
+- .github_automation/callgraph/presets/style.css
+- .github_automation/callgraph/scripts/analyze-codeql.cjs
+- .github_automation/callgraph/scripts/callgraph-utils.cjs
+- .github_automation/callgraph/scripts/check-codeql-exists.cjs
+- .github_automation/callgraph/scripts/check-commits.cjs
+- .github_automation/callgraph/scripts/check-node-version.cjs
+- .github_automation/callgraph/scripts/common-utils.cjs
+- .github_automation/callgraph/scripts/copy-commit-results.cjs
+- .github_automation/callgraph/scripts/extract-sarif-info.cjs
+- .github_automation/callgraph/scripts/find-process-results.cjs
+- .github_automation/callgraph/scripts/generate-html-graph.cjs
+- .github_automation/callgraph/scripts/generateHTML.cjs
+- .github_automation/project_summary/docs/daily-summary-setup.md
+- .github_automation/project_summary/prompts/development-status-prompt.md
+- .github_automation/project_summary/prompts/project-overview-prompt.md
+- .github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs
+- .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
+- .github_automation/project_summary/scripts/development/GitUtils.cjs
+- .github_automation/project_summary/scripts/development/IssueTracker.cjs
+- .github_automation/project_summary/scripts/generate-project-summary.cjs
+- .github_automation/project_summary/scripts/overview/CodeAnalyzer.cjs
+- .github_automation/project_summary/scripts/overview/ProjectAnalysisOrchestrator.cjs
+- .github_automation/project_summary/scripts/overview/ProjectDataCollector.cjs
+- .github_automation/project_summary/scripts/overview/ProjectDataFormatter.cjs
+- .github_automation/project_summary/scripts/overview/ProjectOverviewGenerator.cjs
+- .github_automation/project_summary/scripts/overview/TechStackAnalyzer.cjs
+- .github_automation/project_summary/scripts/shared/BaseGenerator.cjs
+- .github_automation/project_summary/scripts/shared/FileSystemUtils.cjs
+- .github_automation/translate/docs/TRANSLATION_SETUP.md
+- .github_automation/translate/scripts/translate-readme.cjs
+- .gitignore
+- .vscode/settings.json
+- LICENSE
+- README.ja.md
+- README.md
+- generated-docs/callgraph.html
+- generated-docs/callgraph.js
+- generated-docs/development-status-generated-prompt.md
+- generated-docs/development-status.md
+- generated-docs/project-overview.md
+- generated-docs/style.css
+- issue-notes/10.md
+- issue-notes/11.md
+- issue-notes/12.md
+- issue-notes/13.md
+- issue-notes/14.md
+- issue-notes/15.md
+- issue-notes/16.md
+- issue-notes/17.md
+- issue-notes/18.md
+- issue-notes/19.md
+- issue-notes/2.md
+- issue-notes/20.md
+- issue-notes/21.md
+- issue-notes/22.md
+- issue-notes/23.md
+- issue-notes/24.md
+- issue-notes/3.md
+- issue-notes/4.md
+- issue-notes/7.md
+- issue-notes/8.md
+- issue-notes/9.md
+- node_modules/.package-lock.json
+- node_modules/@google/generative-ai/LICENSE
+- node_modules/@google/generative-ai/README.md
+- node_modules/@google/generative-ai/dist/generative-ai.d.ts
+- node_modules/@google/generative-ai/dist/index.js
+- node_modules/@google/generative-ai/dist/index.js.map
+- node_modules/@google/generative-ai/dist/index.mjs
+- node_modules/@google/generative-ai/dist/index.mjs.map
+- node_modules/@google/generative-ai/dist/scripts/check-format.d.ts
+- node_modules/@google/generative-ai/dist/scripts/format-patterns.d.ts
+- node_modules/@google/generative-ai/dist/scripts/license.d.ts
+- node_modules/@google/generative-ai/dist/scripts/run-format.d.ts
+- node_modules/@google/generative-ai/dist/server/index.js
+- node_modules/@google/generative-ai/dist/server/index.js.map
+- node_modules/@google/generative-ai/dist/server/index.mjs
+- node_modules/@google/generative-ai/dist/server/index.mjs.map
+- node_modules/@google/generative-ai/dist/server/scripts/check-format.d.ts
+- node_modules/@google/generative-ai/dist/server/scripts/format-patterns.d.ts
+- node_modules/@google/generative-ai/dist/server/scripts/license.d.ts
+- node_modules/@google/generative-ai/dist/server/scripts/run-format.d.ts
+- node_modules/@google/generative-ai/dist/server/server.d.ts
+- node_modules/@google/generative-ai/dist/server/src/errors.d.ts
+- node_modules/@google/generative-ai/dist/server/src/gen-ai.d.ts
+- node_modules/@google/generative-ai/dist/server/src/index.d.ts
+- node_modules/@google/generative-ai/dist/server/src/methods/chat-session-helpers.d.ts
+- node_modules/@google/generative-ai/dist/server/src/methods/chat-session.d.ts
+- node_modules/@google/generative-ai/dist/server/src/methods/count-tokens.d.ts
+- node_modules/@google/generative-ai/dist/server/src/methods/embed-content.d.ts
+- node_modules/@google/generative-ai/dist/server/src/methods/generate-content.d.ts
+- node_modules/@google/generative-ai/dist/server/src/models/generative-model.d.ts
+- node_modules/@google/generative-ai/dist/server/src/requests/request-helpers.d.ts
+- node_modules/@google/generative-ai/dist/server/src/requests/request.d.ts
+- node_modules/@google/generative-ai/dist/server/src/requests/response-helpers.d.ts
+- node_modules/@google/generative-ai/dist/server/src/requests/stream-reader.d.ts
+- node_modules/@google/generative-ai/dist/server/src/server/cache-manager.d.ts
+- node_modules/@google/generative-ai/dist/server/src/server/constants.d.ts
+- node_modules/@google/generative-ai/dist/server/src/server/file-manager.d.ts
+- node_modules/@google/generative-ai/dist/server/src/server/index.d.ts
+- node_modules/@google/generative-ai/dist/server/src/server/request.d.ts
+- node_modules/@google/generative-ai/dist/server/types/content.d.ts
+- node_modules/@google/generative-ai/dist/server/types/enums.d.ts
+- node_modules/@google/generative-ai/dist/server/types/function-calling.d.ts
+- node_modules/@google/generative-ai/dist/server/types/index.d.ts
+- node_modules/@google/generative-ai/dist/server/types/requests.d.ts
+- node_modules/@google/generative-ai/dist/server/types/responses.d.ts
+- node_modules/@google/generative-ai/dist/server/types/search-grounding.d.ts
+- node_modules/@google/generative-ai/dist/server/types/server/caching.d.ts
+- node_modules/@google/generative-ai/dist/server/types/server/files.d.ts
+- node_modules/@google/generative-ai/dist/server/types/server/index.d.ts
+- node_modules/@google/generative-ai/dist/server/types/server/shared.d.ts
+- node_modules/@google/generative-ai/dist/src/errors.d.ts
+- node_modules/@google/generative-ai/dist/src/gen-ai.d.ts
+- node_modules/@google/generative-ai/dist/src/index.d.ts
+- node_modules/@google/generative-ai/dist/src/methods/chat-session-helpers.d.ts
+- node_modules/@google/generative-ai/dist/src/methods/chat-session.d.ts
+- node_modules/@google/generative-ai/dist/src/methods/count-tokens.d.ts
+- node_modules/@google/generative-ai/dist/src/methods/embed-content.d.ts
+- node_modules/@google/generative-ai/dist/src/methods/generate-content.d.ts
+- node_modules/@google/generative-ai/dist/src/models/generative-model.d.ts
+- node_modules/@google/generative-ai/dist/src/requests/request-helpers.d.ts
+- node_modules/@google/generative-ai/dist/src/requests/request.d.ts
+- node_modules/@google/generative-ai/dist/src/requests/response-helpers.d.ts
+- node_modules/@google/generative-ai/dist/src/requests/stream-reader.d.ts
+- node_modules/@google/generative-ai/dist/src/server/cache-manager.d.ts
+- node_modules/@google/generative-ai/dist/src/server/constants.d.ts
+- node_modules/@google/generative-ai/dist/src/server/file-manager.d.ts
+- node_modules/@google/generative-ai/dist/src/server/index.d.ts
+- node_modules/@google/generative-ai/dist/src/server/request.d.ts
+- node_modules/@google/generative-ai/dist/tsdoc-metadata.json
+- node_modules/@google/generative-ai/dist/types/content.d.ts
+- node_modules/@google/generative-ai/dist/types/enums.d.ts
+- node_modules/@google/generative-ai/dist/types/function-calling.d.ts
+- node_modules/@google/generative-ai/dist/types/index.d.ts
+- node_modules/@google/generative-ai/dist/types/requests.d.ts
+- node_modules/@google/generative-ai/dist/types/responses.d.ts
+- node_modules/@google/generative-ai/dist/types/search-grounding.d.ts
+- node_modules/@google/generative-ai/dist/types/server/caching.d.ts
+- node_modules/@google/generative-ai/dist/types/server/files.d.ts
+- node_modules/@google/generative-ai/dist/types/server/index.d.ts
+- node_modules/@google/generative-ai/dist/types/server/shared.d.ts
+- node_modules/@google/generative-ai/package.json
+- node_modules/@google/generative-ai/server/package.json
+- node_modules/@octokit/auth-token/LICENSE
+- node_modules/@octokit/auth-token/README.md
+- node_modules/@octokit/auth-token/dist-bundle/index.js
+- node_modules/@octokit/auth-token/dist-bundle/index.js.map
+- node_modules/@octokit/auth-token/dist-src/auth.js
+- node_modules/@octokit/auth-token/dist-src/hook.js
+- node_modules/@octokit/auth-token/dist-src/index.js
+- node_modules/@octokit/auth-token/dist-src/is-jwt.js
+- node_modules/@octokit/auth-token/dist-src/with-authorization-prefix.js
+- node_modules/@octokit/auth-token/dist-types/auth.d.ts
+- node_modules/@octokit/auth-token/dist-types/hook.d.ts
+- node_modules/@octokit/auth-token/dist-types/index.d.ts
+- node_modules/@octokit/auth-token/dist-types/is-jwt.d.ts
+- node_modules/@octokit/auth-token/dist-types/types.d.ts
+- node_modules/@octokit/auth-token/dist-types/with-authorization-prefix.d.ts
+- node_modules/@octokit/auth-token/package.json
+- node_modules/@octokit/core/LICENSE
+- node_modules/@octokit/core/README.md
+- node_modules/@octokit/core/dist-src/index.js
+- node_modules/@octokit/core/dist-src/version.js
+- node_modules/@octokit/core/dist-types/index.d.ts
+- node_modules/@octokit/core/dist-types/types.d.ts
+- node_modules/@octokit/core/dist-types/version.d.ts
+- node_modules/@octokit/core/package.json
+- node_modules/@octokit/endpoint/LICENSE
+- node_modules/@octokit/endpoint/README.md
+- node_modules/@octokit/endpoint/dist-bundle/index.js
+- node_modules/@octokit/endpoint/dist-bundle/index.js.map
+- node_modules/@octokit/endpoint/dist-src/defaults.js
+- node_modules/@octokit/endpoint/dist-src/endpoint-with-defaults.js
+- node_modules/@octokit/endpoint/dist-src/index.js
+- node_modules/@octokit/endpoint/dist-src/merge.js
+- node_modules/@octokit/endpoint/dist-src/parse.js
+- node_modules/@octokit/endpoint/dist-src/util/add-query-parameters.js
+- node_modules/@octokit/endpoint/dist-src/util/extract-url-variable-names.js
+- node_modules/@octokit/endpoint/dist-src/util/is-plain-object.js
+- node_modules/@octokit/endpoint/dist-src/util/lowercase-keys.js
+- node_modules/@octokit/endpoint/dist-src/util/merge-deep.js
+- node_modules/@octokit/endpoint/dist-src/util/omit.js
+- node_modules/@octokit/endpoint/dist-src/util/remove-undefined-properties.js
+- node_modules/@octokit/endpoint/dist-src/util/url-template.js
+- node_modules/@octokit/endpoint/dist-src/version.js
+- node_modules/@octokit/endpoint/dist-src/with-defaults.js
+- node_modules/@octokit/endpoint/dist-types/defaults.d.ts
+- node_modules/@octokit/endpoint/dist-types/endpoint-with-defaults.d.ts
+- node_modules/@octokit/endpoint/dist-types/index.d.ts
+- node_modules/@octokit/endpoint/dist-types/merge.d.ts
+- node_modules/@octokit/endpoint/dist-types/parse.d.ts
+- node_modules/@octokit/endpoint/dist-types/util/add-query-parameters.d.ts
+- node_modules/@octokit/endpoint/dist-types/util/extract-url-variable-names.d.ts
+- node_modules/@octokit/endpoint/dist-types/util/is-plain-object.d.ts
+- node_modules/@octokit/endpoint/dist-types/util/lowercase-keys.d.ts
+- node_modules/@octokit/endpoint/dist-types/util/merge-deep.d.ts
+- node_modules/@octokit/endpoint/dist-types/util/omit.d.ts
+- node_modules/@octokit/endpoint/dist-types/util/remove-undefined-properties.d.ts
+- node_modules/@octokit/endpoint/dist-types/util/url-template.d.ts
+- node_modules/@octokit/endpoint/dist-types/version.d.ts
+- node_modules/@octokit/endpoint/dist-types/with-defaults.d.ts
+- node_modules/@octokit/endpoint/package.json
+- node_modules/@octokit/graphql/LICENSE
+- node_modules/@octokit/graphql/README.md
+- node_modules/@octokit/graphql/dist-bundle/index.js
+- node_modules/@octokit/graphql/dist-bundle/index.js.map
+- node_modules/@octokit/graphql/dist-src/error.js
+- node_modules/@octokit/graphql/dist-src/graphql.js
+- node_modules/@octokit/graphql/dist-src/index.js
+- node_modules/@octokit/graphql/dist-src/version.js
+- node_modules/@octokit/graphql/dist-src/with-defaults.js
+- node_modules/@octokit/graphql/dist-types/error.d.ts
+- node_modules/@octokit/graphql/dist-types/graphql.d.ts
+- node_modules/@octokit/graphql/dist-types/index.d.ts
+- node_modules/@octokit/graphql/dist-types/types.d.ts
+- node_modules/@octokit/graphql/dist-types/version.d.ts
+- node_modules/@octokit/graphql/dist-types/with-defaults.d.ts
+- node_modules/@octokit/graphql/package.json
+- node_modules/@octokit/openapi-types/LICENSE
+- node_modules/@octokit/openapi-types/README.md
+- node_modules/@octokit/openapi-types/package.json
+- node_modules/@octokit/openapi-types/types.d.ts
+- node_modules/@octokit/plugin-paginate-rest/LICENSE
+- node_modules/@octokit/plugin-paginate-rest/README.md
+- node_modules/@octokit/plugin-paginate-rest/dist-bundle/index.js
+- node_modules/@octokit/plugin-paginate-rest/dist-bundle/index.js.map
+- node_modules/@octokit/plugin-paginate-rest/dist-src/compose-paginate.js
+- node_modules/@octokit/plugin-paginate-rest/dist-src/generated/paginating-endpoints.js
+- node_modules/@octokit/plugin-paginate-rest/dist-src/index.js
+- node_modules/@octokit/plugin-paginate-rest/dist-src/iterator.js
+- node_modules/@octokit/plugin-paginate-rest/dist-src/normalize-paginated-list-response.js
+- node_modules/@octokit/plugin-paginate-rest/dist-src/paginate.js
+- node_modules/@octokit/plugin-paginate-rest/dist-src/paginating-endpoints.js
+- node_modules/@octokit/plugin-paginate-rest/dist-src/version.js
+- node_modules/@octokit/plugin-paginate-rest/dist-types/compose-paginate.d.ts
+- node_modules/@octokit/plugin-paginate-rest/dist-types/generated/paginating-endpoints.d.ts
+- node_modules/@octokit/plugin-paginate-rest/dist-types/index.d.ts
+- node_modules/@octokit/plugin-paginate-rest/dist-types/iterator.d.ts
+- node_modules/@octokit/plugin-paginate-rest/dist-types/normalize-paginated-list-response.d.ts
+- node_modules/@octokit/plugin-paginate-rest/dist-types/paginate.d.ts
+- node_modules/@octokit/plugin-paginate-rest/dist-types/paginating-endpoints.d.ts
+- node_modules/@octokit/plugin-paginate-rest/dist-types/types.d.ts
+- node_modules/@octokit/plugin-paginate-rest/dist-types/version.d.ts
+- node_modules/@octokit/plugin-paginate-rest/package.json
+- node_modules/@octokit/plugin-request-log/LICENSE
+- node_modules/@octokit/plugin-request-log/README.md
+- node_modules/@octokit/plugin-request-log/dist-src/index.js
+- node_modules/@octokit/plugin-request-log/dist-src/version.js
+- node_modules/@octokit/plugin-request-log/dist-types/index.d.ts
+- node_modules/@octokit/plugin-request-log/dist-types/version.d.ts
+- node_modules/@octokit/plugin-request-log/package.json
+- node_modules/@octokit/plugin-rest-endpoint-methods/LICENSE
+- node_modules/@octokit/plugin-rest-endpoint-methods/README.md
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-src/endpoints-to-methods.js
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-src/endpoints-to-methods.js.map
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-src/generated/endpoints.js
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-src/generated/endpoints.js.map
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-src/index.js
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-src/index.js.map
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-src/version.js
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-src/version.js.map
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-types/endpoints-to-methods.d.ts
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-types/generated/endpoints.d.ts
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-types/generated/method-types.d.ts
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types.d.ts
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-types/index.d.ts
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-types/types.d.ts
+- node_modules/@octokit/plugin-rest-endpoint-methods/dist-types/version.d.ts
+- node_modules/@octokit/plugin-rest-endpoint-methods/package.json
+- node_modules/@octokit/request/LICENSE
+- node_modules/@octokit/request/README.md
+- node_modules/@octokit/request/dist-bundle/index.js
+- node_modules/@octokit/request/dist-bundle/index.js.map
+- node_modules/@octokit/request/dist-src/defaults.js
+- node_modules/@octokit/request/dist-src/fetch-wrapper.js
+- node_modules/@octokit/request/dist-src/index.js
+- node_modules/@octokit/request/dist-src/is-plain-object.js
+- node_modules/@octokit/request/dist-src/version.js
+- node_modules/@octokit/request/dist-src/with-defaults.js
+- node_modules/@octokit/request/dist-types/defaults.d.ts
+- node_modules/@octokit/request/dist-types/fetch-wrapper.d.ts
+- node_modules/@octokit/request/dist-types/index.d.ts
+- node_modules/@octokit/request/dist-types/is-plain-object.d.ts
+- node_modules/@octokit/request/dist-types/version.d.ts
+- node_modules/@octokit/request/dist-types/with-defaults.d.ts
+- node_modules/@octokit/request/package.json
+- node_modules/@octokit/request-error/LICENSE
+- node_modules/@octokit/request-error/README.md
+- node_modules/@octokit/request-error/dist-src/index.js
+- node_modules/@octokit/request-error/dist-types/index.d.ts
+- node_modules/@octokit/request-error/dist-types/types.d.ts
+- node_modules/@octokit/request-error/package.json
+- node_modules/@octokit/rest/LICENSE
+- node_modules/@octokit/rest/README.md
+- node_modules/@octokit/rest/dist-src/index.js
+- node_modules/@octokit/rest/dist-src/index.js.map
+- node_modules/@octokit/rest/dist-src/version.js
+- node_modules/@octokit/rest/dist-src/version.js.map
+- node_modules/@octokit/rest/dist-types/index.d.ts
+- node_modules/@octokit/rest/dist-types/version.d.ts
+- node_modules/@octokit/rest/package.json
+- node_modules/@octokit/types/LICENSE
+- node_modules/@octokit/types/README.md
+- node_modules/@octokit/types/dist-types/AuthInterface.d.ts
+- node_modules/@octokit/types/dist-types/EndpointDefaults.d.ts
+- node_modules/@octokit/types/dist-types/EndpointInterface.d.ts
+- node_modules/@octokit/types/dist-types/EndpointOptions.d.ts
+- node_modules/@octokit/types/dist-types/Fetch.d.ts
+- node_modules/@octokit/types/dist-types/GetResponseTypeFromEndpointMethod.d.ts
+- node_modules/@octokit/types/dist-types/OctokitResponse.d.ts
+- node_modules/@octokit/types/dist-types/RequestError.d.ts
+- node_modules/@octokit/types/dist-types/RequestHeaders.d.ts
+- node_modules/@octokit/types/dist-types/RequestInterface.d.ts
+- node_modules/@octokit/types/dist-types/RequestMethod.d.ts
+- node_modules/@octokit/types/dist-types/RequestOptions.d.ts
+- node_modules/@octokit/types/dist-types/RequestParameters.d.ts
+- node_modules/@octokit/types/dist-types/RequestRequestOptions.d.ts
+- node_modules/@octokit/types/dist-types/ResponseHeaders.d.ts
+- node_modules/@octokit/types/dist-types/Route.d.ts
+- node_modules/@octokit/types/dist-types/StrategyInterface.d.ts
+- node_modules/@octokit/types/dist-types/Url.d.ts
+- node_modules/@octokit/types/dist-types/VERSION.d.ts
+- node_modules/@octokit/types/dist-types/generated/Endpoints.d.ts
+- node_modules/@octokit/types/dist-types/index.d.ts
+- node_modules/@octokit/types/package.json
+- node_modules/before-after-hook/LICENSE
+- node_modules/before-after-hook/README.md
+- node_modules/before-after-hook/index.d.ts
+- node_modules/before-after-hook/index.js
+- node_modules/before-after-hook/lib/add.js
+- node_modules/before-after-hook/lib/register.js
+- node_modules/before-after-hook/lib/remove.js
+- node_modules/before-after-hook/package.json
+- node_modules/fast-content-type-parse/.gitattributes
+- node_modules/fast-content-type-parse/.github/.stale.yml
+- node_modules/fast-content-type-parse/.github/dependabot.yml
+- node_modules/fast-content-type-parse/.github/tests_checker.yml
+- node_modules/fast-content-type-parse/.github/workflows/ci.yml
+- node_modules/fast-content-type-parse/.github/workflows/package-manager-ci.yml
+- node_modules/fast-content-type-parse/LICENSE
+- node_modules/fast-content-type-parse/README.md
+- node_modules/fast-content-type-parse/benchmarks/simple-ows.js
+- node_modules/fast-content-type-parse/benchmarks/simple.js
+- node_modules/fast-content-type-parse/benchmarks/suite.js
+- node_modules/fast-content-type-parse/benchmarks/with-param-quoted.js
+- node_modules/fast-content-type-parse/benchmarks/with-param.js
+- node_modules/fast-content-type-parse/eslint.config.js
+- node_modules/fast-content-type-parse/index.js
+- node_modules/fast-content-type-parse/package.json
+- node_modules/fast-content-type-parse/test/index.test.js
+- node_modules/fast-content-type-parse/types/.gitkeep
+- node_modules/fast-content-type-parse/types/index.d.ts
+- node_modules/fast-content-type-parse/types/index.test-d.ts
+- node_modules/universal-user-agent/.github/workflows/release.yml
+- node_modules/universal-user-agent/.github/workflows/test.yml
+- node_modules/universal-user-agent/.github/workflows/update-prettier.yml
+- node_modules/universal-user-agent/CODE_OF_CONDUCT.md
+- node_modules/universal-user-agent/LICENSE.md
+- node_modules/universal-user-agent/README.md
+- node_modules/universal-user-agent/SECURITY.md
+- node_modules/universal-user-agent/index.d.ts
+- node_modules/universal-user-agent/index.js
+- node_modules/universal-user-agent/index.test-d.ts
+- node_modules/universal-user-agent/index.test.js
+- node_modules/universal-user-agent/package.json
+- package-lock.json
+- package.json
+- src/main.js
 
 ## 現在のオープンIssues
 ## [Issue #24](../issue-notes/24.md): Geminiが503で落ちたのでretryを実装する
@@ -154,6 +569,24 @@ Last updated: 2025-09-07
             - 新規関数で、ファイル一覧と関数一覧を生成する
         - 根拠、そのほうが、シンプルに目的を達成できる可能性が高そう。
         - 根拠、project-overview.mdだと、不具合として.github 配下のymlがlistに含まれておらず、ymlに関するissue、に関する生成、をするとき不具合の可能性がありそう。そういった、別機能の不具合に影響されがち。
+- 課題、早期に実施したほうが毎日好影響が出る可能性がある
+    - 対策、上記検討事項の対処は後回しにして、先に実装してみる
+    - agentに投げる
+- 課題、ProjectSummaryCoordinator をみたところ、並列処理されている
+    - なので、project-overview.mdを参照したいときに、まだ生成されていない、という可能性が高い
+    - 対策、前述の、新規関数で、ファイル一覧と関数一覧を生成させる
+
+# agentに投げるための整理
+- 編集対象ファイル
+    - prompt
+        - .github_automation/project_summary/prompts/development-status-prompt.md
+        - 編集内容
+            - projectのファイル一覧を埋め込む用の、プレースホルダーを追加する
+    - source
+        - .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
+        - 編集内容
+            - projectのファイル一覧を生成する関数、を実装し、
+            - それを前述のプレースホルダーに埋め込む
 
 ```
 
@@ -179,34 +612,6 @@ Last updated: 2025-09-07
 - 課題、issue-notes/ 配下のmdファイルの内容、からファイル名を得る方法が曖昧。
     - 案、.yml と .cjs がある部分で、space区切り。
     - 案、agentに方法を検討させる。
-
-```
-
-## [Issue #18](../issue-notes/18.md): DevelopmentStatusGenerator.cjs 内に、Geminiに与えるpromptがハードコーディングされてしまっている
-[issue-notes/18.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/18.md)
-
-...
-ラベル: 
---- issue-notes/18.md の内容 ---
-
-```markdown
-# issue DevelopmentStatusGenerator.cjs 内に、Geminiに与えるpromptがハードコーディングされてしまっている #18
-[issues #18](https://github.com/cat2151/github-actions/issues/18)
-
-# 何が困るの？
-- project把握しづらい。どこにpromptが書いてあるのか、把握しづらい。
-- prompts/ にほかのpromptがあるため、方針がブレていると、読みづらい。
-- 備忘、いくらテンプレートリテラルとプレースホルダーで密結合しているからとはいえ、ハードコーディングはNG。
-    - それらはreplaceを使う等で楽に切り出しできるので。
-
-# 問題のcjsの場所は？
-- ファイルパス : .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
-- 関数 : generateDevelopmentStatus
-
-# 結果
-- Geminiに生成させたpromptを、agentに投げて、リファクタリングさせてみた
-- ハルシネーションした。使い物にならなかった
-- 人力でやる
 
 ```
 
@@ -370,4 +775,4 @@ Issue番号を記載する際は、必ず [Issue #番号](../issue-notes/番号.
 
 
 ---
-Generated at: 2025-09-07 07:04:24 JST
+Generated at: 2025-09-08 07:04:23 JST
