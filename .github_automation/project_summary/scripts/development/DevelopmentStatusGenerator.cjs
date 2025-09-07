@@ -105,9 +105,13 @@ class DevelopmentStatusGenerator extends BaseGenerator {
   async getProjectFiles(dir = this.projectRoot) {
     // 再帰的にファイル一覧を取得し、Markdownリスト形式で返す
     const results = [];
+    const excludeDirs = ['.git', 'node_modules'];
     function walk(currentDir, base = '') {
       const entries = fs.readdirSync(currentDir, { withFileTypes: true });
       for (const entry of entries) {
+        if (entry.isDirectory() && excludeDirs.includes(entry.name)) {
+          continue;
+        }
         const relPath = path.join(base, entry.name).replace(/\\/g, '/');
         if (entry.isDirectory()) {
           walk(path.join(currentDir, entry.name), relPath + '/');
