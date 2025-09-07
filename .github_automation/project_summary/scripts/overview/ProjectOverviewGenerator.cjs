@@ -13,14 +13,14 @@ class ProjectOverviewGenerator extends BaseGenerator {
    */
   constructor(overviewPromptPath, overviewPath, projectRoot) {
     super(projectRoot);
-    
+
     if (!overviewPromptPath) {
       throw new Error('overviewPromptPath is required as the first argument');
     }
     if (!overviewPath) {
       throw new Error('overviewPath is required as the second argument');
     }
-    
+
     this.overviewPromptPath = overviewPromptPath;
     this.overviewPath = overviewPath;
     this.orchestrator = new ProjectAnalysisOrchestrator(projectRoot);
@@ -77,7 +77,7 @@ class ProjectOverviewGenerator extends BaseGenerator {
     const overviewPrompt = this._buildPrompt(formattedReport, prompt);
 
     try {
-      const result = await this.model.generateContent(overviewPrompt);
+      const result = await this.generateContent(overviewPrompt);
       return this._processAIResponse(result.response.text());
     } catch (error) {
       console.error('Error generating project overview:', error.message);

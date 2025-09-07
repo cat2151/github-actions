@@ -21,6 +21,37 @@ class BaseGenerator {
   }
 
   /**
+   * Geminiのmodel.generateContentをラップし、503エラー時に指数バックオフでリトライする
+   * @param {...any} args - model.generateContentの引数
+   * @returns {Promise<any>}
+   */
+  async generateContent(...args) {
+    const initialDelay = 60 * 1000; // 60秒
+    const maxDelay = 3600 * 1000; // 3600秒（1時間）
+    let delay = initialDelay;
+    while (true) {
+      if (delay > maxDelay) {
+        throw new Error(`generateContent: 遅延が最大値(${maxDelay}ms)を超えたため中断します`);
+      }
+      try {
+        return await this.model.generateContent(...args);
+      } catch (err) {
+        // 503エラーのみリトライ
+        if (err && err.status === 503) {
+          const now = new Date(Date.now() + (9 * 60 * 60 * 1000)); // JST
+          const iso = now.toISOString().replace('T', ' ').split('.')[0];
+          console.warn(`[${iso} JST] Gemini generateContent: 503エラー、delay=${delay}msでリトライ`);
+          await new Promise(res => setTimeout(res, delay));
+          delay = Math.min(delay * 2, maxDelay);
+        } else {
+          // その他のエラーは即座にthrow
+          throw err;
+        }
+      }
+    }
+  }
+
+  /**
    * 環境変数とコミット状況をチェック
    * @returns {Promise<boolean>} 実行を続行するかどうか
    */

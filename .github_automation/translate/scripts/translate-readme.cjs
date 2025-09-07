@@ -1,4 +1,4 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const BaseGenerator = require('../../project_summary/scripts/shared/BaseGenerator.cjs');
 const fs = require('fs').promises;
 
 async function translateReadme() {
@@ -25,10 +25,6 @@ async function translateReadme() {
     // 翻訳先ファイル名の生成（受け取ったファイル名に基づく）
     const readmePath = targetFile.replace('.ja.md', '.md');
 
-    // Gemini API 初期化
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
     const japaneseContent = await fs.readFile(targetFile, 'utf-8');
     if (!japaneseContent.trim()) {
       console.log(`${targetFile} is empty, skipping translation.`);
@@ -49,14 +45,9 @@ IMPORTANT: Return ONLY the translated Markdown content. Do NOT wrap the response
 Japanese text to translate:
 ${japaneseContent}`;
 
-    const result = await model.generateContent(prompt);
-    let translatedText = result.response.text().trim();
-
-    // 不要なコードブロック除去
-    translatedText = translatedText
-      .replace(/^```markdown\s*\n/, '')
-      .replace(/\n```\s*$/, '')
-      .trim();
+    const generator = new BaseGenerator(process.cwd());
+    const result = await generator.generateContent(prompt);
+    let translatedText = generator.cleanMarkdownCodeBlock(result.response.text());
 
     // 既存ファイルと比較
     let existingContent = '';

@@ -150,7 +150,7 @@ class DevelopmentStatusGenerator extends BaseGenerator {
     console.log(`Development status prompt saved to: ${this.developmentGeneratedPath}`);
 
     try {
-      const result = await this.model.generateContent(developmentPrompt);
+      const result = await this.generateContent(developmentPrompt);
       return this.cleanMarkdownCodeBlock(result.response.text());
     } catch (error) {
       console.error('Error generating development status:', error.message);
