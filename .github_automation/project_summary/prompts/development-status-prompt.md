@@ -105,6 +105,9 @@ ${projectFiles}
 ## 現在のオープンIssues
 ${issuesSection}
 
+## ドキュメントで言及されているファイルの内容
+${file_contents}
+
 ## 最近の変更（過去7日間）
 コミット履歴:
 ${recentChanges}
