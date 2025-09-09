@@ -136,7 +136,7 @@ class DevelopmentStatusGenerator extends BaseGenerator {
     // プロンプトを生成 : issues, recentChanges, projectFiles, fileContents を埋め込む
     function fillTemplate(template, values) {
       const lines = template.split(/\r?\n/);
-      // 各keyが複数行で使われていないかチェック
+      // 各keyが複数行で使われていないかチェック＆keyごとに存在確認
       for (const key of Object.keys(values)) {
         const keyRegex = new RegExp(`^\$\{${key}\}$`);
         let foundLine = -1;
@@ -147,6 +147,9 @@ class DevelopmentStatusGenerator extends BaseGenerator {
             }
             foundLine = i;
           }
+        }
+        if (foundLine === -1) {
+          throw new Error(`テンプレート内にkey '${key}' が見つかりませんでした`);
         }
       }
       // 埋め込み
@@ -161,11 +164,11 @@ class DevelopmentStatusGenerator extends BaseGenerator {
       }).join('\n');
     }
     let developmentPrompt = fillTemplate(prompt, {
-      issuesSection,
-      commits: recentChanges.commits.join('\n'),
-      changedFiles: recentChanges.changedFiles.join('\n'),
       projectFiles,
-      fileContents
+      issuesSection,
+      fileContents,
+      commits: recentChanges.commits.join('\n'),
+      changedFiles: recentChanges.changedFiles.join('\n')
     });
 
     // プロンプトをファイルに保存する。開発効率化用。

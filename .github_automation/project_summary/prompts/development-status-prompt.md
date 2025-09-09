@@ -97,7 +97,8 @@
 
 
 # 開発状況情報
-以下の開発状況情報を参考にして要約を生成してください：
+- 以下の開発状況情報を参考にしてください。
+- Issue番号を記載する際は、必ず [Issue #番号](../issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
 
 ## プロジェクトのファイル一覧
 ${projectFiles}
@@ -109,11 +110,8 @@ ${issuesSection}
 ${fileContents}
 
 ## 最近の変更（過去7日間）
-コミット履歴:
-${recentChanges}
+### コミット履歴:
+${commits}
 
-変更されたファイル:
-${recentChanges}
-
-上記の情報を基に、プロンプトで指定された形式で開発状況を生成してください。
-Issue番号を記載する際は、必ず [Issue #番号](../issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
+### 変更されたファイル:
+${changedFiles}
