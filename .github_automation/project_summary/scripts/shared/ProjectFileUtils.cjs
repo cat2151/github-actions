@@ -1,4 +1,4 @@
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 
 /**
@@ -20,7 +20,7 @@ class ProjectFileUtils {
    * @param {string} prompt - プロンプト内容
    * @returns {Promise<string>} 生成された開発状況
    */
-  async getProjectFiles(dir = this.projectRoot) {
+  getProjectFiles(dir = this.projectRoot) {
     // 再帰的にファイル一覧を取得し、Markdownリスト形式で返す
     const results = [];
     const excludeDirs = ['.git', 'node_modules'];
@@ -49,9 +49,7 @@ class ProjectFileUtils {
    * @returns {string} markdown文字列
    */
   getFileContentsMarkdown(filename) {
-    const map = this.getFilenameToPathsMap();
-    const fs = require('fs');
-    const path = require('path');
+  const map = this.getFilenameToPathsMap();
     if (!map[filename] || map[filename].length === 0) {
       return `（該当ファイルなし）`;
     }
@@ -92,10 +90,8 @@ class ProjectFileUtils {
    * @returns {Object} { [filename]: [relativePath, ...] }
    */
   getFilenameToPathsMap(dir = this.projectRoot) {
-    const map = {};
-    const excludeDirs = ['.git', 'node_modules'];
-    const path = require('path');
-    const fs = require('fs');
+  const map = {};
+  const excludeDirs = ['.git', 'node_modules'];
     function walk(currentDir, base = '') {
       const entries = fs.readdirSync(currentDir, { withFileTypes: true });
       for (const entry of entries) {

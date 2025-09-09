@@ -88,6 +88,9 @@ class DevelopmentStatusGenerator extends BaseGenerator {
 
     } catch (error) {
       console.error('Development status generation failed:', error.message);
+      if (error.stack) {
+        console.error('Stack trace:', error.stack);
+      }
       if (error.response) {
         console.error('API Response:', error.response);
       }
@@ -125,9 +128,9 @@ class DevelopmentStatusGenerator extends BaseGenerator {
       ].join('\n');
     }
 
-    // プロジェクトファイル一覧を取得
-    const projectFiles = await this.projectFileUtils.getProjectFiles();
-    // issue-notesで参照されているファイル内容を取得
+    // プロジェクトファイル一覧を取得（同期）
+    const projectFiles = this.projectFileUtils.getProjectFiles();
+    // issue-notesで参照されているファイル内容を取得（同期）
     const fileContents = this.projectFileUtils.getMentionedFileContentsInPrompt(issuesSection);
 
     // プロンプトを生成 : issues, recentChanges, projectFiles, fileContents を埋め込む
