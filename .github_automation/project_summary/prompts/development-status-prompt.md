@@ -106,7 +106,7 @@ ${projectFiles}
 ${issuesSection}
 
 ## ドキュメントで言及されているファイルの内容
-${file_contents}
+${fileContents}
 
 ## 最近の変更（過去7日間）
 コミット履歴:

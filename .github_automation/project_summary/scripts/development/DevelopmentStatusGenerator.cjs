@@ -1,12 +1,11 @@
 const BaseGenerator = require('../shared/BaseGenerator.cjs');
 const IssueTracker = require('./IssueTracker.cjs');
+const ProjectFileUtils = require('../shared/ProjectFileUtils.cjs');
 
 /**
  * 開発状況生成器
  * 開発者向けの進捗状況を生成
  */
-const fs = require('fs');
-const path = require('path');
 
 class DevelopmentStatusGenerator extends BaseGenerator {
   /**
@@ -30,6 +29,7 @@ class DevelopmentStatusGenerator extends BaseGenerator {
     this.developmentStatusPromptPath = developmentStatusPromptPath;
     this.developmentPath = developmentPath;
     this.developmentGeneratedPath = developmentGeneratedPath;
+    this.projectFileUtils = new ProjectFileUtils(projectRoot);
   }
 
   /**
@@ -95,111 +95,6 @@ class DevelopmentStatusGenerator extends BaseGenerator {
     }
   }
 
-  /**
-   * 開発状況を生成
-   * @param {Array} issues - Issues情報
-   * @param {Object} recentChanges - 最近の変更情報
-   * @param {string} prompt - プロンプト内容
-   * @returns {Promise<string>} 生成された開発状況
-   */
-  async getProjectFiles(dir = this.projectRoot) {
-    // 再帰的にファイル一覧を取得し、Markdownリスト形式で返す
-    const results = [];
-    const excludeDirs = ['.git', 'node_modules'];
-    function walk(currentDir, base = '') {
-      const entries = fs.readdirSync(currentDir, { withFileTypes: true });
-      for (const entry of entries) {
-        if (entry.isDirectory() && excludeDirs.includes(entry.name)) {
-          continue;
-        }
-        const relPath = path.join(base, entry.name).replace(/\\/g, '/');
-        if (entry.isDirectory()) {
-          walk(path.join(currentDir, entry.name), relPath + '/');
-        } else {
-          results.push(relPath);
-        }
-      }
-    }
-    walk(dir);
-    // Markdownリスト形式で返す
-    return results.length === 0 ? '（ファイルなし）' : results.map(f => `- ${f}`).join('\n');
-  }
-
-  /**
-   * 指定filenameにマッチする全ファイル内容をmarkdown形式で返す
-   * @param {string} filename - 対象のファイル名
-   * @returns {string} markdown文字列
-   */
-  getFileContentsMarkdown(filename) {
-    const map = this.getFilenameToPathsMap();
-    const fs = require('fs');
-    const path = require('path');
-    if (!map[filename] || map[filename].length === 0) {
-      return `（該当ファイルなし）`;
-    }
-    return map[filename].map(relPath => {
-      let content = '';
-      try {
-        content = fs.readFileSync(path.join(this.projectRoot, relPath), 'utf8');
-      } catch (e) {
-        content = `（ファイル読み込み失敗: ${e.message}）`;
-      }
-      const ext = relPath.split('.').pop();
-      return [
-        `### ${relPath}`,
-        '```' + ext,
-        content,
-        '```'
-      ].join('\n');
-    }).join('\n\n');
-  }
-
-  /**
-   * prompt内で言及されているファイル名の内容をmarkdown文字列群として返す
-   * @param {string} prompt - プロンプト全文
-   * @returns {string} markdown文字列群
-   */
-  getMentionedFileContentsInPrompt(prompt) {
-    const map = this.getFilenameToPathsMap();
-    const mentionedFiles = Object.keys(map).filter(filename => prompt.includes(filename));
-    if (mentionedFiles.length === 0) {
-      return '';
-    }
-    // 各ファイル名について内容取得
-    return mentionedFiles.map(filename => this.getFileContentsMarkdown(filename)).join('\n\n');
-  }
-
-  /**
-   * プロジェクト全体のファイル名→相対パス配列のmapを返す
-   * @returns {Object} { [filename]: [relativePath, ...] }
-   */
-  getFilenameToPathsMap(dir = this.projectRoot) {
-    const map = {};
-    const excludeDirs = ['.git', 'node_modules'];
-    const path = require('path');
-    const fs = require('fs');
-    function walk(currentDir, base = '') {
-      const entries = fs.readdirSync(currentDir, { withFileTypes: true });
-      for (const entry of entries) {
-        if (entry.isDirectory() && excludeDirs.includes(entry.name)) {
-          continue;
-        }
-        const relPath = path.join(base, entry.name).replace(/\\/g, '/');
-        if (entry.isDirectory()) {
-          walk(path.join(currentDir, entry.name), relPath + '/');
-        } else {
-          const basename = entry.name;
-          if (!map[basename]) {
-            map[basename] = [];
-          }
-          map[basename].push(relPath);
-        }
-      }
-    }
-    walk(dir);
-    return map;
-  }
-
   async generateDevelopmentStatus(issues, recentChanges, prompt) {
     console.log('Generating development status with Gemini API...');
 
@@ -231,24 +126,44 @@ class DevelopmentStatusGenerator extends BaseGenerator {
     }
 
     // プロジェクトファイル一覧を取得
-    const projectFiles = await this.getProjectFiles();
+    const projectFiles = await this.projectFileUtils.getProjectFiles();
+    // issue-notesで参照されているファイル内容を取得
+    const fileContents = this.projectFileUtils.getMentionedFileContentsInPrompt(issuesSection);
 
-    // プロンプトを生成
-    // phase1: issues, recentChanges, projectFilesを埋め込む
+    // プロンプトを生成 : issues, recentChanges, projectFiles, fileContents を埋め込む
     function fillTemplate(template, values) {
-      return template.replace(/\$\{(\w+)\}/g, (match, key) => {
-        return key in values ? values[key] : match;
-      });
+      const lines = template.split(/\r?\n/);
+      // 各keyが複数行で使われていないかチェック
+      for (const key of Object.keys(values)) {
+        const keyRegex = new RegExp(`^\$\{${key}\}$`);
+        let foundLine = -1;
+        for (let i = 0; i < lines.length; i++) {
+          if (keyRegex.test(lines[i])) {
+            if (foundLine !== -1) {
+              throw new Error(`テンプレート内でkey '${key}' が複数行(${foundLine+1}行目, ${i+1}行目)で使われています`);
+            }
+            foundLine = i;
+          }
+        }
+      }
+      // 埋め込み
+      return lines.map(line => {
+        for (const key of Object.keys(values)) {
+          const keyRegex = new RegExp(`^\$\{${key}\}$`);
+          if (keyRegex.test(line)) {
+            return values[key];
+          }
+        }
+        return line;
+      }).join('\n');
     }
     let developmentPrompt = fillTemplate(prompt, {
       issuesSection,
       commits: recentChanges.commits.join('\n'),
       changedFiles: recentChanges.changedFiles.join('\n'),
-      projectFiles
+      projectFiles,
+      fileContents
     });
-    // phase2: developmentPrompt を元に、fileContentsを得て埋め込む
-    const fileContents = this.getMentionedFileContentsInPrompt(developmentPrompt);
-    developmentPrompt = developmentPrompt.replace(/\$\{file_contents\}/g, fileContents);
 
     // プロンプトをファイルに保存する。開発効率化用。
     await this.saveToFile(developmentPrompt, this.developmentGeneratedPath);
