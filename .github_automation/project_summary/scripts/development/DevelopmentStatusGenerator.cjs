@@ -136,6 +136,14 @@ class DevelopmentStatusGenerator extends BaseGenerator {
     // プロンプトを生成 : issues, recentChanges, projectFiles, fileContents を埋め込む
     function fillTemplate(template, values) {
       const lines = template.split(/\r?\n/);
+      // エラーメッセージ共通生成関数
+      function formatTemplateError(message) {
+        return (
+          message + '\n' +
+          `--- テンプレート内容 ---\n${template}\n` +
+          `--- テンプレート分割後のlines ---\n${JSON.stringify(lines, null, 2)}`
+        );
+      }
       // 各keyが複数行で使われていないかチェック＆keyごとに存在確認
       for (const key of Object.keys(values)) {
         const keyRegex = new RegExp(`^\$\{${key}\}$`);
@@ -143,13 +151,17 @@ class DevelopmentStatusGenerator extends BaseGenerator {
         for (let i = 0; i < lines.length; i++) {
           if (keyRegex.test(lines[i])) {
             if (foundLine !== -1) {
-              throw new Error(`テンプレート内でkey '${key}' が複数行(${foundLine+1}行目, ${i+1}行目)で使われています`);
+              throw new Error(
+                formatTemplateError(`テンプレート内でkey '${key}' が複数行(${foundLine+1}行目, ${i+1}行目)で使われています`)
+              );
             }
             foundLine = i;
           }
         }
         if (foundLine === -1) {
-          throw new Error(`テンプレート内にkey '${key}' が見つかりませんでした`);
+          throw new Error(
+            formatTemplateError(`テンプレート内にkey '${key}' が見つかりませんでした`)
+          );
         }
       }
       // 埋め込み
