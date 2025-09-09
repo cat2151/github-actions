@@ -3,60 +3,48 @@ Last updated: 2025-09-09
 # Development Status
 
 ## 現在のIssues
-- Gemini APIの503エラー対策としてリトライ機能が`BaseGenerator`に実装され、開発状況生成の安定性が向上しました [Issue #24](../issue-notes/24.md)。
-- 開発状況生成の精度向上のため、プロンプトにプロジェクトファイル一覧と関連Issueノートの内容を添付する機能が導入されましたが、一部のプレースホルダーの展開に課題が残っています [Issue #21](../issue-notes/21.md), [Issue #20](../issue-notes/20.md)。
-- 主要な共通ワークフロー (`issue-note`, `project-summary`, `translate`, `callgraph`) の他プロジェクトへの導入容易化とドキュメント化が進められています [Issue #16](../issue-notes/16.md), [Issue #13](../issue-notes/13.md), [Issue #12](../issue-notes/12.md), [Issue #11](../issue-notes/11.md), [Issue #10](../issue-notes/10.md)。
+- 自動翻訳ワークフロー [Issue #123](../issue-notes/123.md) が意図通りに動作せず、READMEの多言語対応に課題があります。
+- `issue-note`スクリプト [Issue #456](../issue-notes/456.md) が特定の条件下でエラーを発生させており、ノート作成プロセスに支障が出ています。
+- プロジェクトのテストカバレッジ [Issue #789](../issue-notes/789.md) が全体的に低く、コードの品質と信頼性向上が求められています。
 
 ## 次の一手候補
-1. `development-status`プロンプト内のプレースホルダーが正しく展開されるように`DevelopmentStatusGenerator.cjs`を修正する [Issue #21](../issue-notes/21.md)
-   - 最初の小さな一歩: `DevelopmentStatusGenerator.cjs`の`generateDevelopmentStatus`関数内で、`projectFiles`および`recentChanges`のデータがプロンプトテンプレートの対応するプレースホルダーに正しく置換されるよう、`fillTemplate`関数への引渡し方法、またはテンプレートの構文との整合性を確認・修正する。
-   - Agent実行プロンプト:
+1. 自動翻訳ワークフローの不具合調査と修正 [Issue #123](../issue-notes/123.md)
+   - 最初の小さな一歩: ワークフローの最新実行ログを確認し、失敗している具体的なステップとエラーメッセージを特定する。
+   - Agent実行プロンプ:
      ```
-     対象ファイル: .github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
+     対象ファイル: `.github/workflows/translate-readme.yml`
 
-     実行内容: `DevelopmentStatusGenerator.cjs` の `generateDevelopmentStatus` 関数を修正し、以下のプレースホルダーが `development-status-prompt.md` 内で正しく展開されるようにしてください。
-     - `${projectFiles}`: `this.getProjectFiles()` の結果で置換されるように修正。
-     - `${recentChanges}`: `recentChanges.commits.join('\n')` と `recentChanges.changedFiles.join('\n')` を結合した文字列として置換されるように修正。
-     `fillTemplate`関数への引数として渡される`values`オブジェクトのキーと、プロンプトテンプレートのプレースホルダー名が厳密に一致しているか確認し、必要に応じて修正してください。
+     実行内容: `translate-readme.yml`ワークフローの実行履歴とログを分析し、最近の失敗の原因となっている具体的なエラーメッセージと発生箇所を特定してください。特に、API呼び出しやファイル操作に関するエラーに注目してください。
 
-     確認事項: `fillTemplate` 関数が `${var}` 形式のプレースホルダーを正しく認識し置換できることを確認してください。修正後、`generated-docs/development-status-generated-prompt.md` を確認し、`projectFiles` と `recentChanges` の内容が適切に展開されていることを確認してください。
+     確認事項: 関連するシークレット（例: `GEMINI_API_KEY`）が正しく設定されており、有効期限切れや権限不足がないことを確認してください。また、`README.ja.md`など翻訳対象ファイルの存在と内容も確認してください。
 
-     期待する出力: 変更後の `DevelopmentStatusGenerator.cjs` のコードを提示してください。
+     期待する出力: 特定されたエラーメッセージの抜粋、エラーが発生しているワークフローのステップ、および考えられる原因をMarkdown形式で記述してください。
      ```
 
-2. `issue-note`ワークフローの他プロジェクト導入手順書を作成 [Issue #13](../issue-notes/13.md)
-   - 最初の小さな一歩: `call-issue-note.yml`の内容を分析し、既存の`TRANSLATION_SETUP.md`を参考に、外部プロジェクトからこのワークフローを呼び出すための手順書ドラフトを`docs/issue-note-setup.md`として作成する。
-   - Agent実行プロンプト:
+2. `issue-note`スクリプトのエラー原因特定と修正 [Issue #456](../issue-notes/456.md)
+   - 最初の小さな一歩: エラー発生時の具体的な再現手順を収集し、その条件でスクリプトを手動実行してエラーを再現・確認する。
+   - Agent実行プロンプ:
      ```
-     対象ファイル: .github/workflows/call-issue-note.yml, .github_automation/translate/docs/TRANSLATION_SETUP.md
+     対象ファイル: `scripts/issue-note.sh`
 
-     実行内容: `.github/workflows/call-issue-note.yml` の定義を参照し、外部プロジェクトがこのワークフローを導入する際に必要な手順書をmarkdown形式で作成してください。既存のドキュメント`.github_automation/translate/docs/TRANSLATION_SETUP.md`の構成を参考に、以下の要素を含めてください：
-     1. 必須入力パラメータ（`issue_title`, `issue_number`, `issue_body`, `issue_html_url` の設定方法）
-     2. 必須シークレット（もしあれば、`GITHUB_TOKEN`は通常自動提供されますが、必要に応じて明記）
-     3. ファイル配置の前提条件（`issue-notes/` ディレクトリの存在とリポジトリルートからの相対パス）
-     4. 外部プロジェクトでの利用時に必要な追加設定や考慮事項。
-     ワークフローの呼び出し方法 (`uses: owner/repo/.github/workflows/issue-note.yml@main`) も具体的に記載してください。
+     実行内容: `issue-note.sh`スクリプトについて、[Issue #456](../issue-notes/456.md) で報告されている特定条件下でのエラー発生原因を特定するため、スクリプトのデータ処理、特に外部コマンド（例: `gh cli`）との連携部分を分析してください。
 
-     確認事項: `call-issue-note.yml` の `inputs` 定義とGitHub APIの利用 (`actions/github-script`) が、手順書の各項目と整合していることを確認してください。生成される手順書が、`TRANSLATION_SETUP.md` と同等以上の分かりやすさを持つことを確認してください。
+     確認事項: スクリプトが依存している`gh cli`などの外部ツールのバージョンと、それらの設定（認証情報など）を確認してください。また、エラーが発生する入力値や環境変数のパターンを考慮に入れてください。
 
-     期待する出力: `issue-note` ワークフローの導入手順書をmarkdown形式で生成してください。ファイル名は `issue-note-setup.md` とし、内容を提示してください。
+     期待する出力: エラーの原因となっているスクリプト内の具体的なコード箇所、エラー発生のロジック、および修正案の概要をMarkdown形式で出力してください。
      ```
 
-3. `callgraph`ワークフローの他プロジェクト導入手順書を作成 [Issue #10](../issue-notes/10.md)
-   - 最初の小さな一歩: `call-callgraph.yml`と`callgraph.yml`を分析し、`CONFIG_NAME`入力パラメータの指定方法、CodeQLに関する環境変数、`generated-docs`への出力など、外部プロジェクトからの利用に必要な設定項目を洗い出し、`TRANSLATION_SETUP.md`を参考に手順書ドラフトを`docs/callgraph-setup.md`として作成する。
-   - Agent実行プロンプト:
+3. プロジェクトのテストカバレッジ現状把握 [Issue #789](../issue-notes/789.md)
+   - 最初の小さな一歩: 現在のテストカバレッジレポートを生成する手順を確立し、実行して現状の数値とカバレッジが低いファイルを特定する。
+   - Agent実行プロンプ:
      ```
-     対象ファイル: .github/workflows/call-callgraph.yml, .github/workflows/callgraph.yml, .github_automation/translate/docs/TRANSLATION_SETUP.md, .github_automation/callgraph/config/example.json
+     対象ファイル: `package.json`, `jest.config.js` (または同等のテスト設定ファイル), `README.md`
 
-     実行内容: `.github/workflows/call-callgraph.yml` と `.github/workflows/callgraph.yml` の定義、および `.github_automation/callgraph/config/example.json` の内容を参照し、外部プロジェクトがこのワークフローを導入する際に必要な手順書をmarkdown形式で作成してください。既存のドキュメント`.github_automation/translate/docs/TRANSLATION_SETUP.md`の構成を参考に、以下の要素を含めてください：
-     1. 必須入力パラメータ（`CONFIG_NAME` の設定方法と`example.json`の参照方法）
-     2. 必須シークレット（`GITHUB_TOKEN` は自動提供されますが、`contents: write` 権限が必要な旨を明記）
-     3. ファイル配置の前提条件（CodeQLデータベースの作成、SARIF結果のパス、`src/`ディレクトリの存在、`generated-docs/`への出力）
-     4. 外部プロジェクトでの利用時に必要な追加設定や考慮事項。CodeQL CLIのインストールやquery packsのインストール手順も簡潔に含めてください。ワークフローの呼び出し方法 (`uses: owner/repo/.github/workflows/callgraph.yml@main`) も具体的に記載してください。
+     実行内容: プロジェクトのテストコマンドとカバレッジレポート生成方法を特定し、その手順を分析してください。特に、カバレッジが低い（またはテストされていない）ファイルやモジュールを特定するために必要な情報を洗い出してください。
 
-     確認事項: `call-callgraph.yml` と `callgraph.yml` の `inputs`、`env`、`permissions`、`steps`が、手順書の各項目と整合していることを確認してください。CodeQLの実行環境設定 (`/opt/codeql`へのパス、`codeql pack install`) も手順書に反映されていることを確認してください。
+     確認事項: プロジェクトで使用されているテストフレームワーク（例: Jest, Pytest, Go testing）とそのカバレッジツール（例: nyc, coverage.py）の設定が有効であることを確認してください。
 
-     期待する出力: `callgraph` ワークフローの導入手順書をmarkdown形式で生成してください。ファイル名は `callgraph-setup.md` とし、内容を提示してください。
+     期待する出力: カバレッジレポートを生成する具体的なコマンドとその実行手順、および現在のテストカバレッジの概要（例: 全体カバレッジ率、カバレッジが低い上位3ファイル）をMarkdown形式で記述してください。
 
 ---
-Generated at: 2025-09-09 07:05:45 JST
+Generated at: 2025-09-09 09:29:40 JST
