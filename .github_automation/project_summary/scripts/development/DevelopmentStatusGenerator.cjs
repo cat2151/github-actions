@@ -146,7 +146,7 @@ class DevelopmentStatusGenerator extends BaseGenerator {
       }
       // 各keyが複数行で使われていないかチェック＆keyごとに存在確認
       for (const key of Object.keys(values)) {
-        const keyRegex = new RegExp(`^\$\{${key}\}$`);
+        const keyRegex = new RegExp(String.raw`^\$\{${key}\}$`);
         let foundLine = -1;
         for (let i = 0; i < lines.length; i++) {
           if (keyRegex.test(lines[i])) {
@@ -167,7 +167,7 @@ class DevelopmentStatusGenerator extends BaseGenerator {
       // 埋め込み
       return lines.map(line => {
         for (const key of Object.keys(values)) {
-          const keyRegex = new RegExp(`^\$\{${key}\}$`);
+          const keyRegex = new RegExp(String.raw`^\$\{${key}\}$`);
           if (keyRegex.test(line)) {
             return values[key];
           }
