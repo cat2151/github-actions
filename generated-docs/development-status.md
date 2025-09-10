@@ -1,50 +1,51 @@
-Last updated: 2025-09-10
+Last updated: 2025-09-11
 
 # Development Status
 
 ## 現在のIssues
-- [Issue #16](../issue-notes/16.md) は、issue-note, project-summary, translate, callgraphの各ワークフローが他のリポジトリ（tonejs-mml-to-json）で正しく機能するかを確認し、古い実装を置き換えることを目指しています。
-- [Issue #13](../issue-notes/13.md), [Issue #12](../issue-notes/12.md), [Issue #11](../issue-notes/11.md), [Issue #10](../issue-notes/10.md) は、それぞれissue-note, project-summary, translate, callgraphの各ワークフローを他プロジェクトから利用しやすくするための課題（スクリプト/プロンプトのディレクトリ移動、パラメータ化、導入ドキュメント作成など）を扱っています。
-- 特に[Issue #12](../issue-notes/12.md) と [Issue #11](../issue-notes/11.md) は、スクリプトやプロンプトの独立した配置と呼び出し元からの設定指定という共通の課題を解決する必要があります。
+- [Issue #16](../issue-notes/16.md) は、issue-note/project-summary/translate/callgraphが他リポジトリで古いワークフローを使用中。
+- `github-actions` リポジトリの最新版 `call-*.yml` へ切り替える必要があることを可視化。
+- 各 `call-*.yml` を単純コピーして、`tonejs-mml-to-json` リポジトリでの動作確認を進める。
 
 ## 次の一手候補
-1.  [Issue #12](../issue-notes/12.md): project-summary を他projectから使いやすくする
-    -   最初の小さな一歩: `project_summary`関連のスクリプトとプロンプトファイルを、現在の`.github_automation/project_summary/`配下から、より独立したディレクトリ構造（例: `.github_automation/project_summary_action/scripts` と `.github_automation/project_summary_action/prompts`）に移動し、`daily-project-summary.yml`内のパス参照を新しいパスに更新する。
-    -   Agent実行プロンプト:
-        ```
-        対象ファイル: .github_automation/project_summary/scripts/**/*.cjs, .github_automation/project_summary/prompts/**/*.md, .github/workflows/daily-project-summary.yml
+1. [Issue #16](../issue-notes/16.md) - `issue-note` 共通ワークフローの他リポジトリへの導入テスト
+   - 最初の小さな一歩: `tonejs-mml-to-json` リポジトリに `call-issue-note.yml` をコピーし、既存の古い `issue-note.yml` と置き換えて実際に動作するか確認する。
+   - Agent実行プロンプト:
+     ```
+     対象ファイル: `tonejs-mml-to-json` リポジトリ内の既存の `issue-note.yml` （置き換え対象）および、コピー元の `.github/workflows/call-issue-note.yml`
 
-        実行内容: `daily-project-summary.yml`で参照されている`project_summary`関連のスクリプトとプロンプトファイルを、`github-actions`リポジトリ内でより独立したディレクトリ構造（例: `.github_automation/project_summary_action/scripts`と`.github_automation/project_summary_action/prompts`）に移動してください。その後、`daily-project-summary.yml`内のこれらのファイルへのパス参照を新しいパスに更新してください。
+     実行内容: `cat2151/github-actions` リポジトリの `.github/workflows/call-issue-note.yml` を `tonejs-mml-to-json` リポジトリの `.github/workflows/call-issue-note.yml` としてコピーし、既存の `tonejs-mml-to-json` リポジトリ内の古い `issue-note.yml` を無効化または削除する手順をmarkdown形式で記述してください。その後、`tonejs-mml-to-json` リポジトリでテスト用のIssueを新規作成し、新しいワークフローが正常に動作してIssue Noteが生成されるかを確認するための手順を記述してください。
 
-        確認事項: ファイル移動後、`daily-project-summary.yml`が新しいパスで正しくスクリプトやプロンプトを参照しているか、既存の機能が壊れていないかを確認してください。`generate-project-summary.cjs`の実行時にパス解決の問題が発生しないか特に注意してください。
+     確認事項: `tonejs-mml-to-json` リポジトリの現在の `issue-note` 関連ワークフローの状態を確認し、新しい `call-issue-note.yml` の導入によって既存の機能に悪影響がないことを検証してください。また、必要な依存関係（Node.jsなど）が満たされているか確認してください。
 
-        期待する出力: 移動後のファイルパスと、`daily-project-summary.yml`の変更箇所をMarkdown形式で出力してください。
-        ```
+     期待する出力: `tonejs-mml-to-json` リポジトリでの `call-issue-note.yml` 導入手順書と、テスト用Issue作成からIssue Note生成までの確認手順をまとめたmarkdownファイル。
+     ```
 
-2.  [Issue #11](../issue-notes/11.md): translate を他projectから使いやすくする
-    -   最初の小さな一歩: `translate-readme.cjs`スクリプトを`.github_automation/translate/scripts/`から、より独立したディレクトリ（例: `.github_automation/translate_action/scripts`）に移動し、`translate-readme.yml`内のパスを更新する。
-    -   Agent実行プロンプト:
-        ```
-        対象ファイル: .github_automation/translate/scripts/translate-readme.cjs, .github/workflows/translate-readme.yml
+2. [Issue #13](../issue-notes/13.md) - `issue-note` ワークフローの導入手順書作成
+   - 最初の小さな一歩: `call-issue-note.yml` の `uses` や `with` の設定内容を基に、他プロジェクトがこのワークフローを導入するために必要な手順のドラフトを作成する。
+   - Agent実行プロンプト:
+     ```
+     対象ファイル: `.github/workflows/call-issue-note.yml`, `.github/workflows/issue-note.yml`
 
-        実行内容: `translate-readme.cjs`を`.github_automation/translate_action/scripts/`ディレクトリに移動し、`translate-readme.yml`内の`SCRIPT_DIR`環境変数を新しいパスに合わせて更新してください。
+     実行内容: `issue-note` ワークフローを他プロジェクトから利用するための導入手順書をmarkdown形式で作成してください。手順書には、ワークフローの呼び出し方法、必須入力パラメータ（`issue_number`, `issue_title`, `issue_body`, `issue_html_url`）の設定方法、必要なパーミッションや依存関係を含めてください。
 
-        確認事項: ファイル移動後、`translate-readme.yml`が新しいパスでスクリプトを正しく参照しているか、および既存の翻訳機能が壊れていないかを確認してください。
+     確認事項: 既存の `issue-note.yml` および `call-issue-note.yml` の定義を確認し、必要な設定項目がすべて網羅され、導入者が迷うことなく設定できる内容になっているか検証してください。
 
-        期待する出力: 移動後のファイルパスと、`translate-readme.yml`の変更箇所をMarkdown形式で出力してください。
-        ```
+     期待する出力: `issue-note` ワークフローの導入手順を詳細に記述したmarkdown形式のファイル (`.github_automation/issue-note/docs/ISSUE_NOTE_SETUP.md` など)。
+     ```
 
-3.  [Issue #10](../issue-notes/10.md): callgraph を他projectから使いやすくする
-    -   最初の小さな一歩: `callgraph`関連の`codeql-queries`と`scripts`を、現在の`.github_automation/callgraph/`配下から、より独立したディレクトリ構造（例: `.github_automation/callgraph_action/codeql-queries`と`.github_automation/callgraph_action/scripts`）に移動し、`callgraph.yml`内のパス参照を更新する。
-    -   Agent実行プロンプト:
-        ```
-        対象ファイル: .github_automation/callgraph/codeql-queries/**/*.ql, .github_automation/callgraph/scripts/**/*.cjs, .github/workflows/callgraph.yml
+3. [Issue #12](../issue-notes/12.md) - `project-summary` ワークフローの利用性向上に関する現状分析とプロンプト外部指定の提案
+   - 最初の小さな一歩: `project-summary` 関連ファイル (`daily-project-summary.yml`, `call-daily-project-summary.yml`, `ProjectSummaryCoordinator.cjs`) を分析し、Issue #12で言及されている「個別dirへの移動」「共通リポジトリcheckout」「プロンプト外部指定」の現状（どこまで対応済みで何が残っているか）を可視化する。
+   - Agent実行プロンプト:
+     ```
+     対象ファイル: `.github/workflows/daily-project-summary.yml`, `.github/workflows/call-daily-project-summary.yml`, `.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs`, `.github_automation/project_summary/prompts/development-status-prompt.md`, `.github_automation/project_summary/prompts/project-overview-prompt.md`
 
-        実行内容: `callgraph`関連の`codeql-queries`と`scripts`ファイルを、それぞれ`.github_automation/callgraph_action/codeql-queries/`と`.github_automation/callgraph_action/scripts/`へ移動してください。その後、`callgraph.yml`内の`QUERIES`と`CALLGRAPH`環境変数を新しいパスに更新してください。
+     実行内容: [Issue #12](../issue-notes/12.md) で挙げられている課題（個別ディレクトリへの移動、共通リポジトリの checkout、プロンプトの呼び出し元からの指定）について、現状がどこまで解決されているか、また残りの課題は何かを分析し、markdown形式で報告してください。特に、「プロンプトを呼び出し元ymlから指定可能にする」ための具体的な変更点（どのファイルをどのように修正するか）を提案してください。
 
-        確認事項: ファイル移動後、`callgraph.yml`が新しいパスでCodeQLクエリやスクリプトを正しく参照しているか、および既存のコールグラフ生成機能が壊れていないかを確認してください。CodeQL関連のパスが特に重要です。
+     確認事項: `daily-project-summary.yml` が `TMP_DIR`, `PROMPT_DIR` など環境変数でパスを管理している現状を考慮し、これがプロンプトの外部指定にどのように影響するか、およびその変更の複雑性を評価してください。
 
-        期待する出力: 移動後のファイルパスと、`callgraph.yml`の変更箇所をMarkdown形式で出力してください。
+     期待する出力: [Issue #12](../issue-notes/12.md) の現状分析と、プロンプトの外部指定化を実現するための具体的な改修提案（ファイルパス、変更内容、メリット・デメリット）をまとめたmarkdownファイル。
+     ```
 
 ---
-Generated at: 2025-09-10 07:05:26 JST
+Generated at: 2025-09-11 07:04:52 JST

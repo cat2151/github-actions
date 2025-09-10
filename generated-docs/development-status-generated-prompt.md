@@ -1,4 +1,4 @@
-Last updated: 2025-09-10
+Last updated: 2025-09-11
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -273,6 +273,10 @@ Last updated: 2025-09-10
     - 現在はscript内にファイル名決め打ちで存在しているため、他のprojectで別ymlを指定できない。
     - 方法、他のcallワークフローで指定しているところを参考にすべし
 
+# 状況
+- 上記のうち、別dirへの切り分け等は実施済みのはず
+- どうする？
+    - それをここに可視化する。
 
 ```
 
@@ -298,6 +302,11 @@ Last updated: 2025-09-10
         - README以外の用途が明確でないうちは、README決め打ちにするほうがよい
 - docs
     - call導入手順を書く
+
+# 状況
+- 上記のうち、別dirへの切り分け等は実施済みのはず
+- どうする？
+    - それをここに可視化する。
 
 ```
 
@@ -330,6 +339,11 @@ Last updated: 2025-09-10
     - 課題、名前 enhanced が不要。対策、名前から enhanced を削除してymlなどもそれぞれ同期して修正すべし
 - docs
     - call導入手順を書く
+
+# 状況
+- 上記のうち、別dirへの切り分け等は実施済みのはず
+- どうする？
+    - それをここに可視化する。
 
 ```
 
@@ -830,6 +844,11 @@ jobs:
 - docs
     - call導入手順を書く
 
+# 状況
+- 上記のうち、別dirへの切り分け等は実施済みのはず
+- どうする？
+    - それをここに可視化する。
+
 ```
 
 ### issue-notes/11.md
@@ -848,6 +867,11 @@ jobs:
         - README以外の用途が明確でないうちは、README決め打ちにするほうがよい
 - docs
     - call導入手順を書く
+
+# 状況
+- 上記のうち、別dirへの切り分け等は実施済みのはず
+- どうする？
+    - それをここに可視化する。
 
 ```
 
@@ -872,6 +896,10 @@ jobs:
     - 現在はscript内にファイル名決め打ちで存在しているため、他のprojectで別ymlを指定できない。
     - 方法、他のcallワークフローで指定しているところを参考にすべし
 
+# 状況
+- 上記のうち、別dirへの切り分け等は実施済みのはず
+- どうする？
+    - それをここに可視化する。
 
 ```
 
@@ -1178,6 +1206,9 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+a5d6867 Update callgraph.html [auto]
+457cfe7 #10 #11 #12 mdメンテ
+04a7238 Update project summaries (overview & development status)
 92e6687 Update callgraph.html [auto]
 b44e044 Merge branch 'main' of github.com:cat2151/github-actions into main
 b51cb8f fix #21 test greenとなったので、closeする
@@ -1185,20 +1216,18 @@ b51cb8f fix #21 test greenとなったので、closeする
 518c55f Update project summaries (overview & development status)
 55c1187 #20 プレースホルダーが見つかるように修正したつもり。agentは失敗したので外部LLMにcodeとlogをすべて投げて、String.rawを得た
 df253f7 #20 プレースホルダーが見つからないエンバグが発生。バグ調査中
-e8383da #20 置き換えに失敗していたのでバグ調査中。あわせてpromptを見直した
-b321c54 Update project summaries (overview & development status)
-587a78a #20 落ちないようにしたつもり。あわせて、agentが複雑にasyncしていたのを、処理速度より読みやすさを優先して同期処理に統一したつもり
 
 ### 変更されたファイル:
-.github_automation/project_summary/prompts/development-status-prompt.md
-.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
+issue-notes/10.md
+issue-notes/11.md
+issue-notes/12.md
 issue-notes/20.md
 issue-notes/21.md
 
 
 ---
-Generated at: 2025-09-10 07:05:07 JST
+Generated at: 2025-09-11 07:04:28 JST
