@@ -1,51 +1,50 @@
-Last updated: 2025-09-11
+Last updated: 2025-09-12
 
 # Development Status
 
 ## 現在のIssues
-- [Issue #16](../issue-notes/16.md) は、issue-note/project-summary/translate/callgraphが他リポジトリで古いワークフローを使用中。
-- `github-actions` リポジトリの最新版 `call-*.yml` へ切り替える必要があることを可視化。
-- 各 `call-*.yml` を単純コピーして、`tonejs-mml-to-json` リポジトリでの動作確認を進める。
+- [Issue #16](../issue-notes/16.md)では、`issue-note`等の共通ワークフロー群を他リポジトリ(`tonejs-mml-to-json`)で動作させるための移行と検証が主要な課題です。
+- [Issue #13]、[Issue #12]、[Issue #11]、[Issue #10]は、各共通ワークフロー（issue-note, project-summary, translate, callgraph）の他プロジェクトからの利用を容易にするための改善（プロンプト外部指定、ドキュメント整備など）を進めています。
+- 特に[Issue #12]では`project-summary`のプロンプト外部指定化の具体的な改修提案がまとまり、その実装が次の一手となります。
 
 ## 次の一手候補
-1. [Issue #16](../issue-notes/16.md) - `issue-note` 共通ワークフローの他リポジトリへの導入テスト
-   - 最初の小さな一歩: `tonejs-mml-to-json` リポジトリに `call-issue-note.yml` をコピーし、既存の古い `issue-note.yml` と置き換えて実際に動作するか確認する。
+1. [Issue #12] `project-summary` のプロンプト外部指定化の実装
+   - 最初の小さな一歩: `.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs` 内でプロンプトファイル名の決め打ち部分を `process.env.PROMPT_FILE` から取得するように修正する。
    - Agent実行プロンプト:
      ```
-     対象ファイル: `tonejs-mml-to-json` リポジトリ内の既存の `issue-note.yml` （置き換え対象）および、コピー元の `.github/workflows/call-issue-note.yml`
+     対象ファイル: `.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs`
 
-     実行内容: `cat2151/github-actions` リポジトリの `.github/workflows/call-issue-note.yml` を `tonejs-mml-to-json` リポジトリの `.github/workflows/call-issue-note.yml` としてコピーし、既存の `tonejs-mml-to-json` リポジトリ内の古い `issue-note.yml` を無効化または削除する手順をmarkdown形式で記述してください。その後、`tonejs-mml-to-json` リポジトリでテスト用のIssueを新規作成し、新しいワークフローが正常に動作してIssue Noteが生成されるかを確認するための手順を記述してください。
+     実行内容: `ProjectSummaryCoordinator.cjs` 内のプロンプトファイル名をハードコードしている部分（例: `prompts/development-status-prompt.md`や`project-overview-prompt.md`の指定箇所）を、`process.env.OVERVIEW_PROMPT` および `process.env.DEVELOPMENT_STATUS_BASE_PROMPT` 環境変数から取得するように変更し、環境変数が設定されていない場合は既存のデフォルト値をフォールバックとして使用するように修正してください。
 
-     確認事項: `tonejs-mml-to-json` リポジトリの現在の `issue-note` 関連ワークフローの状態を確認し、新しい `call-issue-note.yml` の導入によって既存の機能に悪影響がないことを検証してください。また、必要な依存関係（Node.jsなど）が満たされているか確認してください。
+     確認事項: 既存の `ProjectSummaryCoordinator.cjs` のロジックが変更されないこと。環境変数の優先度が正しく設定されること。デフォルトパスが引き続き機能すること。修正後のコードで `overviewPromptPath` と `developmentStatusPromptPath` が環境変数またはデフォルト値から正しく初期化されることを確認してください。
 
-     期待する出力: `tonejs-mml-to-json` リポジトリでの `call-issue-note.yml` 導入手順書と、テスト用Issue作成からIssue Note生成までの確認手順をまとめたmarkdownファイル。
+     期待する出力: 修正された `ProjectSummaryCoordinator.cjs` のコード。変更箇所の説明をMarkdown形式で記述してください。
      ```
 
-2. [Issue #13](../issue-notes/13.md) - `issue-note` ワークフローの導入手順書作成
-   - 最初の小さな一歩: `call-issue-note.yml` の `uses` や `with` の設定内容を基に、他プロジェクトがこのワークフローを導入するために必要な手順のドラフトを作成する。
+2. [Issue #11] `translate` を他projectから使いやすくする - プロンプト外部指定化の検討
+   - 最初の小さな一歩: `.github_automation/translate/scripts/translate-readme.cjs` が翻訳に用いるプロンプトの扱い方を調査し、外部からプロンプトを指定できる余地があるか、または新規にプロンプトを導入する必要があるか分析する。
    - Agent実行プロンプト:
      ```
-     対象ファイル: `.github/workflows/call-issue-note.yml`, `.github/workflows/issue-note.yml`
+     対象ファイル: `.github_automation/translate/scripts/translate-readme.cjs`
 
-     実行内容: `issue-note` ワークフローを他プロジェクトから利用するための導入手順書をmarkdown形式で作成してください。手順書には、ワークフローの呼び出し方法、必須入力パラメータ（`issue_number`, `issue_title`, `issue_body`, `issue_html_url`）の設定方法、必要なパーミッションや依存関係を含めてください。
+     実行内容: `.github_automation/translate/scripts/translate-readme.cjs` が翻訳に用いるプロンプトの扱い方を分析し、現在プロンプトがどのように組み込まれているか、またそれを外部（例: 環境変数、引数）から指定できるようにするためにはどのような改修が必要か、markdown形式で出力してください。
 
-     確認事項: 既存の `issue-note.yml` および `call-issue-note.yml` の定義を確認し、必要な設定項目がすべて網羅され、導入者が迷うことなく設定できる内容になっているか検証してください。
+     確認事項: `translate-readme.cjs` のメインロジック（Gemini API呼び出し部分）が翻訳内容生成にどのようなプロンプトを用いているかを確認してください。Gemini APIへのリクエストペイロードにおいてプロンプトがどのように構築されているかを特定してください。
 
-     期待する出力: `issue-note` ワークフローの導入手順を詳細に記述したmarkdown形式のファイル (`.github_automation/issue-note/docs/ISSUE_NOTE_SETUP.md` など)。
+     期待する出力: `translate-readme.cjs`におけるプロンプトの現状と、外部指定化のための具体的な改修案（例：環境変数でのパス指定、引数でのプロンプト文字列渡しなど）をMarkdown形式で記述したレポート。
      ```
 
-3. [Issue #12](../issue-notes/12.md) - `project-summary` ワークフローの利用性向上に関する現状分析とプロンプト外部指定の提案
-   - 最初の小さな一歩: `project-summary` 関連ファイル (`daily-project-summary.yml`, `call-daily-project-summary.yml`, `ProjectSummaryCoordinator.cjs`) を分析し、Issue #12で言及されている「個別dirへの移動」「共通リポジトリcheckout」「プロンプト外部指定」の現状（どこまで対応済みで何が残っているか）を可視化する。
+3. [Issue #16] `issue-note` を `tonejs-mml-to-json` から呼び出す - 移行手順の確認
+   - 最初の小さな一歩: `tonejs-mml-to-json` リポジトリで現在使用されている古い `issue-note` ワークフローが存在するか確認し、存在する場合、`github-actions` リポジトリの `call-issue-note.yml` の内容で置き換える場合の具体的な変更点と手順を洗い出す。
    - Agent実行プロンプト:
      ```
-     対象ファイル: `.github/workflows/daily-project-summary.yml`, `.github/workflows/call-daily-project-summary.yml`, `.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs`, `.github_automation/project_summary/prompts/development-status-prompt.md`, `.github_automation/project_summary/prompts/project-overview-prompt.md`
+     対象ファイル: `.github/workflows/call-issue-note.yml`
 
-     実行内容: [Issue #12](../issue-notes/12.md) で挙げられている課題（個別ディレクトリへの移動、共通リポジトリの checkout、プロンプトの呼び出し元からの指定）について、現状がどこまで解決されているか、また残りの課題は何かを分析し、markdown形式で報告してください。特に、「プロンプトを呼び出し元ymlから指定可能にする」ための具体的な変更点（どのファイルをどのように修正するか）を提案してください。
+     実行内容: `.github/workflows/call-issue-note.yml` の内容を分析し、これを外部リポジトリ（例: `tonejs-mml-to-json`）の `.github/workflows/` ディレクトリにコピーして使用する際に、変更が必要な箇所（`uses:`の参照パスなど）を特定し、その変更方法と導入手順をMarkdown形式で説明してください。
 
-     確認事項: `daily-project-summary.yml` が `TMP_DIR`, `PROMPT_DIR` など環境変数でパスを管理している現状を考慮し、これがプロンプトの外部指定にどのように影響するか、およびその変更の複雑性を評価してください。
+     確認事項: `call-issue-note.yml` が `cat2151/github-actions/.github/workflows/issue-note.yml@main` を `uses` している点、および `with` で渡している `inputs` の形式が正しいことを確認してください。`issue_body`の入力が正しくエスケープされていることも確認してください。
 
-     期待する出力: [Issue #12](../issue-notes/12.md) の現状分析と、プロンプトの外部指定化を実現するための具体的な改修提案（ファイルパス、変更内容、メリット・デメリット）をまとめたmarkdownファイル。
-     ```
+     期待する出力: `call-issue-note.yml` を外部リポジトリに導入するための具体的な手順書をMarkdown形式で出力してください。これには、ファイルの内容、`uses`パスの指定方法、必要な入力パラメータの渡し方、および`GITHUB_TOKEN`の扱いや権限設定に関する注意点を含めてください。
 
 ---
-Generated at: 2025-09-11 07:04:52 JST
+Generated at: 2025-09-12 07:04:56 JST

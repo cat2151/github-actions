@@ -1,4 +1,4 @@
-Last updated: 2025-09-11
+Last updated: 2025-09-12
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -277,6 +277,92 @@ Last updated: 2025-09-11
 - 上記のうち、別dirへの切り分け等は実施済みのはず
 - どうする？
     - それをここに可視化する。
+
+# 結果
+- project summary で生成させたagent用promptを投げた
+- 結果は以下
+
+# Issue #12 現状分析・改修提案報告
+
+## 1. 現状分析
+
+### 1.1 個別ディレクトリへの移動
+- `scripts`・`prompts`ディレクトリへの分離は既に実施済み。
+  - `ProjectSummaryCoordinator.cjs` → `scripts/`
+  - `development-status-prompt.md`・`project-overview-prompt.md` → `prompts/`
+
+### 1.2 共通リポジトリの checkout
+- 呼び出し元リポジトリと共通ワークフローリポジトリが同一の場合は問題なし。
+- 他プロジェクトで利用する場合は、共通ワークフローリポジトリの checkout が必要。
+  - `call-daily-project-summary.yml` などで `actions/checkout@v3` を使い、共通リポジトリを明示的に checkout する必要あり。
+
+### 1.3 プロンプトの呼び出し元ymlから指定
+- 現状は `ProjectSummaryCoordinator.cjs` 内でプロンプトファイル名が決め打ち。
+- 呼び出し元ymlから任意のプロンプトを指定できない。
+- `TMP_DIR`, `PROMPT_DIR` などの環境変数でパス管理しているが、プロンプトファイル名自体は外部から渡せない設計。
+
+---
+
+## 2. 残課題
+
+- **プロンプトファイルの外部指定化**
+  呼び出し元ymlからプロンプトファイル名（パス）を指定できるようにする必要がある。
+
+---
+
+## 3. 改修提案
+
+### 3.1 変更方針
+
+- `ProjectSummaryCoordinator.cjs` のプロンプトファイル名決め打ち部分を、環境変数（例: `PROMPT_FILE`）で外部指定できるように修正。
+- `daily-project-summary.yml`・`call-daily-project-summary.yml` で `PROMPT_FILE` を環境変数として渡す。
+- デフォルト値は維持しつつ、外部指定があればそれを優先。
+
+### 3.2 具体的な変更内容
+
+#### 1. `.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs`
+- プロンプトファイル名の決め打ちを廃止し、`process.env.PROMPT_FILE` で取得するように修正。
+- 例:
+  ```js
+  // ...existing code...
+  const promptFile = process.env.PROMPT_FILE || 'prompts/development-status-prompt.md';
+  // ...existing code...
+  ```
+
+#### 2. `.github/workflows/daily-project-summary.yml`
+#### 3. `.github/workflows/call-daily-project-summary.yml`
+- `env` セクションに `PROMPT_FILE` を追加し、必要に応じて値を指定。
+- 例:
+  ```yaml
+  env:
+    TMP_DIR: ${{ github.workspace }}/tmp
+    PROMPT_DIR: ${{ github.workspace }}/.github_automation/project_summary/prompts
+    PROMPT_FILE: ${{ env.PROMPT_DIR }}/development-status-prompt.md
+  ```
+
+#### 4. 呼び出し元ymlで任意のプロンプトを指定したい場合
+- `PROMPT_FILE` の値を変更するだけで、他のプロンプトファイルを利用可能。
+
+### 3.3 変更のメリット・デメリット
+
+| 項目 | メリット | デメリット |
+|------|----------|------------|
+| プロンプト外部指定 | 他プロジェクト・他ymlから柔軟にプロンプトを指定可能 | 呼び出し元ymlの記述がやや複雑化 |
+| パス管理 | 既存の `PROMPT_DIR` を活用できる | ディレクトリ構成変更時はymlも修正必要 |
+| 汎用性 | ワークフローの再利用性向上 | 既存利用箇所の動作検証が必要 |
+
+---
+
+## 4. まとめ
+
+- 個別ディレクトリ分離・共通リポジトリ checkout はほぼ解決済み。
+- 残課題は「プロンプトファイルの外部指定化」。
+- `PROMPT_FILE` 環境変数導入により、呼び出し元ymlから任意のプロンプトを指定可能となる。
+- これにより、他プロジェクト・他ymlからの柔軟な利用が実現できる。
+
+# どうする？
+- 上記を1stepずつ進める
+    - まずproject summaryに次の一手を生成させる
 
 ```
 
@@ -820,6 +906,298 @@ jobs:
 
 ```
 
+### .github_automation/project_summary/prompts/development-status-prompt.md
+```md
+# 開発状況生成プロンプト（開発者向け）
+
+## 生成するもの：
+- 現在openされているissuesを3行で要約する
+- 次の一手の候補を3つlistする
+- 次の一手の候補3つそれぞれについて、極力小さく分解して、その最初の小さな一歩を書く
+
+## 生成しないもの：
+- 「今日のissue目標」などuserに提案するもの
+  - ハルシネーションの温床なので生成しない
+- ハルシネーションしそうなものは生成しない（例、無価値なtaskや新issueを勝手に妄想してそれをuserに提案する等）
+- プロジェクト構造情報（来訪者向け情報のため、別ファイルで管理）
+
+## 「Agent実行プロンプト」生成ガイドライン：
+「Agent実行プロンプト」作成時は以下の要素を必ず含めてください：
+
+### 必須要素
+1. **対象ファイル**: 分析/編集する具体的なファイルパス
+2. **実行内容**: 具体的な分析や変更内容（「分析してください」ではなく「XXXファイルのYYY機能を分析し、ZZZの観点でmarkdown形式で出力してください」）
+3. **確認事項**: 変更前に確認すべき依存関係や制約
+4. **期待する出力**: markdown形式での結果や、具体的なファイル変更
+
+### Agent実行プロンプト例
+
+**良い例（上記「必須要素」4項目を含む具体的なプロンプト形式）**:
+```
+対象ファイル: `.github/workflows/translate-readme.yml`と`.github/workflows/call-translate-readme.yml`
+
+実行内容: 対象ファイルについて、外部プロジェクトから利用する際に必要な設定項目を洗い出し、以下の観点から分析してください：
+1) 必須入力パラメータ（target-branch等）
+2) 必須シークレット（GEMINI_API_KEY）
+3) ファイル配置の前提条件（README.ja.mdの存在）
+4) 外部プロジェクトでの利用時に必要な追加設定
+
+確認事項: 作業前に既存のworkflowファイルとの依存関係、および他のREADME関連ファイルとの整合性を確認してください。
+
+期待する出力: 外部プロジェクトがこの`call-translate-readme.yml`を導入する際の手順書をmarkdown形式で生成してください。具体的には：必須パラメータの設定方法、シークレットの登録手順、前提条件の確認項目を含めてください。
+```
+
+**避けるべき例**:
+- callgraphについて調べてください
+- ワークフローを分析してください
+- issue-noteの処理フローを確認してください
+
+## 出力フォーマット：
+以下のMarkdown形式で出力してください：
+
+```markdown
+# Development Status
+
+## 現在のIssues
+[以下の形式で3行でオープン中のissuesを要約。issue番号を必ず書く]
+- [1行目の説明]
+- [2行目の説明]
+- [3行目の説明]
+
+## 次の一手候補
+1. [候補1のタイトル。issue番号を必ず書く]
+   - 最初の小さな一歩: [具体的で実行可能な最初のアクション]
+   - Agent実行プロンプト:
+     ```
+     対象ファイル: [分析/編集する具体的なファイルパス]
+
+     実行内容: [具体的な分析や変更内容を記述]
+
+     確認事項: [変更前に確認すべき依存関係や制約]
+
+     期待する出力: [markdown形式での結果や、具体的なファイル変更の説明]
+     ```
+
+2. [候補2のタイトル。issue番号を必ず書く]
+   - 最初の小さな一歩: [具体的で実行可能な最初のアクション]
+   - Agent実行プロンプト:
+     ```
+     対象ファイル: [分析/編集する具体的なファイルパス]
+
+     実行内容: [具体的な分析や変更内容を記述]
+
+     確認事項: [変更前に確認すべき依存関係や制約]
+
+     期待する出力: [markdown形式での結果や、具体的なファイル変更の説明]
+     ```
+
+3. [候補3のタイトル。issue番号を必ず書く]
+   - 最初の小さな一歩: [具体的で実行可能な最初のアクション]
+   - Agent実行プロンプト:
+     ```
+     対象ファイル: [分析/編集する具体的なファイルパス]
+
+     実行内容: [具体的な分析や変更内容を記述]
+
+     確認事項: [変更前に確認すべき依存関係や制約]
+
+     期待する出力: [markdown形式での結果や、具体的なファイル変更の説明]
+     ```
+```
+
+
+# 開発状況情報
+- 以下の開発状況情報を参考にしてください。
+- Issue番号を記載する際は、必ず [Issue #番号](../issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
+
+## プロジェクトのファイル一覧
+${projectFiles}
+
+## 現在のオープンIssues
+${issuesSection}
+
+## ドキュメントで言及されているファイルの内容
+${fileContents}
+
+## 最近の変更（過去7日間）
+### コミット履歴:
+${commits}
+
+### 変更されたファイル:
+${changedFiles}
+
+```
+
+### .github_automation/project_summary/prompts/project-overview-prompt.md
+```md
+# プロジェクト概要生成プロンプト（来訪者向け）
+
+## 生成するもの：
+- projectを3行で要約する
+- プロジェクトで使用されている技術スタックをカテゴリ別に整理して説明する
+- プロジェクト全体のファイル階層ツリー（ディレクトリ構造を図解）
+- プロジェクト全体のファイルそれぞれの説明
+- プロジェクト全体の関数それぞれの説明
+- プロジェクト全体の関数の呼び出し階層ツリー
+
+## 生成しないもの：
+- Issues情報（開発者向け情報のため）
+- 次の一手候補（開発者向け情報のため）
+- ハルシネーションしそうなもの（例、存在しない機能や計画を勝手に妄想する等）
+
+## 出力フォーマット：
+以下のMarkdown形式で出力してください：
+
+```markdown
+# Project Overview
+
+## プロジェクト概要
+[以下の形式で3行でプロジェクトを要約]
+- [1行目の説明]
+- [2行目の説明]
+- [3行目の説明]
+
+## 技術スタック
+[使用している技術をカテゴリ別に整理して説明]
+- フロントエンド: [フロントエンド技術とその説明]
+- 音楽・オーディオ: [音楽・オーディオ関連技術とその説明]
+- 開発ツール: [開発支援ツールとその説明]
+- テスト: [テスト関連技術とその説明]
+- ビルドツール: [ビルド・パース関連技術とその説明]
+- 言語機能: [言語仕様・機能とその説明]
+- 自動化・CI/CD: [自動化・継続的統合関連技術とその説明]
+- 開発標準: [コード品質・統一ルール関連技術とその説明]
+
+## ファイル階層ツリー
+```
+[プロジェクトのディレクトリ構造をツリー形式で表現]
+```
+
+## ファイル詳細説明
+[各ファイルの役割と機能を詳細に説明]
+
+## 関数詳細説明
+[各関数の役割、引数、戻り値、機能を詳細に説明]
+
+## 関数呼び出し階層ツリー
+```
+[関数間の呼び出し関係をツリー形式で表現]
+```
+```
+
+```
+
+### .github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs
+```cjs
+const ProjectOverviewGenerator = require('./overview/ProjectOverviewGenerator.cjs');
+const DevelopmentStatusGenerator = require('./development/DevelopmentStatusGenerator.cjs');
+
+/**
+ * プロジェクト要約コーディネーター
+ * 既存のProjectSummaryGeneratorとの後方互換性を保ちつつ、
+ * 疎結合化された2つの生成器を協調実行する
+ */
+class ProjectSummaryCoordinator {
+  /**
+   * @param {string} overviewPromptPath - プロジェクト概要プロンプトのパス（必須）
+   * @param {string} developmentStatusPromptPath - 開発状況プロンプトのパス（必須）
+   * @param {string} overviewPath - プロジェクト概要出力先パス（必須）
+   * @param {string} developmentPath - 開発状況出力先パス（必須）
+   * @param {string} developmentGeneratedPath - 開発状況生成プロンプトのパス（必須）
+   * @param {string} projectRoot - プロジェクトルートパス（必須）
+   */
+  constructor(overviewPromptPath, developmentStatusPromptPath, overviewPath, developmentPath, developmentGeneratedPath, projectRoot) {
+    // 引数のバリデーション
+    if (!overviewPromptPath) {
+      throw new Error('overviewPromptPath is required as the first argument');
+    }
+    if (!developmentStatusPromptPath) {
+      throw new Error('developmentStatusPromptPath is required as the second argument');
+    }
+    if (!overviewPath) {
+      throw new Error('overviewPath is required as the third argument');
+    }
+    if (!developmentPath) {
+      throw new Error('developmentPath is required as the fourth argument');
+    }
+    if (!developmentGeneratedPath) {
+      throw new Error('developmentGeneratedPath is required as the fifth argument');
+    }
+    if (!projectRoot) {
+      throw new Error('projectRoot is required as the sixth argument');
+    }
+
+    // 各生成器を初期化
+    this.overviewGenerator = new ProjectOverviewGenerator(overviewPromptPath, overviewPath, projectRoot);
+    this.developmentGenerator = new DevelopmentStatusGenerator(developmentStatusPromptPath, developmentPath, developmentGeneratedPath, projectRoot);
+  }
+
+  /**
+   * メイン実行関数
+   * 既存のProjectSummaryGenerator.run()と同じインターフェース
+   * @returns {Promise<Array<string>>} 生成されたファイルパスの配列
+   */
+  async run() {
+    try {
+      console.log('Starting project summary generation...');
+
+      const filenames = [];
+
+      // 並列実行で効率化
+      const [overviewFile, developmentFile] = await Promise.all([
+        this.overviewGenerator.run(),
+        this.developmentGenerator.run()
+      ]);
+
+      // 成功したファイルのみを結果に追加
+      if (overviewFile) {
+        filenames.push(overviewFile);
+      }
+      if (developmentFile) {
+        filenames.push(developmentFile);
+      }
+
+      if (filenames.length > 0) {
+        console.log('Project summary generation completed successfully!');
+        console.log(`Generated files: ${filenames.join(', ')}`);
+      } else {
+        console.log('No files were generated.');
+      }
+
+      return filenames;
+
+    } catch (error) {
+      console.error('Project summary generation failed:', error.message);
+      if (error.response) {
+        console.error('API Response:', error.response);
+      }
+      process.exit(1);
+    }
+  }
+
+  /**
+   * プロジェクト概要のみ生成
+   * @returns {Promise<string>} 生成されたファイルのパス
+   */
+  async generateOverviewOnly() {
+    console.log('Generating project overview only...');
+    return await this.overviewGenerator.run();
+  }
+
+  /**
+   * 開発状況のみ生成
+   * @returns {Promise<string>} 生成されたファイルのパス
+   */
+  async generateDevelopmentStatusOnly() {
+    console.log('Generating development status only...');
+    return await this.developmentGenerator.run();
+  }
+}
+
+module.exports = ProjectSummaryCoordinator;
+
+```
+
 ### issue-notes/10.md
 ```md
 # issue callgraph を他projectから使いやすくする #10
@@ -900,6 +1278,92 @@ jobs:
 - 上記のうち、別dirへの切り分け等は実施済みのはず
 - どうする？
     - それをここに可視化する。
+
+# 結果
+- project summary で生成させたagent用promptを投げた
+- 結果は以下
+
+# Issue #12 現状分析・改修提案報告
+
+## 1. 現状分析
+
+### 1.1 個別ディレクトリへの移動
+- `scripts`・`prompts`ディレクトリへの分離は既に実施済み。
+  - `ProjectSummaryCoordinator.cjs` → `scripts/`
+  - `development-status-prompt.md`・`project-overview-prompt.md` → `prompts/`
+
+### 1.2 共通リポジトリの checkout
+- 呼び出し元リポジトリと共通ワークフローリポジトリが同一の場合は問題なし。
+- 他プロジェクトで利用する場合は、共通ワークフローリポジトリの checkout が必要。
+  - `call-daily-project-summary.yml` などで `actions/checkout@v3` を使い、共通リポジトリを明示的に checkout する必要あり。
+
+### 1.3 プロンプトの呼び出し元ymlから指定
+- 現状は `ProjectSummaryCoordinator.cjs` 内でプロンプトファイル名が決め打ち。
+- 呼び出し元ymlから任意のプロンプトを指定できない。
+- `TMP_DIR`, `PROMPT_DIR` などの環境変数でパス管理しているが、プロンプトファイル名自体は外部から渡せない設計。
+
+---
+
+## 2. 残課題
+
+- **プロンプトファイルの外部指定化**
+  呼び出し元ymlからプロンプトファイル名（パス）を指定できるようにする必要がある。
+
+---
+
+## 3. 改修提案
+
+### 3.1 変更方針
+
+- `ProjectSummaryCoordinator.cjs` のプロンプトファイル名決め打ち部分を、環境変数（例: `PROMPT_FILE`）で外部指定できるように修正。
+- `daily-project-summary.yml`・`call-daily-project-summary.yml` で `PROMPT_FILE` を環境変数として渡す。
+- デフォルト値は維持しつつ、外部指定があればそれを優先。
+
+### 3.2 具体的な変更内容
+
+#### 1. `.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs`
+- プロンプトファイル名の決め打ちを廃止し、`process.env.PROMPT_FILE` で取得するように修正。
+- 例:
+  ```js
+  // ...existing code...
+  const promptFile = process.env.PROMPT_FILE || 'prompts/development-status-prompt.md';
+  // ...existing code...
+  ```
+
+#### 2. `.github/workflows/daily-project-summary.yml`
+#### 3. `.github/workflows/call-daily-project-summary.yml`
+- `env` セクションに `PROMPT_FILE` を追加し、必要に応じて値を指定。
+- 例:
+  ```yaml
+  env:
+    TMP_DIR: ${{ github.workspace }}/tmp
+    PROMPT_DIR: ${{ github.workspace }}/.github_automation/project_summary/prompts
+    PROMPT_FILE: ${{ env.PROMPT_DIR }}/development-status-prompt.md
+  ```
+
+#### 4. 呼び出し元ymlで任意のプロンプトを指定したい場合
+- `PROMPT_FILE` の値を変更するだけで、他のプロンプトファイルを利用可能。
+
+### 3.3 変更のメリット・デメリット
+
+| 項目 | メリット | デメリット |
+|------|----------|------------|
+| プロンプト外部指定 | 他プロジェクト・他ymlから柔軟にプロンプトを指定可能 | 呼び出し元ymlの記述がやや複雑化 |
+| パス管理 | 既存の `PROMPT_DIR` を活用できる | ディレクトリ構成変更時はymlも修正必要 |
+| 汎用性 | ワークフローの再利用性向上 | 既存利用箇所の動作検証が必要 |
+
+---
+
+## 4. まとめ
+
+- 個別ディレクトリ分離・共通リポジトリ checkout はほぼ解決済み。
+- 残課題は「プロンプトファイルの外部指定化」。
+- `PROMPT_FILE` 環境変数導入により、呼び出し元ymlから任意のプロンプトを指定可能となる。
+- これにより、他プロジェクト・他ymlからの柔軟な利用が実現できる。
+
+# どうする？
+- 上記を1stepずつ進める
+    - まずproject summaryに次の一手を生成させる
 
 ```
 
@@ -1206,16 +1670,16 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+1a73e46 Update callgraph.html [auto]
+c955ffe Merge branch 'main' of github.com:cat2151/github-actions into main
+28b3080 #12 状況をmdに反映した
+47741cf Update project summaries (overview & development status)
 a5d6867 Update callgraph.html [auto]
 457cfe7 #10 #11 #12 mdメンテ
 04a7238 Update project summaries (overview & development status)
 92e6687 Update callgraph.html [auto]
 b44e044 Merge branch 'main' of github.com:cat2151/github-actions into main
 b51cb8f fix #21 test greenとなったので、closeする
-724d7cc fix #20 test greenとなった。closeする
-518c55f Update project summaries (overview & development status)
-55c1187 #20 プレースホルダーが見つかるように修正したつもり。agentは失敗したので外部LLMにcodeとlogをすべて投げて、String.rawを得た
-df253f7 #20 プレースホルダーが見つからないエンバグが発生。バグ調査中
 
 ### 変更されたファイル:
 generated-docs/callgraph.html
@@ -1225,9 +1689,7 @@ generated-docs/project-overview.md
 issue-notes/10.md
 issue-notes/11.md
 issue-notes/12.md
-issue-notes/20.md
-issue-notes/21.md
 
 
 ---
-Generated at: 2025-09-11 07:04:28 JST
+Generated at: 2025-09-12 07:04:35 JST
