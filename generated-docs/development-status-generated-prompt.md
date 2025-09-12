@@ -1,4 +1,4 @@
-Last updated: 2025-09-12
+Last updated: 2025-09-13
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -363,6 +363,16 @@ Last updated: 2025-09-12
 # どうする？
 - 上記を1stepずつ進める
     - まずproject summaryに次の一手を生成させる
+- 生成させて、それをagentに投げた
+  - 結果、userの設計思想と違う変更が始まったのでstopした
+  - 設計思想
+    - cjsはできるだけ引数で制御し、環境変数への依存を減らしたシンプルな作りにする
+    - 環境変数が影響するのはyml workflowであり、ymlでcjsに引数でデータを渡して、cjsの制御はできるだけ引数で行う
+  - agentが今回変更しようとしたこと
+    - 引数を削除し、環境変数に依存する挙動をするような実装をしようとしていた
+  - やめさせた
+- どうする？
+  - 再度project summaryに次の一手を生成させて様子見する
 
 ```
 
@@ -1364,6 +1374,16 @@ module.exports = ProjectSummaryCoordinator;
 # どうする？
 - 上記を1stepずつ進める
     - まずproject summaryに次の一手を生成させる
+- 生成させて、それをagentに投げた
+  - 結果、userの設計思想と違う変更が始まったのでstopした
+  - 設計思想
+    - cjsはできるだけ引数で制御し、環境変数への依存を減らしたシンプルな作りにする
+    - 環境変数が影響するのはyml workflowであり、ymlでcjsに引数でデータを渡して、cjsの制御はできるだけ引数で行う
+  - agentが今回変更しようとしたこと
+    - 引数を削除し、環境変数に依存する挙動をするような実装をしようとしていた
+  - やめさせた
+- どうする？
+  - 再度project summaryに次の一手を生成させて様子見する
 
 ```
 
@@ -1670,6 +1690,9 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+6ba9742 Update callgraph.html [auto]
+e73f64a #12 試した結果を反映
+19a735c Update project summaries (overview & development status)
 1a73e46 Update callgraph.html [auto]
 c955ffe Merge branch 'main' of github.com:cat2151/github-actions into main
 28b3080 #12 状況をmdに反映した
@@ -1677,9 +1700,6 @@ c955ffe Merge branch 'main' of github.com:cat2151/github-actions into main
 a5d6867 Update callgraph.html [auto]
 457cfe7 #10 #11 #12 mdメンテ
 04a7238 Update project summaries (overview & development status)
-92e6687 Update callgraph.html [auto]
-b44e044 Merge branch 'main' of github.com:cat2151/github-actions into main
-b51cb8f fix #21 test greenとなったので、closeする
 
 ### 変更されたファイル:
 generated-docs/callgraph.html
@@ -1692,4 +1712,4 @@ issue-notes/12.md
 
 
 ---
-Generated at: 2025-09-12 07:04:35 JST
+Generated at: 2025-09-13 07:04:12 JST

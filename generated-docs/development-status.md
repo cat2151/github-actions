@@ -1,50 +1,64 @@
-Last updated: 2025-09-12
+Last updated: 2025-09-13
 
 # Development Status
 
 ## 現在のIssues
-- [Issue #16](../issue-notes/16.md)では、`issue-note`等の共通ワークフロー群を他リポジトリ(`tonejs-mml-to-json`)で動作させるための移行と検証が主要な課題です。
-- [Issue #13]、[Issue #12]、[Issue #11]、[Issue #10]は、各共通ワークフロー（issue-note, project-summary, translate, callgraph）の他プロジェクトからの利用を容易にするための改善（プロンプト外部指定、ドキュメント整備など）を進めています。
-- 特に[Issue #12]では`project-summary`のプロンプト外部指定化の具体的な改修提案がまとまり、その実装が次の一手となります。
+- [Issue #16](../issue-notes/16.md) は、4つの共通GitHub Actionsワークフロー（issue-note, project-summary, translate, callgraph）を別のプロジェクト（tonejs-mml-to-json）で最新版に切り替えることを目指し、現在古いワークフローが呼び出されている状況を解消します。
+- [Issue #12](../issue-notes/12.md) は、project-summaryワークフローにおいて、プロンプトファイルを呼び出し元から柔軟に指定できるよう、設計思想（CJSは引数制御、YAMLは環境変数/inputs制御）に基づいた外部指定化の再実装を必要としています。
+- [Issue #13](../issue-notes/13.md), [Issue #11](../issue-notes/11.md), [Issue #10](../issue-notes/10.md) は、issue-note, translate, callgraphの各ワークフローについて、他プロジェクトからの導入手順のドキュメント作成と、既存のディレクトリ構造や名称に関する課題解決を進めることを示しています。
 
 ## 次の一手候補
-1. [Issue #12] `project-summary` のプロンプト外部指定化の実装
-   - 最初の小さな一歩: `.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs` 内でプロンプトファイル名の決め打ち部分を `process.env.PROMPT_FILE` から取得するように修正する。
+1. **[Issue #12](../issue-notes/12.md): Project Summaryワークフローのプロンプト外部指定化を実装**
+   - 最初の小さな一歩: `daily-project-summary.yml` に `workflow_call` の `inputs` セクションを追加し、`overview-prompt-path` と `development-status-prompt-path` を受け取れるように定義します。そして、`generate-project-summary.cjs` を呼び出す際に、これらの `inputs` の値を引数として渡すように変更します。
    - Agent実行プロンプト:
      ```
-     対象ファイル: `.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs`
+     対象ファイル: `.github/workflows/daily-project-summary.yml` と `.github_automation/project_summary/scripts/generate-project-summary.cjs`
 
-     実行内容: `ProjectSummaryCoordinator.cjs` 内のプロンプトファイル名をハードコードしている部分（例: `prompts/development-status-prompt.md`や`project-overview-prompt.md`の指定箇所）を、`process.env.OVERVIEW_PROMPT` および `process.env.DEVELOPMENT_STATUS_BASE_PROMPT` 環境変数から取得するように変更し、環境変数が設定されていない場合は既存のデフォルト値をフォールバックとして使用するように修正してください。
+     実行内容: `project-summary` ワークフローのプロンプトファイルを呼び出し元から指定できるようにするため、`.github/workflows/daily-project-summary.yml` を以下のように修正してください。
+     1. `on: workflow_call:` セクションに、`overview-prompt-path` と `development-status-prompt-path` という2つの `inputs` を追加します。これらはそれぞれ、プロジェクト概要プロンプトと開発状況プロンプトのファイルパスを受け取る文字列型の入力とします。`required: false`とし、デフォルト値として現在の環境変数 `PROMPT_DIR` と `OVERVIEW_PROMPT` / `DEVELOPMENT_STATUS_BASE_PROMPT` を組み合わせたパスを設定してください。
+     2. `Generate project summary` ステップの `node` コマンドで `generate-project-summary.cjs` を呼び出す際、既存の引数として渡しているプロンプトパスを、新しく定義した `inputs` (もし指定されていればその値、指定されていなければデフォルト値) から取得するように変更してください。
+     `generate-project-summary.cjs` は引数の受け取り方を変更する必要はありません。
 
-     確認事項: 既存の `ProjectSummaryCoordinator.cjs` のロジックが変更されないこと。環境変数の優先度が正しく設定されること。デフォルトパスが引き続き機能すること。修正後のコードで `overviewPromptPath` と `developmentStatusPromptPath` が環境変数またはデフォルト値から正しく初期化されることを確認してください。
+     確認事項: `daily-project-summary.yml` が `workflow_call` の `inputs` を正しく解釈し、デフォルト値が適切に機能することを確認してください。また、`generate-project-summary.cjs` が受け取る引数の順序と数が変更されないことを保証してください。`call-daily-project-summary.yml`からの呼び出し時に、`with:`で新しい`inputs`が指定できることを想定しています。
 
-     期待する出力: 修正された `ProjectSummaryCoordinator.cjs` のコード。変更箇所の説明をMarkdown形式で記述してください。
+     期待する出力: 上記の変更を適用した `.github/workflows/daily-project-summary.yml` の更新内容をMarkdown形式のコードブロックで出力してください。また、`.github_automation/project_summary/scripts/generate-project-summary.cjs` の変更は不要ですが、その旨を明記してください。
      ```
 
-2. [Issue #11] `translate` を他projectから使いやすくする - プロンプト外部指定化の検討
-   - 最初の小さな一歩: `.github_automation/translate/scripts/translate-readme.cjs` が翻訳に用いるプロンプトの扱い方を調査し、外部からプロンプトを指定できる余地があるか、または新規にプロンプトを導入する必要があるか分析する。
+2. **[Issue #16](../issue-notes/16.md): tonejs-mml-to-jsonでのissue-noteワークフロー導入と動作確認**
+   - 最初の小さな一歩: `tonejs-mml-to-json` リポジトリに、`github-actions` リポジトリの最新の `call-issue-note.yml` の内容をコピーして配置します。その後、そのリポジトリで新しいIssueを作成し、issue-noteが正しく生成され、Issueの本文にリンクが追加されるかを確認します。
    - Agent実行プロンプト:
      ```
-     対象ファイル: `.github_automation/translate/scripts/translate-readme.cjs`
+     対象ファイル: `tonejs-mml-to-json`リポジトリ（仮想）における新規`.github/workflows/call-issue-note.yml`、および現在のリポジトリの`.github/workflows/call-issue-note.yml`。
 
-     実行内容: `.github_automation/translate/scripts/translate-readme.cjs` が翻訳に用いるプロンプトの扱い方を分析し、現在プロンプトがどのように組み込まれているか、またそれを外部（例: 環境変数、引数）から指定できるようにするためにはどのような改修が必要か、markdown形式で出力してください。
+     実行内容: 外部プロジェクト`tonejs-mml-to-json`で、現在のリポジトリの最新版`issue-note`共通ワークフローを利用するための導入手順書をmarkdown形式で作成してください。
+     手順書には以下の要素を含めてください：
+     1. `tonejs-mml-to-json`リポジトリに配置すべきYAMLファイル（`.github/workflows/call-issue-note.yml`）の完全な内容。現在のリポジリの`call-issue-note.yml`をベースとします。
+     2. そのYAMLファイルをどこに配置すべきか。
+     3. 導入後、ワークフローが正しく動作するかを確認するための具体的なステップ（例: 新規Issueの作成、Issue本文へのリンク追加の確認）。
 
-     確認事項: `translate-readme.cjs` のメインロジック（Gemini API呼び出し部分）が翻訳内容生成にどのようなプロンプトを用いているかを確認してください。Gemini APIへのリクエストペイロードにおいてプロンプトがどのように構築されているかを特定してください。
+     確認事項: 作成されるYAMLが`github.event.issue`の情報を正しく共通ワークフローに渡し、GitHubのリポジトリパスが`cat2151/github-actions`として正しく参照されていることを確認してください。また、導入手順が明確で、非開発者でも理解しやすいように記述されていることを確認してください。
 
-     期待する出力: `translate-readme.cjs`におけるプロンプトの現状と、外部指定化のための具体的な改修案（例：環境変数でのパス指定、引数でのプロンプト文字列渡しなど）をMarkdown形式で記述したレポート。
+     期待する出力: `tonejs-mml-to-json`リポジトリに`call-issue-note.yml`を導入する際の手順書をmarkdown形式で出力してください。
      ```
 
-3. [Issue #16] `issue-note` を `tonejs-mml-to-json` から呼び出す - 移行手順の確認
-   - 最初の小さな一歩: `tonejs-mml-to-json` リポジトリで現在使用されている古い `issue-note` ワークフローが存在するか確認し、存在する場合、`github-actions` リポジトリの `call-issue-note.yml` の内容で置き換える場合の具体的な変更点と手順を洗い出す。
+3. **[Issue #13](../issue-notes/13.md), [Issue #11](../issue-notes/11.md), [Issue #10](../issue-notes/10.md): 共通ワークフロー導入手順書の汎用テンプレート作成**
+   - 最初の小さな一歩: `issue-note`, `translate`, `callgraph` の各共通ワークフローを他プロジェクトから利用する際の導入手順を網羅し、汎用的に利用できるMarkdownテンプレートを新規作成します。このテンプレートは、各ワークフロー固有の情報を埋め込むためのプレースホルダーを含めます。
    - Agent実行プロンプト:
      ```
-     対象ファイル: `.github/workflows/call-issue-note.yml`
+     対象ファイル: なし（新規作成ファイル: `docs/common-workflow-setup-template.md` を想定）
 
-     実行内容: `.github/workflows/call-issue-note.yml` の内容を分析し、これを外部リポジトリ（例: `tonejs-mml-to-json`）の `.github/workflows/` ディレクトリにコピーして使用する際に、変更が必要な箇所（`uses:`の参照パスなど）を特定し、その変更方法と導入手順をMarkdown形式で説明してください。
+     実行内容: `issue-note`, `translate`, `callgraph` など、現在のプロジェクトで提供されている共通GitHub Actionsワークフローを、外部のプロジェクトに導入する際に利用できる、汎用的な導入手順書のMarkdownテンプレートを作成してください。
+     このテンプレートは、具体的なワークフロー名やパラメータを埋め込めるようなプレースホルダーを含み、以下の必須項目を網羅している必要があります：
+     - ワークフローの機能と目的の簡潔な説明
+     - 導入ステップ (ファイル配置パス、`uses`構文、リポジトリ参照)
+     - 必須/オプションの`inputs`パラメータとその説明、設定例
+     - 必須`secrets`とその設定方法、GitHubリポジトリへの登録手順
+     - 前提条件 (例: 必要なファイル構造、ブランチ名、CodeQL CLIのインストールなど、ワークフロー固有の要件)
+     - 動作確認方法 (例: トリガーイベント、出力ファイルの確認)
 
-     確認事項: `call-issue-note.yml` が `cat2151/github-actions/.github/workflows/issue-note.yml@main` を `uses` している点、および `with` で渡している `inputs` の形式が正しいことを確認してください。`issue_body`の入力が正しくエスケープされていることも確認してください。
+     確認事項: テンプレートが十分に汎用性があり、各ワークフローに特化した内容ではなく、異なるワークフローに対応できるよう設計されていることを確認してください。ハルシネーションを避け、現在把握している情報に基づいた実用的な項目を含めてください。
 
-     期待する出力: `call-issue-note.yml` を外部リポジトリに導入するための具体的な手順書をMarkdown形式で出力してください。これには、ファイルの内容、`uses`パスの指定方法、必要な入力パラメータの渡し方、および`GITHUB_TOKEN`の扱いや権限設定に関する注意点を含めてください。
+     期待する出力: 汎用的な共通ワークフロー導入手順書のMarkdownテンプレートを、適切なタイトルと説明を付けたMarkdown形式のコードブロックで出力してください。
 
 ---
-Generated at: 2025-09-12 07:04:56 JST
+Generated at: 2025-09-13 07:04:59 JST
