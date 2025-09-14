@@ -1,50 +1,51 @@
-Last updated: 2025-09-14
+Last updated: 2025-09-15
 
 # Development Status
 
 ## 現在のIssues
-- [Issue #16](../issue-notes/16.md) は、issue-note, project-summary, translate, callgraphの各ワークフローを外部リポジトリ(tonejs-mml-to-json)から呼び出す検証を進めています。
-- [Issue #13](../issue-notes/13.md), [Issue #12](../issue-notes/12.md), [Issue #11](../issue-notes/11.md), [Issue #10](../issue-notes/10.md) では、それぞれissue-note, project-summary, translate, callgraphについて、外部プロジェクトでの導入手順ドキュメント作成が課題として挙げられています。
-- [Issue #12](../issue-notes/12.md) ではproject-summaryのプロンプトを呼び出し元で指定可能にするかについてはYAGNI原則に基づき保留されています。
+- [Issue #16](../issue-notes/16.md) は、issue-note, project-summary, translate, callgraphの各共通ワークフローが`tonejs-mml-to-json`プロジェクトで古いバージョンを呼び出しているため、最新版への切り替えと動作確認が課題です。
+- [Issue #13](../issue-notes/13.md), [Issue #12](../issue-notes/12.md), [Issue #11](../issue-notes/11.md), [Issue #10](../issue-notes/10.md) はそれぞれ、issue-note, project-summary, translate, callgraphの各ワークフローを他プロジェクトから使いやすくするための導入ドキュメント整備が主な課題となっています。
+- 特に [Issue #12](../issue-notes/12.md) のproject-summaryについては、`daily-summary-setup.md`のメンテナンスと`call-daily-project-summary.yml`の導入手順追記が具体的なタスクとして挙げられています。
 
 ## 次の一手候補
-1. [Issue #16](../issue-notes/16.md): `issue-note` ワークフローの外部リポジトリへの導入検証
-   - 最初の小さな一歩: `tonejs-mml-to-json` リポジトリに、`github-actions` リポジトリの `.github/workflows/call-issue-note.yml` をコピーし、GitHub Actions上で実行可能か確認する。
-   - Agent実行プロンプト:
+1. [Issue #16](../issue-notes/16.md): `tonejs-mml-to-json`の`issue-note`ワークフローを最新の共通ワークフローに更新する
+   - 最初の小さな一歩: `tonejs-mml-to-json`リポジトリで、現在の`issue-note`ワークフローを無効化（またはバックアップ）し、`cat2151/github-actions/.github/workflows/call-issue-note.yml`を`uses`するように更新する。
+   - Agent実行プロンプ:
      ```
-     対象ファイル: `.github/workflows/call-issue-note.yml` (github-actionsリポジトリ), 外部リポジトリ (例: tonejs-mml-to-json) の `.github/workflows/issue-note-test.yml` (新規作成を想定)
+     対象ファイル: (例:`tonejs-mml-to-json`リポジトリ内の`.github/workflows/issue-note.yml`)
 
-     実行内容: `tonejs-mml-to-json` リポジトリの現行の`issue-note`ワークフローと、`github-actions`リポジトリの`call-issue-note.yml`の内容を比較し、外部リポジトリにコピーする際の変更点（特に`uses:`パスの調整）と、テストするための具体的な`issue_title`などの入力パラメータの提供方法を分析してください。
+     実行内容: `tonejs-mml-to-json`リポジトリの既存のissue-noteワークフローファイルを、`cat2151/github-actions/.github/workflows/issue-note.yml@main`を`uses`する形式に更新してください。この際、`github-actions`リポジトリの`call-issue-note.yml`の構成を参考に、`workflow_call`で必要となる`issue_number`, `issue_title`, `issue_body`, `issue_html_url`を正しく`with`パラメータとして設定してください。
 
-     確認事項: `call-issue-note.yml`が`issue-note.yml`を正しく参照しているか、また`issue-note.yml`が必要とする`inputs`が全て`call-issue-note.yml`から渡されているかを確認してください。
+     確認事項: `tonejs-mml-to-json`リポジトリの既存のissue-noteワークフローファイル名とその内容、および`github-actions`リポジトリの`.github/workflows/issue-note.yml`で定義されている`inputs`と`call-issue-note.yml`の`with`パラメータが整合していることを確認してください。
 
-     期待する出力: `tonejs-mml-to-json`リポジトリで`call-issue-note.yml`を導入・テストするための具体的な手順書をMarkdown形式で生成してください。これには、新しいワークフローファイルの作成内容と、テストのためのIssueのオープン手順が含まれます。
-     ```
-
-2. [Issue #12](../issue-notes/12.md): `project-summary` 導入手順ドキュメント (`daily-summary-setup.md`) の更新
-   - 最初の小さな一歩: `call-daily-project-summary.yml` の導入手順を、既存の `.github_automation/project_summary/docs/daily-summary-setup.md` に追記する。
-   - Agent実行プロンプト:
-     ```
-     対象ファイル: `.github_automation/project_summary/docs/daily-summary-setup.md` と `.github/workflows/call-daily-project-summary.yml`
-
-     実行内容: `call-daily-project-summary.yml`を外部プロジェクトで利用するために必要な設定（secrets, cronスケジュール等）を抽出し、既存の`daily-summary-setup.md`の「必要な設定」セクションに追記する形で導入手順を分析し、提案してください。
-
-     確認事項: `daily-summary-setup.md`の既存の構成と矛盾しないか、また`call-daily-project-summary.yml`で定義されている`secrets`や`on:`トリガーが網羅されているかを確認してください。
-
-     期待する出力: 更新された`daily-summary-setup.md`の提案内容をMarkdown形式で出力してください。特に`call-daily-project-summary.yml`の具体的な`uses:`パスや`secrets`の設定方法を含めてください。
+     期待する出力: `tonejs-mml-to-json`リポジトリのissue-noteワークフローを更新したYAMLファイルの内容をMarkdown形式で出力してください。
      ```
 
-3. [Issue #13](../issue-notes/13.md): `issue-note` 導入手順ドキュメントの作成
-   - 最初の小さな一歩: `issue-note` ワークフローを外部プロジェクトから呼び出すための導入手順書を新規作成する。既存の `daily-summary-setup.md` を参考にファイル構成を検討し、`.github_automation/issue_note/docs/issue-note-setup.md` として新規作成する。
-   - Agent実行プロンプト:
+2. [Issue #12](../issue-notes/12.md): `project-summary`ワークフローの導入手順を`daily-summary-setup.md`に追記する
+   - 最初の小さな一歩: `.github_automation/project_summary/docs/daily-summary-setup.md`ファイルに、`call-daily-project-summary.yml`の導入に必要な設定項目 (GitHub Secrets、ファイル配置、スケジュール設定) の見出しと概要を追記する。
+   - Agent実行プロンプ:
      ```
-     対象ファイル: `.github/workflows/call-issue-note.yml` と `.github_automation/project_summary/docs/daily-summary-setup.md` (参考用)
+     対象ファイル: `.github_automation/project_summary/docs/daily-summary-setup.md`と`.github/workflows/call-daily-project-summary.yml`
 
-     実行内容: `call-issue-note.yml`を外部プロジェクトで利用するための導入手順書を新規にMarkdown形式で作成してください。`daily-summary-setup.md`の構成を参考に、「必要な設定（GitHub Secrets、ファイル構成、実行条件）」、「プロンプトのカスタマイズ（該当する場合）」、「手動実行」、「トラブルシューティング」、「API制限について」、「セキュリティ」の項目を考慮し、特に`issue_number`, `issue_title`, `issue_body`, `issue_html_url`の`inputs`の渡し方を明確に記述してください。
+     実行内容: `.github_automation/project_summary/docs/daily-summary-setup.md`を更新し、「必要な設定」セクションの下に`call-daily-project-summary.yml`を外部プロジェクトで利用する際に必要な手順と設定項目を明確に記述してください。具体的には、`secrets.GEMINI_API_KEY`の設定方法、`GITHUB_TOKEN`の権限、`call-daily-project-summary.yml`の導入例、および推奨されるスケジュール設定について追記してください。
 
-     確認事項: `call-issue-note.yml`で定義されている`inputs`が全て手順書で説明されているか、また新規ドキュメントとして分かりやすい構成になっているかを確認してください。
+     確認事項: 既存の`daily-summary-setup.md`の内容と、`.github/workflows/call-daily-project-summary.yml`で定義されている`secrets`が正確に反映されていることを確認してください。
 
-     期待する出力: `issue-note`ワークフローの導入手順書（新規作成）をMarkdown形式で出力してください。ファイルパスは`.github_automation/issue_note/docs/issue-note-setup.md`と仮定します。
+     期待する出力: `daily-summary-setup.md`に追記された`call-daily-project-summary.yml`の導入手順を含む、更新されたMarkdownファイルの内容。
+     ```
+
+3. [Issue #10](../issue-notes/10.md): `callgraph`ワークフローの導入手順を`.github_automation/callgraph/docs/callgraph.md`に追記する
+   - 最初の小さな一歩: `.github_automation/callgraph/docs/callgraph.md`ファイルを新規作成し、`call-callgraph.yml`の導入に必要な設定項目 (必須入力パラメータ、必須シークレット、ファイル配置の前提条件) の見出しと概要を記述する。
+   - Agent実行プロンプ:
+     ```
+     対象ファイル: `.github_automation/callgraph/docs/callgraph.md`と`.github/workflows/call-callgraph.yml`と`.github/workflows/callgraph.yml`
+
+     実行内容: `.github_automation/callgraph/docs/callgraph.md`を新規作成し、`call-callgraph.yml`を外部プロジェクトで利用する際に必要な設定項目を明確に記述してください。具体的には、`inputs.CONFIG_NAME`の指定方法、`secrets.GITHUB_TOKEN`の役割、ワークフローのスケジュール設定例、およびCodeQLクエリパックの配置に関する前提条件を含めてください。
+
+     確認事項: `call-callgraph.yml`で定義されている`inputs`と`secrets`、および`callgraph.yml`でCodeQLクエリパックのパスとして設定されている`env.QUERIES`のパスを正確に反映してください。
+
+     期待する出力: `.github_automation/callgraph/docs/callgraph.md`に記述された`call-callgraph.yml`の導入手順を含む、Markdownファイルの内容。
+     ```
 
 ---
-Generated at: 2025-09-14 07:04:36 JST
+Generated at: 2025-09-15 07:04:39 JST
