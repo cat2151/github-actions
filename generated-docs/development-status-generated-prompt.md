@@ -1,4 +1,4 @@
-Last updated: 2025-09-16
+Last updated: 2025-09-17
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -1308,6 +1308,8 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+a4236d2 Update callgraph.html [auto]
+ab28e95 Update project summaries (overview & development status)
 0e00203 Update callgraph.html [auto]
 26b5da4 Update project summaries (overview & development status)
 7654bf7 Update callgraph.html [auto]
@@ -1316,16 +1318,13 @@ abd2f2d Update project summaries (overview & development status)
 711ca5a #12 状況を反映、mdを整頓、読みやすくしたつもり
 b5f6ed4 Update project summaries (overview & development status)
 6ba9742 Update callgraph.html [auto]
-e73f64a #12 試した結果を反映
-19a735c Update project summaries (overview & development status)
 
 ### 変更されたファイル:
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
-issue-notes/12.md
 
 
 ---
-Generated at: 2025-09-16 07:05:00 JST
+Generated at: 2025-09-17 07:04:10 JST
