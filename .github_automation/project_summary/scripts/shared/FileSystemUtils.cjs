@@ -33,7 +33,7 @@ class FileSystemUtils {
   }
 
   /**
-   * GitHub Actionsワークフローファイルを取得
+   * GitHub Actionsワークフローファイルを取得 ※用途は、調査対象projectにどのようなworkflowsがあるかを把握するためである
    */
   getWorkflowFiles() {
     try {

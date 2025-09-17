@@ -185,7 +185,7 @@ class TechStackAnalyzer {
   }
 
   /**
-   * ワークフローファイルを検出
+   * ワークフローファイルを検出 ※用途は、調査対象projectにどのようなworkflowsがあるかを把握するためである
    * @private
    */
   _detectWorkflows() {

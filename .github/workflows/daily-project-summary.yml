@@ -71,7 +71,7 @@ jobs:
             ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }} \
             ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }} \
             ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }} \
-            ${{ env.TMP_DIR }}
+            ${{ github.workspace }}
 
       - name: Verify generated files # 生成後のtimestampやfilesizeのチェック用
         run: |
