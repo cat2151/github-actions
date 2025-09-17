@@ -1,4 +1,4 @@
-Last updated: 2025-09-17
+Last updated: 2025-09-18
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -175,6 +175,8 @@ Last updated: 2025-09-17
 - issue-notes/22.md
 - issue-notes/23.md
 - issue-notes/24.md
+- issue-notes/25.md
+- issue-notes/26.md
 - issue-notes/3.md
 - issue-notes/4.md
 - issue-notes/7.md
@@ -185,6 +187,45 @@ Last updated: 2025-09-17
 - src/main.js
 
 ## 現在のオープンIssues
+## [Issue #26](../issue-notes/26.md): userによるcommitがなくなって24時間超経過しているのに、毎日ムダにproject summaryとcallgraphの自動生成が行われてしまっている
+[issue-notes/26.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/26.md)
+
+...
+ラベル: 
+--- issue-notes/26.md の内容 ---
+
+```markdown
+# issue userによるcommitがなくなって24時間超経過しているのに、毎日ムダにproject summaryとcallgraphの自動生成が行われてしまっている #26
+[issues #26](https://github.com/cat2151/github-actions/issues/26)
+
+# どうする？
+- logを確認する。24時間チェックがバグっている想定。
+- もしlogから判別できない場合は、logを改善する。
+
+
+
+```
+
+## [Issue #25](../issue-notes/25.md): project summaryを他projectからcallしたところ、issue-notes参照ディレクトリ誤りが発覚した
+[issue-notes/25.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/25.md)
+
+...
+ラベル: 
+--- issue-notes/25.md の内容 ---
+
+```markdown
+# issue project summaryを他projectからcallしたところ、issue-notes参照ディレクトリ誤りが発覚した #25
+[issues #25](https://github.com/cat2151/github-actions/issues/25)
+
+# 事象
+- `Issueノートが存在しません: /home/runner/work/tonejs-mml-to-json/tonejs-mml-to-json/.github/actions-tmp/issue-notes/6.md`
+
+# どうする？
+- 当該処理のディレクトリ部分を確認する
+- 日次バッチでGeminiに確認させてみる
+
+```
+
 ## [Issue #16](../issue-notes/16.md): issue-note / project-summary / translate / callgraph をtonejs-mml-to-jsonから呼び出す
 [issue-notes/16.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/16.md)
 
@@ -1227,6 +1268,33 @@ jobs:
 
 ```
 
+### issue-notes/25.md
+```md
+# issue project summaryを他projectからcallしたところ、issue-notes参照ディレクトリ誤りが発覚した #25
+[issues #25](https://github.com/cat2151/github-actions/issues/25)
+
+# 事象
+- `Issueノートが存在しません: /home/runner/work/tonejs-mml-to-json/tonejs-mml-to-json/.github/actions-tmp/issue-notes/6.md`
+
+# どうする？
+- 当該処理のディレクトリ部分を確認する
+- 日次バッチでGeminiに確認させてみる
+
+```
+
+### issue-notes/26.md
+```md
+# issue userによるcommitがなくなって24時間超経過しているのに、毎日ムダにproject summaryとcallgraphの自動生成が行われてしまっている #26
+[issues #26](https://github.com/cat2151/github-actions/issues/26)
+
+# どうする？
+- logを確認する。24時間チェックがバグっている想定。
+- もしlogから判別できない場合は、logを改善する。
+
+
+
+```
+
 ### issue-notes/3.md
 ```md
 # issue GitHub Actions「issue note生成」を共通ワークフロー化する #3
@@ -1308,23 +1376,25 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+a40fdf9 Update callgraph.html [auto]
+d6acef2 #26 状況を反映
+97f0573 #25 状況を反映
+092255e Add issue note for #26
+65f4883 Add issue note for #25
+78d9738 Update project summaries (overview & development status)
 a4236d2 Update callgraph.html [auto]
 ab28e95 Update project summaries (overview & development status)
 0e00203 Update callgraph.html [auto]
 26b5da4 Update project summaries (overview & development status)
-7654bf7 Update callgraph.html [auto]
-abd2f2d Update project summaries (overview & development status)
-6efba58 Update callgraph.html [auto]
-711ca5a #12 状況を反映、mdを整頓、読みやすくしたつもり
-b5f6ed4 Update project summaries (overview & development status)
-6ba9742 Update callgraph.html [auto]
 
 ### 変更されたファイル:
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
+issue-notes/25.md
+issue-notes/26.md
 
 
 ---
-Generated at: 2025-09-17 07:04:10 JST
+Generated at: 2025-09-18 07:04:24 JST

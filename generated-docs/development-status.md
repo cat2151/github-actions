@@ -1,58 +1,50 @@
-Last updated: 2025-09-17
+Last updated: 2025-09-18
 
 # Development Status
 
 ## 現在のIssues
-- 共通ワークフロー（`issue-note`, `project-summary`, `translate`, `callgraph`）の他プロジェクト(`tonejs-mml-to-json`)での導入検証 ([Issue #16](../issue-notes/16.md))を進めており、古いワークフローの最新版への置き換えが主な課題です。
-- 各共通ワークフローの他プロジェクトからの利用を容易にするため、`issue-note` ([#13](../issue-notes/13.md)), `project-summary` ([#12](../issue-notes/12.md)), `translate` ([#11](../issue-notes/11.md)), `callgraph` ([#10](../issue-notes/10.md)) の導入手順ドキュメントの作成・更新が必要です。
-- 特に`project-summary` ([#12](../issue-notes/12.md))については、`daily-summary-setup.md`の更新を通じて導入手順を明確にすることが求められています。
+- [Issue #26](../issue-notes/26.md)では、ユーザーコミットがない状態でも毎日不必要にproject summaryとcallgraphが自動生成される問題がオープンしています。
+- [Issue #25](../issue-notes/25.md)では、他プロジェクトでproject summaryを呼び出した際にissue-notesの参照ディレクトリに誤りがあることが発覚し、その修正が課題となっています。
+- [Issue #16](../issue-notes/16.md)では、`issue-note`、`project-summary`、`translate`、`callgraph`の各共通ワークフローを`tonejs-mml-to-json`プロジェクトから呼び出すための置き換えと検証が進行中です。
 
 ## 次の一手候補
-1. `issue-note`共通ワークフローの導入手順ドキュメント案作成 ([Issue #13](../issue-notes/13.md) & [Issue #16](../issue-notes/16.md))
-   - 最初の小さな一歩: `call-issue-note.yml`と`issue-note.yml`を分析し、外部プロジェクトでこのワークフローを利用するための設定項目（inputs, secrets, ファイル配置など）を洗い出し、手順書案を作成する。
-   - Agent実行プロンプ:
-     ```
-     対象ファイル: .github/workflows/call-issue-note.yml と .github/workflows/issue-note.yml
+1.  [Issue #26](../issue-notes/26.md): userによるcommitがなくなって24時間超経過しているのに、毎日ムダにproject summaryとcallgraphの自動生成が行われてしまっている
+    -   最初の小さな一歩: `callgraph.yml`が呼び出している`check-commits.cjs`のログ出力を詳細化し、24時間チェックの挙動と`should-run`の判断基準を明確に把握する。
+    -   Agent実行プロンプト:
+        ```
+        対象ファイル: .github_automation/callgraph/scripts/check-commits.cjs, .github/workflows/callgraph.yml
 
-     実行内容: `call-issue-note.yml`が`issue-note.yml`を呼び出す際の具体的な`inputs`と、他プロジェクトから利用する際に必要な設定項目を洗い出し、以下の観点から分析してください：
-     1) 必須入力パラメータ (`issue_number`, `issue_title`, `issue_body`, `issue_html_url`等)
-     2) 必須シークレット (なし)
-     3) ファイル配置の前提条件 (なし)
-     4) 外部プロジェクトでの利用時に必要な追加設定
+        実行内容: .github/workflows/callgraph.yml の `check-commits` jobで利用されている .github_automation/callgraph/scripts/check-commits.cjs を分析し、ユーザーコミットの有無を判断するロジックを確認してください。特に、過去24時間以内のコミットチェックが正しく行われているか、またはログ出力が不足していないかを分析し、現状の挙動を詳細に把握するためのログ追加やデバッグ出力強化の提案をmarkdown形式で出力してください。
 
-     確認事項: 既存の`issue-note.yml`の`workflow_call`定義と`call-issue-note.yml`の`with`の内容が一致していることを確認してください。また、`issue-note.yml`の各ステップが`inputs`を正しく参照していることを確認してください。
+        確認事項: GitHub Actionsの実行ログで、`check-commits`ステップの出力がどのように表示されているかを確認し、`should-run`の出力が意図通りかを理解した上で作業を進めてください。
 
-     期待する出力: 外部プロジェクトがこの`issue-note`ワークフローを導入する際の手順書をmarkdown形式で生成してください。具体的には：必須パラメータの設定方法、前提条件の確認項目を含めてください。この手順書は、[Issue #13](../issue-notes/13.md)の`docs - call導入手順を書く`の参考となるようにしてください。
-     ```
+        期待する出力: .github_automation/callgraph/scripts/check-commits.cjs の現行のコミットチェックロジックの説明と、より詳細なデバッグ情報を出力するための変更提案（例: タイムスタンプ、取得したコミット数、最終コミット時刻などのログ追加）をmarkdown形式で生成してください。
+        ```
 
-2. `project-summary`共通ワークフローの導入手順ドキュメント更新 ([Issue #12](../issue-notes/12.md))
-   - 最初の小さな一歩: `.github_automation/project_summary/docs/daily-summary-setup.md`に、`call-daily-project-summary.yml`の具体的な導入手順（`uses`の設定、`secrets.GEMINI_API_KEY`の指定など）を追記する。
-   - Agent実行プロンプ:
-     ```
-     対象ファイル: .github_automation/project_summary/docs/daily-summary-setup.md, .github/workflows/call-daily-project-summary.yml, .github/workflows/daily-project-summary.yml
+2.  [Issue #25](../issue-notes/25.md): project summaryを他projectからcallしたところ、issue-notes参照ディレクトリ誤りが発覚した
+    -   最初の小さな一歩: `project_summary`関連スクリプト（特に`IssueTracker.cjs`）内で`issue-notes`ディレクトリを参照している箇所を特定し、現在のパス解決ロジックがどのように機能しているか、そしてなぜ誤りが発生するのかを分析する。
+    -   Agent実行プロンプト:
+        ```
+        対象ファイル: .github_automation/project_summary/scripts/development/IssueTracker.cjs, .github/workflows/daily-project-summary.yml, .github_automation/project_summary/scripts/generate-project-summary.cjs
 
-     実行内容: `.github_automation/project_summary/docs/daily-summary-setup.md`の「必要な設定」セクションに、`call-daily-project-summary.yml`を外部プロジェクトで利用する際の具体的な導入手順を追記してください。追記する内容は以下の点を網羅するようにしてください：
-     1. `.github/workflows/call-daily-project-summary.yml`をプロジェクトに追加する手順。
-     2. `uses`に指定するリポジトリとブランチ（`cat2151/github-actions/.github/workflows/daily-project-summary.yml@main`）。
-     3. 必須シークレット`GEMINI_API_KEY`の設定方法。
-     4. スケジュールトリガーや`workflow_dispatch`に関する説明。
+        実行内容: `daily-project-summary.yml`ワークフローから呼び出される`project_summary`関連スクリプト（特に`IssueTracker.cjs`）において、`issue-notes`ディレクトリを参照している全ての箇所を特定し、そのパス解決ロジックを詳細に分析してください。特に、呼び出し元リポジトリのルートからの相対パスとして解決されるべきか、`TMP_DIR`内での解決か、または他の方法が適切かについて、原因分析と修正提案をmarkdown形式で出力してください。
 
-     確認事項: `.github_automation/project_summary/docs/daily-summary-setup.md`の既存のフォーマットと内容の整合性を確認してください。また、`call-daily-project-summary.yml`と`daily-project-summary.yml`の定義が正しく反映されているか確認してください。
+        確認事項: `daily-project-summary.yml`で`TMP_DIR`がどのように設定され、関連するスクリプトがそれをどのように利用しているかを確認してください。また、`IssueTracker.cjs`がGitHub APIを介してIssue情報を取得している場合、その際のパス解決方法との関連性も考慮に入れてください。
 
-     期待する出力: 更新された`.github_automation/project_summary/docs/daily-summary-setup.md`のコンテンツ全体をmarkdown形式で出力してください。
-     ```
+        期待する出力: `issue-notes`のパス参照が誤っている原因（例: カレントディレクトリの認識誤り、環境変数の不適切な利用）の分析と、その修正案（例: 環境変数`GITHUB_WORKSPACE`の利用、`TMP_DIR`を基準としたパス解決、スクリプト内での動的なパス構築）をmarkdown形式で生成してください。
+        ```
 
-3. `callgraph`共通ワークフローの導入手順ドキュメント案作成と状況可視化 ([Issue #10](../issue-notes/10.md))
-   - 最初の小さな一歩: `issue-notes/10.md`を更新し、`callgraph`ワークフローの別ディレクトリへの切り分け状況を明記するとともに、`call-callgraph.yml`の導入手順に関する記載を提案する。
-   - Agent実行プロンプ:
-     ```
-     対象ファイル: issue-notes/10.md, .github/workflows/call-callgraph.yml, .github/workflows/callgraph.yml
+3.  [Issue #16](../issue-notes/16.md): issue-note / project-summary / translate / callgraph をtonejs-mml-to-jsonから呼び出す
+    -   最初の小さな一歩: `tonejs-mml-to-json`リポジトリで現在利用されている`issue-note`関連ワークフロー（`tonejs-mml-to-json/.github/workflows/issue-note.yml`相当のもの）の内容を把握し、本リポジトリの`call-issue-note.yml`への置き換えに必要な具体的な変更点を洗い出す。
+    -   Agent実行プロンプト:
+        ```
+        対象ファイル: .github/workflows/issue-note.yml (本リポジトリ), .github/workflows/call-issue-note.yml (本リポジトリ), tonejs-mml-to-json/.github/workflows/issue-note.yml (仮称、ターゲットリポジトリの既存ファイル)
 
-     実行内容: `issue-notes/10.md`の「状況」セクションを更新し、`callgraph`ワークフローの別ディレクトリへの切り分け（`codeql-queries`, `scripts`, `presets`などの配置）が実施済みであることを明記してください。また、新しい「docs - call導入手順を書く」セクションを追加し、`call-callgraph.yml`の導入手順（`uses`の設定、`CONFIG_NAME`入力パラメータの指定など）に関する記載を提案してください。
+        実行内容: `tonejs-mml-to-json`リポジトリに、本リポジトリで定義されている`call-issue-note.yml`共通ワークフローを導入するための手順書をmarkdown形式で生成してください。具体的には、既存の`issue-note`関連ワークフロー（`tonejs-mml-to-json/.github/workflows/issue-note.yml`と仮定）を削除し、新しい`call-issue-note.yml`を適切な場所に配置し、必要な入力パラメータ（issue_number, issue_title, issue_body, issue_html_url）を設定する方法を含めて記述してください。
 
-     確認事項: `issue-notes/10.md`の既存コンテンツとフォーマットの整合性を確認してください。また、`call-callgraph.yml`と`callgraph.yml`の定義が正しく反映されているか確認してください。
+        確認事項: `tonejs-mml-to-json`リポジトリ内の既存のissue-noteワークフローの正確なファイルパスと内容を事前に確認し、本リポジトリの`call-issue-note.yml`が提供する機能が既存のニーズを満たすことを確認してください。
 
-     期待する出力: 更新された`issue-notes/10.md`のコンテンツ全体をmarkdown形式で出力してください。
+        期待する出力: `tonejs-mml-to-json`リポジトリにおける`issue-note`共通ワークフローの導入手順書（ファイル削除、新しい`call-issue-note.yml`の配置、`with`セクションでのパラメータ設定例、`on`トリガーの設定例を含む）をmarkdown形式で生成してください。
 
 ---
-Generated at: 2025-09-17 07:04:56 JST
+Generated at: 2025-09-18 07:05:09 JST
