@@ -1,29 +1,39 @@
-Last updated: 2025-09-18
+Last updated: 2025-09-19
 
 # Project Overview
 
 ## プロジェクト概要
-- 🚀 プロジェクトごとのGitHub Actions管理をもっと楽に
-- 🔗 共通化されたワークフローで、どのプロジェクトからも呼ぶだけでOK
-- ✅ メンテは一括、プロジェクト開発に集中できます
+- 🚀 プロジェクトごとのGitHub Actions管理をもっと楽にします。
+- 🔗 共通化されたワークフローで、どのプロジェクトからも呼ぶだけで利用可能です。
+- ✅ メンテナンスは一括で効率化し、プロジェクト開発に集中できる環境を提供します。
 
 ## 技術スタック
-- フロントエンド: N/A
-- 音楽・オーディオ:
-  - Tone.js: Web Audio APIを用いた音楽・オーディオ処理のためのJavaScriptライブラリ。
-  - Web Audio API: ブラウザ上で高度な音声処理を行うためのAPI（Tone.jsを介して利用）。
-  - MML (Music Macro Language): 音楽をテキストで記述するための簡易記法をパースする技術。
+- フロントエンド:
+    - `generated-docs/callgraph.js`: 生成された呼び出しグラフをブラウザでインタラクティブに表示・操作するためのJavaScriptコード。
+    - `generated-docs/style.css`: 生成された呼び出しグラフのHTML表示に適用されるCSSスタイルシート。
+- 音楽・オーディオ: (本プロジェクトには直接関連しない情報として提供されていますが、参考情報として記載します)
+    - Tone.js: Web Audio APIを用いたWebベースの音楽・オーディオアプリケーション開発ライブラリ。
+    - Web Audio API: ウェブブラウザ上で高度な音声処理を行うためのAPI（Tone.js経由で利用）。
+    - MML (Music Macro Language): 音楽をテキスト形式で記述するための簡易記法パーサー。
 - 開発ツール:
-  - Node.js runtime: JavaScriptコードを実行するための環境。
-  - npm scripts: プロジェクトのビルド、テスト、その他のタスクを自動化するためのコマンドラインツール。
-  - Google Generative AI: AIによる文書生成や要約などをサポートする技術。
-  - @octokit/rest: GitHub APIと連携し、リポジトリ操作やワークフロー管理を行うためのJavaScriptライブラリ。
-- テスト: N/A
-- ビルドツール: N/A
-- 言語機能: N/A
+    - Node.js runtime: プロジェクト内の自動化スクリプト（`.cjs`ファイル）を実行するためのJavaScript実行環境。
+    - CodeQL: ソフトウェアのセキュリティ脆弱性やバグを検出するための静的解析エンジン。本プロジェクトでは関数呼び出しグラフの生成に利用されています。
+- テスト:
+    - CodeQL: コードの品質と潜在的な問題を検出するための静的解析ツールとして、テスト・品質保証の一環で活用されます。
+- ビルドツール:
+    - Node.jsスクリプト: プロジェクト内の`.cjs`ファイル群が、様々な自動化処理やドキュメント生成の役割を担っており、実質的なビルド・生成ツールとして機能しています。
+- 言語機能:
+    - JavaScript: 主に自動化スクリプトやウェブコンテンツの動的な振る舞いを記述するために使用されています。
+    - CommonJS (.cjs): Node.js環境におけるモジュールシステム。多くのスクリプトファイルでこの形式が採用されています。
 - 自動化・CI/CD:
-  - GitHub Actions: コードの変更を検知し、テスト、ビルド、デプロイなどのワークフローを自動化するCI/CDサービス。8つのワークフローが定義されており、プロジェクト要約、Issue管理、README翻訳、i18nの自動化などを実現します。
-- 開発標準: N/A
+    - GitHub Actions: コードの変更やリポジトリのイベントに基づいて、様々な自動化ワークフローを実行するためのCI/CDプラットフォーム。
+        - プロジェクト要約自動生成: リポジトリの情報を基にプロジェクト概要を自動で生成するワークフロー。
+        - Issue自動管理: Issueのライフサイクルや関連情報を自動で管理するワークフロー。
+        - README多言語翻訳: `README.md` ファイルを複数の言語に自動翻訳するワークフロー。
+        - i18n automation: 国際化 (i18n) 関連の自動化処理を行うワークフロー。
+- 開発標準:
+    - CodeQL: コードの潜在的な問題を特定し、品質とセキュリティ標準を維持するための静的解析を行います。
+    - GitHub Actions: 自動化されたワークフローにより、コードのフォーマットチェックや特定のルールの適用を促し、開発標準の維持に貢献します。
 
 ## ファイル階層ツリー
 ```
@@ -90,9 +100,6 @@ Last updated: 2025-09-18
 📁 generated-docs/
   🌐 callgraph.html
   📜 callgraph.js
-  📖 development-status-generated-prompt.md
-  📖 development-status.md
-  📖 project-overview.md
   🎨 style.css
 📁 issue-notes/
   📖 10.md
@@ -118,244 +125,177 @@ Last updated: 2025-09-18
   📖 7.md
   📖 8.md
   📖 9.md
-📊 package-lock.json
-📊 package.json
 📁 src/
   📜 main.js
 ```
 
 ## ファイル詳細説明
-
-*   **.github_automation/**: GitHub Actionsワークフローや自動化スクリプトを格納するルートディレクトリ。
-    *   **callgraph/**: コードの関数呼び出しグラフを生成し、可視化するためのツール群。
-        *   **codeql-queries/**: CodeQL解析ツールで使用されるクエリファイル。
-            *   `callgraph.ql`: コードから関数呼び出しグラフを抽出するためのCodeQLクエリ。
-            *   `codeql-pack.lock.yml`: CodeQLパックの依存関係を固定するファイル。
-            *   `qlpack.yml`: CodeQLパックのメタデータと設定を定義するファイル。
-        *   **config/**: 設定ファイルを格納するディレクトリ。
-            *   `example.json`: 呼び出しグラフ生成に関する設定の例。
-        *   **docs/**: ドキュメントファイルを格納するディレクトリ。
-            *   `callgraph.md`: 関数呼び出しグラフ機能に関する詳細な説明ドキュメント。
-        *   **presets/**: 呼び出しグラフの表示やスタイルに関するプリセットファイル。
-            *   `callgraph.js`: 呼び出しグラフのインタラクティブな表示ロジック、レイアウト、イベント処理などを定義するJavaScriptファイル。
-            *   `style.css`: 呼び出しグラフのHTML表示のためのスタイルシート。
-        *   **scripts/**: 呼び出しグラフ生成に関連する様々なユーティリティスクリプト。
-            *   `analyze-codeql.cjs`: CodeQLを用いてコード解析を実行するスクリプト。
-            *   `callgraph-utils.cjs`: 呼び出しグラフの処理に特化したユーティリティ関数群。
-            *   `check-codeql-exists.cjs`: CodeQLコマンドラインツールが存在するかを確認するスクリプト。
-            *   `check-commits.cjs`: Gitコミット履歴を分析するためのスクリプト。
-            *   `check-node-version.cjs`: Node.jsのバージョンが要件を満たしているかを確認するスクリプト。
-            *   `common-utils.cjs`: プロジェクト全体で共有される一般的なユーティリティ関数。
-            *   `copy-commit-results.cjs`: コミット解析の結果をコピーするスクリプト。
-            *   `extract-sarif-info.cjs`: SARIF形式の解析結果から情報を抽出するスクリプト。
-            *   `find-process-results.cjs`: 特定の処理結果ファイルを検索するスクリプト。
-            *   `generate-html-graph.cjs`: 解析結果からHTML形式の呼び出しグラフを生成するスクリプト。
-            *   `generateHTML.cjs`: HTMLコンテンツを生成するための汎用スクリプト。
-    *   **project_summary/**: プロジェクトの概要や開発状況を自動生成するためのツール群。
-        *   **docs/**: ドキュメントファイルを格納するディレクトリ。
-            *   `daily-summary-setup.md`: 日次プロジェクト概要生成の設定に関するドキュメント。
-        *   **prompts/**: AIモデルに渡すプロンプト定義ファイル。
-            *   `development-status-prompt.md`: 開発状況レポート生成用のプロンプト定義。
-            *   `project-overview-prompt.md`: プロジェクト概要生成用のプロンプト定義。
-        *   **scripts/**: プロジェクト概要生成に関連するスクリプト。
-            *   `ProjectSummaryCoordinator.cjs`: プロジェクト概要生成プロセス全体の調整役となるスクリプト。
-            *   **development/**: 開発状況レポート生成に関連するスクリプト。
-                *   `DevelopmentStatusGenerator.cjs`: 開発状況レポートを生成するスクリプト。
-                *   `GitUtils.cjs`: Gitリポジトリ操作に関連するユーティリティ関数群。
-                *   `IssueTracker.cjs`: GitHub Issuesの情報を追跡・処理するユーティリティ。
-            *   `generate-project-summary.cjs`: プロジェクト概要生成のメインエントリスクリプト。
-            *   **overview/**: プロジェクト概要の詳細生成ロジック。
-                *   `CodeAnalyzer.cjs`: プロジェクトのコードを解析するスクリプト。
-                *   `ProjectAnalysisOrchestrator.cjs`: プロジェクト解析プロセスを統括するスクリプト。
-                *   `ProjectDataCollector.cjs`: プロジェクトに関する様々なデータを収集するスクリプト。
-                *   `ProjectDataFormatter.cjs`: 収集したプロジェクトデータを整形するスクリプト。
-                *   `ProjectOverviewGenerator.cjs`: 収集・整形されたデータからプロジェクト概要を生成するスクリプト。
-                *   `TechStackAnalyzer.cjs`: プロジェクトの使用技術スタックを解析するスクリプト。
-            *   **shared/**: 複数のスクリプトで共有されるユーティリティ。
-                *   `BaseGenerator.cjs`: 各種ジェネレータの基底クラス。
-                *   `FileSystemUtils.cjs`: ファイルシステム操作に関するユーティリティ関数群。
-                *   `ProjectFileUtils.cjs`: プロジェクトファイルに関するユーティリティ関数群。
-    *   **translate/**: プロジェクトドキュメントの自動翻訳に関するツール群。
-        *   **docs/**: ドキュメントファイルを格納するディレクトリ。
-            *   `TRANSLATION_SETUP.md`: 翻訳機能の設定と利用方法に関するドキュメント。
-        *   **scripts/**: 翻訳に関連するスクリプト。
-            *   `translate-readme.cjs`: READMEファイルを自動的に多言語に翻訳するスクリプト。
-*   `.gitignore`: Gitバージョン管理システムが無視すべきファイルやディレクトリを指定する設定ファイル。
-*   **.vscode/**: Visual Studio Codeエディタのワークスペース固有の設定を格納するディレクトリ。
-    *   `settings.json`: VS Codeのワークスペース設定ファイル。
-*   `LICENSE`: プロジェクトのオープンソースライセンス情報が記述されたファイル。
-*   `README.ja.md`: プロジェクトの日本語版の概要と説明が記述されたドキュメント。
-*   `README.md`: プロジェクトの主要な概要と説明が記述された英語のドキュメント（通常、デフォルトで表示される）。
-*   **generated-docs/**: 自動生成された各種ドキュメントやレポートを格納するディレクトリ。
-    *   `callgraph.html`: 生成された関数呼び出しグラフをブラウザで表示するためのHTMLファイル。
-    *   `callgraph.js`: `callgraph.html`で使用されるインタラクティブなグラフ表示ロジックを担うJavaScriptファイル。
-    *   `development-status-generated-prompt.md`: 自動生成された開発状況レポート用のプロンプトファイル。
-    *   `development-status.md`: 自動生成された開発状況レポート。
-    *   `project-overview.md`: 自動生成されたプロジェクトの概要ドキュメント。
-    *   `style.css`: `callgraph.html`などの自動生成されたHTMLに適用されるスタイルシート。
-*   **issue-notes/**: GitHub Actionsによって自動生成されたIssueに関連するメモや詳細情報を格納するディレクトリ。
-*   `package-lock.json`: `package.json`に記述された依存関係パッケージの具体的なバージョンと依存ツリーを記録するファイル。一貫性のあるビルドを保証する。
-*   `package.json`: Node.jsプロジェクトのメタデータ、依存関係、スクリプトなどを定義する設定ファイル。
-*   **src/**: プロジェクトの主要なソースコードを格納するディレクトリ。
-    *   `main.js`: プロジェクトのメインエントリポイントとなるJavaScriptファイル。
+- **.github_automation/callgraph/codeql-queries/callgraph.ql**: CodeQLを用いて、ソースコード内の関数呼び出し関係を分析し、グラフデータを抽出するためのクエリ。
+- **.github_automation/callgraph/codeql-queries/codeql-pack.lock.yml**: CodeQLパックの依存関係とバージョンをロックするファイル。
+- **.github_automation/callgraph/codeql-queries/qlpack.yml**: CodeQLパックのメタデータを定義するファイル（名前、バージョン、依存関係など）。
+- **.github_automation/callgraph/config/example.json**: 関数呼び出しグラフの生成または表示に関する設定例を格納するJSONファイル。
+- **.github_automation/callgraph/docs/callgraph.md**: 関数呼び出しグラフ機能に関するドキュメントや説明が記述されたMarkdownファイル。
+- **.github_automation/callgraph/presets/callgraph.js**: 関数呼び出しグラフの表示ロジック、インタラクション、レイアウトなどを定義するJavaScriptファイル。`generated-docs/callgraph.js` の元となるコード。
+- **.github_automation/callgraph/presets/style.css**: 関数呼び出しグラフのHTML表示に適用されるCSSスタイルシート。`generated-docs/style.css` の元となるコード。
+- **.github_automation/callgraph/scripts/analyze-codeql.cjs**: CodeQL解析を実行し、SARIF形式の結果を生成するためのNode.jsスクリプト。
+- **.github_automation/callgraph/scripts/callgraph-utils.cjs**: 関数呼び出しグラフの生成・処理に関連する共通ユーティリティ関数を提供するNode.jsスクリプト。
+- **.github_automation/callgraph/scripts/check-codeql-exists.cjs**: CodeQL実行環境の存在を確認するためのNode.jsスクリプト。
+- **.github_automation/callgraph/scripts/check-commits.cjs**: Gitのコミット履歴をチェックするためのNode.jsスクリプト。
+- **.github_automation/callgraph/scripts/check-node-version.cjs**: Node.jsのバージョンが要件を満たしているか確認するためのNode.jsスクリプト。
+- **.github_automation/callgraph/scripts/common-utils.cjs**: プロジェクト全体で利用される共通のユーティリティ関数をまとめたNode.jsスクリプト。
+- **.github_automation/callgraph/scripts/copy-commit-results.cjs**: コミット関連の結果をコピーするためのNode.jsスクリプト。
+- **.github_automation/callgraph/scripts/extract-sarif-info.cjs**: CodeQLのSARIF結果ファイルから必要な情報を抽出するためのNode.jsスクリプト。
+- **.github_automation/callgraph/scripts/find-process-results.cjs**: 特定の処理結果を検索するためのNode.jsスクリプト。
+- **.github_automation/callgraph/scripts/generate-html-graph.cjs**: CodeQLの解析結果を基に、HTML形式の関数呼び出しグラフを生成するNode.jsスクリプト。
+- **.github_automation/callgraph/scripts/generateHTML.cjs**: HTMLファイルを生成するための汎用的なNode.jsスクリプト。
+- **.github_automation/project_summary/docs/daily-summary-setup.md**: プロジェクトのデイリーサマリー機能を設定するためのドキュメント。
+- **.github_automation/project_summary/prompts/development-status-prompt.md**: 開発状況に関する情報を収集・生成するためのプロンプト定義ファイル。
+- **.github_automation/project_summary/prompts/project-overview-prompt.md**: プロジェクト概要を生成するためのプロンプト定義ファイル。
+- **.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs**: プロジェクト概要生成処理全体を調整・管理するNode.jsスクリプト。
+- **.github_automation/project_summary/scripts/development/DevelopmentStatusGenerator.cjs**: 開発状況のレポートを生成するためのNode.jsスクリプト。
+- **.github_automation/project_summary/scripts/development/GitUtils.cjs**: Gitリポジトリ操作に関するユーティリティ関数を提供するNode.jsスクリプト。
+- **.github_automation/project_summary/scripts/development/IssueTracker.cjs**: Issueトラッキングシステムと連携するためのNode.jsスクリプト。
+- **.github_automation/project_summary/scripts/generate-project-summary.cjs**: プロジェクト概要を実際に生成するNode.jsスクリプトのエントリポイント。
+- **.github_automation/project_summary/scripts/overview/CodeAnalyzer.cjs**: ソースコードを分析し、構造や統計情報を抽出するNode.jsスクリプト。
+- **.github_automation/project_summary/scripts/overview/ProjectAnalysisOrchestrator.cjs**: プロジェクト分析の各ステップをオーケストレーションするNode.jsスクリプト。
+- **.github_automation/project_summary/scripts/overview/ProjectDataCollector.cjs**: プロジェクトに関する様々なデータを収集するNode.jsスクリプト。
+- **.github_automation/project_summary/scripts/overview/ProjectDataFormatter.cjs**: 収集したプロジェクトデータを特定の形式に整形するNode.jsスクリプト。
+- **.github_automation/project_summary/scripts/overview/ProjectOverviewGenerator.cjs**: 収集・整形されたデータからプロジェクト概要テキストを生成するNode.jsスクリプト。
+- **.github_automation/project_summary/scripts/overview/TechStackAnalyzer.cjs**: プロジェクトで使用されている技術スタックを分析・特定するNode.jsスクリプト。
+- **.github_automation/project_summary/scripts/shared/BaseGenerator.cjs**: 各種ジェネレータの基底クラスまたは共通機能を提供するNode.jsスクリプト。
+- **.github_automation/project_summary/scripts/shared/FileSystemUtils.cjs**: ファイルシステム操作に関するユーティリティ関数を提供するNode.jsスクリプト。
+- **.github_automation/project_summary/scripts/shared/ProjectFileUtils.cjs**: プロジェクト内のファイル操作に特化したユーティリティ関数を提供するNode.jsスクリプト。
+- **.github_automation/translate/docs/TRANSLATION_SETUP.md**: 翻訳機能の設定方法に関するドキュメント。
+- **.github_automation/translate/scripts/translate-readme.cjs**: READMEファイルを自動翻訳するためのNode.jsスクリプト。
+- **.gitignore**: Gitが追跡しないファイルやディレクトリを指定する設定ファイル。
+- **.vscode/settings.json**: VS Codeエディタのワークスペース固有の設定を定義するファイル。
+- **LICENSE**: 本プロジェクトの利用許諾条件を定めるライセンスファイル。
+- **README.ja.md**: プロジェクトの概要、使い方などを日本語で説明するメインのドキュメント。
+- **README.md**: プロジェクトの概要、使い方などを英語で説明するメインのドキュメント。
+- **generated-docs/callgraph.html**: 関数呼び出しグラフを可視化したHTMLファイル。
+- **generated-docs/callgraph.js**: `generated-docs/callgraph.html` で使用される、グラフの動的な描画やインタラクションを制御するJavaScriptコード。
+- **generated-docs/style.css**: `generated-docs/callgraph.html` のスタイルを定義するCSSファイル。
+- **issue-notes/*.md**: GitHub Actionsによって管理されるIssueに関連する自動生成されたメモファイル群。
+- **src/main.js**: サンプルまたはテスト目的のシンプルなJavaScriptファイル。
 
 ## 関数詳細説明
-
-*   **src/main.js**:
-    *   `greet()`:
-        *   役割: コンソールに「Hello, GitHub Actions!」というメッセージを出力します。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: 簡単な挨拶メッセージを表示し、スクリプトが正常に実行されたことを示します。
-    *   `main()`:
-        *   役割: プログラムの主要な実行ロジックをカプセル化し、`greet`関数を呼び出します。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: プログラムのエントリーポイントとして機能し、`greet`関数を実行します。
-
-*   **.github_automation/callgraph/presets/callgraph.js** (および **generated-docs/callgraph.js**):
-    *   `escapeHtml(unsafe)`:
-        *   役割: 与えられた文字列中のHTML特殊文字をエスケープします。
-        *   引数: `unsafe` (string) - エスケープする文字列。
-        *   戻り値: (string) - エスケープされた文字列。
-        *   機能: クロスサイトスクリプティング (XSS) 攻撃を防ぐため、HTMLコンテンツとして表示する前に文字列を安全な形式に変換します。
-    *   `getLayoutConfig()`:
-        *   役割: 呼び出しグラフのレイアウト設定を取得または決定します。
-        *   引数: なし。
-        *   戻り値: (object) - レイアウト設定オブジェクト。
-        *   機能: グラフのノード配置や全体の視覚的配置に関する設定を提供します。
-    *   `placeCentralNode(cy, node)`:
-        *   役割: 指定されたノードをグラフの中央に配置します。
-        *   引数: `cy` (Cytoscape.jsインスタンス), `node` (Cytoscape.jsノード要素)。
-        *   戻り値: なし。
-        *   機能: グラフ表示において特定のノードをユーザーの視点の中央に固定します。
-    *   `showNodeInfo(node)`:
-        *   役割: 指定されたノードの詳細情報を情報パネルに表示します。
-        *   引数: `node` (Cytoscape.jsノード要素)。
-        *   戻り値: なし。
-        *   機能: ユーザーがノードをクリックまたはホバーした際に、そのノードに関する追加情報（例: 関数名、ファイルパスなど）を提供します。
-    *   `showEdgeInfo(edge)`:
-        *   役割: 指定されたエッジ（接続線）の詳細情報を情報パネルに表示します。
-        *   引数: `edge` (Cytoscape.jsエッジ要素)。
-        *   戻り値: なし。
-        *   機能: ユーザーがエッジをクリックまたはホバーした際に、そのエッジに関する追加情報（例: 呼び出し関係のタイプ）を提供します。
-    *   `hideInfoPanel()`:
-        *   役割: グラフの情報表示パネルを非表示にします。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: 情報を表示する必要がなくなったときにパネルを隠し、グラフの視認性を向上させます。
-    *   `showInfoPanel()`:
-        *   役割: グラフの情報表示パネルを表示します。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: ノードやエッジの詳細情報を提供するためにパネルを表示します。
-    *   `toggleInfoPanel()`:
-        *   役割: グラフの情報表示パネルの表示/非表示を切り替えます。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: ユーザー操作に応じてパネルの表示状態をトグルします。
-    *   `generateGitHubURL(nodeData)`:
-        *   役割: 与えられたノードデータから、対応するGitHubリポジトリのURLを生成します。
-        *   引数: `nodeData` (object) - ノードに関連するデータ（ファイルパス、リポジトリ情報などを含む）。
-        *   戻り値: (string) - 生成されたGitHub URL。
-        *   機能: グラフ上のノードから直接、GitHub上のソースコードにジャンプするためのリンクを作成します。
-    *   `resetLayout()`:
-        *   役割: グラフのレイアウトを初期状態にリセットします。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: ユーザーがレイアウトを変更した後、元の配置に戻したい場合に利用します。
-    *   `watchNodeMovementAndFixOverlapsWrap()`:
-        *   役割: ノードの移動を監視し、重なりを修正する処理をラップします。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: ノードの重なりを動的に解決する処理の開始点となるラッパー関数。
-    *   `watchNodeMovementAndFixOverlaps()`:
-        *   役割: グラフ内のノードの移動を継続的に監視し、ノードの重なりを自動的に修正します。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: グラフのノードが密集して見づらくなるのを防ぎ、視覚的な整理を保ちます。
-    *   `resolveNodeOverlaps()`:
-        *   役割: グラフ内のノードの重なりを一度だけ解決します。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: ノードが互いに重なり合っている場合に、それらを離して配置し、視認性を改善します。
-    *   `switchLayout(layoutName)`:
-        *   役割: グラフの表示レイアウトを切り替えます。
-        *   引数: `layoutName` (string) - 適用するレイアウトの名前（例: 'cola', 'dagre'など）。
-        *   戻り値: なし。
-        *   機能: ユーザーがグラフの表示形式を異なるアルゴリズムに基づいて変更できるようにします。
-    *   `resetNodeStates()`:
-        *   役割: グラフ内の全てのノードの状態（選択状態、ハイライトなど）をリセットします。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: ユーザーの操作によって変更されたノードの視覚的状態を初期化します。
-    *   `fitToContent()`:
-        *   役割: グラフの表示領域を、全てのコンテンツ（ノードとエッジ）が収まるように調整します。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: グラフ全体を一望できるように、ズームレベルとパン位置を調整します。
-    *   `toggleNodeLabels()`:
-        *   役割: グラフ内のノードラベルの表示/非表示を切り替えます。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: グラフが密集している場合などに、ノードラベルの表示を切り替えて視認性を向上させます。
-    *   `toggleCalleeLocationFilter()`:
-        *   役割: 呼び出し先（callee）の場所に基づくフィルターの表示/非表示を切り替えます。
-        *   引数: なし。
-        *   戻り値: なし。
-        *   機能: 特定の場所（ファイル、モジュールなど）にある呼び出し先のみを表示するフィルターを適用または解除します。
-    *   `replace(search, replace)`:
-        *   役割: 文字列中の特定のパターンを別の文字列に置換します（一般的なString.prototype.replaceの利用または類似機能）。
-        *   引数: `search` (string|RegExp), `replace` (string)。
-        *   戻り値: (string) - 置換後の文字列。
-        *   機能: 文字列操作において特定の文字やパターンを別のものに置き換えます。
-    *   `max(a, b)`:
-        *   役割: 2つの値のうち大きい方を返します（一般的なMath.maxの利用または類似機能）。
-        *   引数: `a`, `b` (number)。
-        *   戻り値: (number) - より大きい値。
-        *   機能: 数値の比較と最大値の取得を行います。
-    *   `on(eventName, handler)`:
-        *   役割: 特定のイベントが発生したときに実行されるイベントハンドラを登録します（jQueryなどのイベントリスナー機能）。
-        *   引数: `eventName` (string), `handler` (function)。
-        *   戻り値: なし。
-        *   機能: ユーザーインタラクションやシステムイベントに応答するコールバック関数を設定します。
-    *   `ready(handler)`:
-        *   役割: ドキュメントが完全にロードされ、操作可能になったときに実行されるイベントハンドラを登録します（jQueryの$(document).ready()に相当）。
-        *   引数: `handler` (function)。
-        *   戻り値: なし。
-        *   機能: DOMの準備が完了した時点で初期化処理を実行します。
-    *   `addListener(event, listener)`:
-        *   役割: 指定されたイベントに対するリスナー関数を追加します（Node.js EventEmitterや類似のAPIの利用）。
-        *   引数: `event` (string), `listener` (function)。
-        *   戻り値: なし。
-        *   機能: 特定のイベントに反応する複数のコールバック関数を登録します。
+- **switch**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: JavaScriptの `switch` 文の一部として、複数の条件分岐を処理する。
+    - 機能: 特定の値に基づいて、対応するコードブロックを実行する。
+- **escapeHtml**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: HTML特殊文字をエスケープし、スクリプトインジェクションなどのセキュリティリスクを防ぐ。
+    - 機能: 文字列内のHTMLエンティティ（例: `<`, `>`, `&`）を安全な形式に変換する。
+- **getLayoutConfig**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: グラフのレイアウト設定を取得する。
+    - 機能: グラフ描画のための設定オブジェクトを返す。
+- **placeCentralNode**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: グラフの中央ノードを配置する。
+    - 機能: 視覚的な中心となるノードの位置を調整する。
+- **showNodeInfo**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: 特定のノード（関数など）に関する情報を表示する。
+    - 機能: ノードがクリックされたりホバーされたりした際に、詳細パネルにそのノードの情報を展開する。
+- **showEdgeInfo**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: 特定のエッジ（関数呼び出し関係など）に関する情報を表示する。
+    - 機能: エッジがクリックされたりホバーされたりした際に、詳細パネルにそのエッジの情報を展開する。
+- **hideInfoPanel**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: グラフの詳細情報パネルを非表示にする。
+    - 機能: ユーザーがパネルを閉じる操作を行った際に、パネルを畳む。
+- **showInfoPanel**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: グラフの詳細情報パネルを表示する。
+    - 機能: ノードやエッジが選択された際に、パネルを展開する。
+- **toggleInfoPanel**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: グラフの詳細情報パネルの表示/非表示を切り替える。
+    - 機能: パネルの現在の状態に応じて、表示と非表示を交互に切り替える。
+- **generateGitHubURL**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: GitHub上の対応するソースコードへのURLを生成する。
+    - 機能: ノードやエッジの情報から、そのコードが存在するGitHubリポジトリのURLを構築する。
+- **resetLayout**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: グラフのレイアウトを初期状態にリセットする。
+    - 機能: ユーザーがグラフの配置を操作した後、元の状態に戻す。
+- **watchNodeMovementAndFixOverlapsWrap**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: ノードの動きを監視し、重なりを修正するラッパー関数。
+    - 機能: `watchNodeMovementAndFixOverlaps` の呼び出しをラップし、必要に応じて重なり解決ロジックを適用する。
+- **watchNodeMovementAndFixOverlaps**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: ノードの動きをリアルタイムで監視し、他のノードとの重なりを解決する。
+    - 機能: グラフが動的に変化する際に、ノードが互いに重ならないように位置を調整する。
+- **resolveNodeOverlaps**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: グラフ内の重なっているノードの位置を調整して解決する。
+    - 機能: 複数のノードが同じ位置に表示されるのを防ぐため、位置を微調整する。
+- **switchLayout**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: グラフのレイアウトアルゴリズムを切り替える。
+    - 機能: ユーザーの選択に応じて、異なるレイアウト（例: 円形、強制指向）にグラフを再描画する。
+- **resetNodeStates**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: 全てのノードの状態（選択、ハイライトなど）をリセットする。
+    - 機能: グラフのインタラクション後に、ノードを初期状態に戻す。
+- **fitToContent**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: グラフ全体がビューポートに収まるようにズームレベルとパンを調整する。
+    - 機能: グラフの全体像を一画面で表示する。
+- **toggleNodeLabels**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: ノードのラベルの表示/非表示を切り替える。
+    - 機能: グラフの視認性を高めるため、ノード名の表示をオン/オフする。
+- **toggleCalleeLocationFilter**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: 呼び出し先の場所に基づいてノードをフィルタリングする機能のオン/オフを切り替える。
+    - 機能: 特定の場所に定義されている関数のみを表示するなどのフィルタリングを適用する。
+- **replace**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: 文字列置換操作を行う。JavaScriptの標準的な `String.prototype.replace` メソッドを参照。
+    - 機能: 文字列内のパターンを別の文字列に置き換える。
+- **function**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: JavaScriptにおける関数定義のキーワード。
+    - 機能: 関数スコープを作成し、特定の処理をカプセル化する。
+- **max**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: 複数の数値の中から最大値を返す。JavaScriptの標準的な `Math.max` メソッドを参照。
+    - 機能: 引数として与えられた数値群の最大値を計算する。
+- **on**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: イベントリスナーを要素にアタッチする。jQueryなどのイベントハンドリングメソッドを参照。
+    - 機能: 指定されたイベントが発生したときに特定の関数を実行するように設定する。
+- **if**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: JavaScriptにおける条件分岐のキーワード。
+    - 機能: 指定された条件が真である場合にのみコードブロックを実行する。
+- **for**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: JavaScriptにおけるループ処理のキーワード。
+    - 機能: 指定された回数または条件が満たされるまでコードブロックを繰り返し実行する。
+- **ready**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: DOMが完全にロードされたときに実行される関数を設定する。jQueryの `$(document).ready()` などに類似。
+    - 機能: ウェブページが準備完了になった後、スクリプトを実行する。
+- **addListener**: (.github_automation/callgraph/presets/callgraph.js, generated-docs/callgraph.js)
+    - 役割: イベントリスナーを追加する。DOMの `EventTarget.prototype.addEventListener` に類似。
+    - 機能: 特定のイベントが発生したときに呼び出される関数を登録する。
+- **greet**: (src/main.js)
+    - 役割: シンプルな挨拶メッセージを生成する。
+    - 機能: 引数に名前を受け取り、「Hello, [名前]!」という文字列を返す。
+- **main**: (src/main.js)
+    - 役割: `src/main.js` の主要な実行エントリポイント。
+    - 機能: `greet` 関数を呼び出し、その結果をコンソールに出力する。
 
 ## 関数呼び出し階層ツリー
 ```
-- escapeHtml (.github_automation/callgraph/presets/callgraph.js)
-- getLayoutConfig (.github_automation/callgraph/presets/callgraph.js)
-  - placeCentralNode ()
-  - showNodeInfo ()
-  - showEdgeInfo ()
-  - hideInfoPanel ()
-  - showInfoPanel ()
-  - toggleInfoPanel ()
-  - generateGitHubURL ()
-  - resetLayout ()
-  - watchNodeMovementAndFixOverlapsWrap ()
-  - watchNodeMovementAndFixOverlaps ()
-  - resolveNodeOverlaps ()
-  - switchLayout ()
-  - resetNodeStates ()
-  - fitToContent ()
-  - toggleNodeLabels ()
-  - toggleCalleeLocationFilter ()
-  - replace ()
-  - function ()
-  - max ()
-  - on ()
-  - ready ()
-  - addListener ()
+- switch (.github_automation/callgraph/presets/callgraph.js)
+  - escapeHtml (.github_automation/callgraph/presets/callgraph.js)
+    - getLayoutConfig ()
+      - placeCentralNode ()
+      - showNodeInfo ()
+      - showEdgeInfo ()
+      - hideInfoPanel ()
+      - showInfoPanel ()
+      - toggleInfoPanel ()
+      - generateGitHubURL ()
+      - resetLayout ()
+      - watchNodeMovementAndFixOverlapsWrap ()
+      - watchNodeMovementAndFixOverlaps ()
+      - resolveNodeOverlaps ()
+      - switchLayout ()
+      - resetNodeStates ()
+      - fitToContent ()
+      - toggleNodeLabels ()
+      - toggleCalleeLocationFilter ()
+      - replace ()
+      - function ()
+      - max ()
+      - on ()
+      - ready ()
+      - addListener ()
+- if (.github_automation/callgraph/presets/callgraph.js)
+- for (.github_automation/callgraph/presets/callgraph.js)
 
 ---
-Generated at: 2025-09-18 07:06:11 JST
+Generated at: 2025-09-19 07:05:12 JST
