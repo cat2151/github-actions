@@ -1,4 +1,4 @@
-Last updated: 2025-09-19
+Last updated: 2025-09-20
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -280,33 +280,6 @@ Last updated: 2025-09-19
 - もしlogから判別できない場合は、logを改善する。
 
 
-
-```
-
-## [Issue #25](../issue-notes/25.md): project summaryを他projectからcallしたところ、issue-notes参照ディレクトリ誤りが発覚した
-[issue-notes/25.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/25.md)
-
-...
-ラベル: 
---- issue-notes/25.md の内容 ---
-
-```markdown
-# issue project summaryを他projectからcallしたところ、issue-notes参照ディレクトリ誤りが発覚した #25
-[issues #25](https://github.com/cat2151/github-actions/issues/25)
-
-# 事象
-- `Issueノートが存在しません: /home/runner/work/tonejs-mml-to-json/tonejs-mml-to-json/.github/actions-tmp/issue-notes/6.md`
-
-# どうする？
-- 当該処理のディレクトリ部分を確認する
-- 日次バッチでGeminiに確認させてみる
-- 結果
-    - Geminiに確認させてpromptを生成させ、agentに投げた
-    - 結果、projectRootの扱いの誤り、と判明
-        - 共通workflow側のdirを引数でわたしてしまっていた
-        - target repository側のdirを引数でわたすべき
-- 修正したつもり
-- 次の日次バッチで動作確認させるつもり
 
 ```
 
@@ -2238,48 +2211,6 @@ jobs:
 
 ```
 
-### .github/actions-tmp/issue-notes/25.md
-```md
-# issue project summaryを他projectからcallしたところ、issue-notes参照ディレクトリ誤りが発覚した #25
-[issues #25](https://github.com/cat2151/github-actions/issues/25)
-
-# 事象
-- `Issueノートが存在しません: /home/runner/work/tonejs-mml-to-json/tonejs-mml-to-json/.github/actions-tmp/issue-notes/6.md`
-
-# どうする？
-- 当該処理のディレクトリ部分を確認する
-- 日次バッチでGeminiに確認させてみる
-- 結果
-    - Geminiに確認させてpromptを生成させ、agentに投げた
-    - 結果、projectRootの扱いの誤り、と判明
-        - 共通workflow側のdirを引数でわたしてしまっていた
-        - target repository側のdirを引数でわたすべき
-- 修正したつもり
-- 次の日次バッチで動作確認させるつもり
-
-```
-
-### issue-notes/25.md
-```md
-# issue project summaryを他projectからcallしたところ、issue-notes参照ディレクトリ誤りが発覚した #25
-[issues #25](https://github.com/cat2151/github-actions/issues/25)
-
-# 事象
-- `Issueノートが存在しません: /home/runner/work/tonejs-mml-to-json/tonejs-mml-to-json/.github/actions-tmp/issue-notes/6.md`
-
-# どうする？
-- 当該処理のディレクトリ部分を確認する
-- 日次バッチでGeminiに確認させてみる
-- 結果
-    - Geminiに確認させてpromptを生成させ、agentに投げた
-    - 結果、projectRootの扱いの誤り、と判明
-        - 共通workflow側のdirを引数でわたしてしまっていた
-        - target repository側のdirを引数でわたすべき
-- 修正したつもり
-- 次の日次バッチで動作確認させるつもり
-
-```
-
 ### .github/actions-tmp/issue-notes/26.md
 ```md
 # issue userによるcommitがなくなって24時間超経過しているのに、毎日ムダにproject summaryとcallgraphの自動生成が行われてしまっている #26
@@ -2466,6 +2397,9 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+07d2f25 Update callgraph.html [auto]
+1c3f76a fix #25 test greenなのでcloseとする
+a4033fa Update project summaries (overview & development status)
 124a63f Update callgraph.html [auto]
 4bb146e #25 script調査対象dirを、共通workflow側でなく、呼び出し元project側に修正したつもり
 3888f7d Update project summaries (overview & development status)
@@ -2473,9 +2407,6 @@ a40fdf9 Update callgraph.html [auto]
 d6acef2 #26 状況を反映
 97f0573 #25 状況を反映
 092255e Add issue note for #26
-65f4883 Add issue note for #25
-78d9738 Update project summaries (overview & development status)
-a4236d2 Update callgraph.html [auto]
 
 ### 変更されたファイル:
 .github/workflows/daily-project-summary.yml
@@ -2486,8 +2417,7 @@ generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
 issue-notes/25.md
-issue-notes/26.md
 
 
 ---
-Generated at: 2025-09-19 07:04:31 JST
+Generated at: 2025-09-20 07:05:10 JST
