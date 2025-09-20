@@ -41,7 +41,7 @@ function main() {
     }
   }
 
-  const output = `has_recent_human_commit=${hasHuman}`;
+  const output = `has_recent_human_commit=${hasHuman ? 'true' : 'false'}`;
   console.log(output);
 
   // GitHub Actionsの出力に反映する
