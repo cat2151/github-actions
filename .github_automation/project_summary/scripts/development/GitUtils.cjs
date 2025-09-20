@@ -12,52 +12,6 @@ class GitUtils {
   }
 
   /**
-   * 過去24時間以内にユーザーコミットがあるかチェック
-   */
-  async hasUserCommitsInLast24Hours() {
-    try {
-      console.log('Checking for user commits in the last 24 hours...');
-
-      // 過去24時間のコミット履歴を取得（author情報付き）
-      const gitCommand = `git log --since="24 hours ago" --pretty=format:"%H %an %s" --oneline`;
-
-      const result = execSync(gitCommand, {
-        cwd: this.projectRoot,
-        encoding: 'utf-8',
-        stdio: 'pipe'
-      });
-
-      const allCommits = result.trim();
-      if (!allCommits) {
-        console.log('No commits found in the last 24 hours.');
-        return false;
-      }
-
-      // GitHub Actionsによるコミットを除外
-      const userCommits = allCommits
-        .split('\n')
-        .filter(line => {
-          const lowerLine = line.toLowerCase();
-          return !lowerLine.includes('github-actions') &&
-                 !lowerLine.includes('action@github.com');
-        });
-
-      const hasCommits = userCommits.length > 0;
-
-      console.log(`User commits found: ${hasCommits}`);
-      if (hasCommits) {
-        console.log('Recent user commits:');
-        userCommits.forEach(commit => console.log(commit));
-      }
-
-      return hasCommits;
-    } catch (error) {
-      console.error('Error checking commits:', error.message);
-      return false;
-    }
-  }
-
-  /**
    * 最近の変更履歴を取得
    */
   async collectRecentChanges() {

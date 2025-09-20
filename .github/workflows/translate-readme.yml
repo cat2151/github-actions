@@ -17,7 +17,12 @@ env:
   DOC_NAME: README
 
 jobs:
+  check_recent_human_commit:
+    uses: ./.github/workflows/check-recent-human-commit.yml
+
   translate:
+    needs: check_recent_human_commit
+    if: needs.check_recent_human_commit.outputs.has_recent_human_commit == 'true'
     runs-on: ubuntu-latest
 
     permissions:

@@ -16,7 +16,12 @@ env:
   OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT: development-status-generated-prompt.md
 
 jobs:
+  check_recent_human_commit:
+    uses: ./.github/workflows/check-recent-human-commit.yml
+
   generate-summary:
+    needs: check_recent_human_commit
+    if: needs.check_recent_human_commit.outputs.has_recent_human_commit == 'true'
     runs-on: ubuntu-latest
 
     permissions:

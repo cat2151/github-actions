@@ -51,16 +51,6 @@ async function collectRecentChanges(projectRoot) {
 }
 
 /**
- * ユーザーコミットの存在チェック
- * @param {string} projectRoot - プロジェクトルートパス
- * @returns {Promise<boolean>} 過去24時間にユーザーコミットがあるか
- */
-async function hasRecentUserCommits(projectRoot) {
-  const gitUtils = new GitUtils(projectRoot);
-  return await gitUtils.hasUserCommitsInLast24Hours();
-}
-
-/**
  * 指定したIssue番号のノートmdファイル内容を同期取得 ※まず開発しやすさ優先で、決め打ちで必ずノートがある想定で開発する。これによりノート取得失敗バグを検知できる
  * ノートファイルが存在しない、または読み取りに失敗した場合はエラーメッセージを出力し、プロセスをエラー終了させる。
  * @param {number|string} issueNumber - Issue番号
@@ -87,6 +77,5 @@ function getIssueNoteSync(issueNumber, projectRoot) {
 module.exports = {
   collectIssues,
   collectRecentChanges,
-  hasRecentUserCommits,
   getIssueNoteSync
 };

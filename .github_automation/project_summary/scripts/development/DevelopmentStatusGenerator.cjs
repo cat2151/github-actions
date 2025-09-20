@@ -40,13 +40,6 @@ class DevelopmentStatusGenerator extends BaseGenerator {
     // 基底クラスの環境変数チェック
     await super.validateEnvironment();
 
-    // 過去24時間のユーザーコミットチェック
-    const hasUserCommits = await IssueTracker.hasRecentUserCommits(this.projectRoot);
-    if (!hasUserCommits) {
-      console.log('No user commits in the last 24 hours. Skipping summary generation.');
-      return false;
-    }
-
     return true;
   }
 

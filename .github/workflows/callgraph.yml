@@ -14,32 +14,12 @@ env:
   QUERIES: .github/actions-tmp/.github_automation/callgraph/codeql-queries
 
 jobs:
-  check-commits:
-    runs-on: ubuntu-latest
-    outputs:
-      should-run: ${{ steps.check.outputs.should-run }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 50 # 過去のコミットを取得
-
-      - name: Checkout shared github-actions repo ※共通ワークフロー側。こうしないと呼び出し元リポジトリ側の内容が上書きされて消える
-        uses: actions/checkout@v4
-        with:
-          repository: cat2151/github-actions
-          path: ${{ env.ACTION_TMP }}
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Check for user commits in last 24 hours
-        id: check
-        run: |
-          node ${{ env.CALLGRAPH }}/check-commits.cjs
+  check_recent_human_commit:
+    uses: ./.github/workflows/check-recent-human-commit.yml
 
   generate-callgraph:
-    needs: check-commits
-    if: needs.check-commits.outputs.should-run == 'true'
+    needs: check_recent_human_commit
+    if: needs.check_recent_human_commit.outputs.has_recent_human_commit == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
