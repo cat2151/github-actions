@@ -24,3 +24,18 @@ jobs:
         # 呼び出し元jobでは needs.<job_id>.outputs.has_recent_human_commit で参照される
         run: |
           node .github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
+
+      - name: Debug - Verify output was set
+        run: |
+          echo "=== DEBUG: Step outputs verification ==="
+          echo "GITHUB_OUTPUT file contents:"
+          cat "$GITHUB_OUTPUT"
+          echo ""
+          echo "Step output value: ${{ steps.check.outputs.has_recent_human_commit }}"
+          echo "=== END DEBUG ==="
+
+      - name: Create workflow summary
+        run: |
+          echo "## Check Recent Human Commit Results" >> $GITHUB_STEP_SUMMARY
+          echo "- **has_recent_human_commit**: \`${{ steps.check.outputs.has_recent_human_commit }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Will trigger downstream jobs**: ${{ steps.check.outputs.has_recent_human_commit == 'true' && '✅ Yes' || '❌ No' }}" >> $GITHUB_STEP_SUMMARY

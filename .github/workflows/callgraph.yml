@@ -17,8 +17,20 @@ jobs:
   check_recent_human_commit:
     uses: ./.github/workflows/check-recent-human-commit.yml
 
-  generate-callgraph:
+  debug_output:
     needs: check_recent_human_commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug - Show received value
+        run: |
+          echo "=== DEBUG: check_recent_human_commit job outputs ==="
+          echo "has_recent_human_commit: ${{ needs.check_recent_human_commit.outputs.has_recent_human_commit }}"
+          echo "Boolean evaluation: ${{ needs.check_recent_human_commit.outputs.has_recent_human_commit == 'true' }}"
+          echo "Will execute generate-callgraph: ${{ needs.check_recent_human_commit.outputs.has_recent_human_commit == 'true' && '✅ Yes' || '❌ No' }}"
+          echo "=== END DEBUG ==="
+
+  generate-callgraph:
+    needs: [check_recent_human_commit, debug_output]
     if: needs.check_recent_human_commit.outputs.has_recent_human_commit == 'true'
     runs-on: ubuntu-latest
     permissions:
