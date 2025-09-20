@@ -1,4 +1,4 @@
-Last updated: 2025-09-20
+Last updated: 2025-09-21
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -108,6 +108,7 @@ Last updated: 2025-09-20
 - .github/actions-tmp/.github/workflows/call-issue-note.yml
 - .github/actions-tmp/.github/workflows/call-translate-readme.yml
 - .github/actions-tmp/.github/workflows/callgraph.yml
+- .github/actions-tmp/.github/workflows/check-recent-human-commit.yml
 - .github/actions-tmp/.github/workflows/daily-project-summary.yml
 - .github/actions-tmp/.github/workflows/issue-note.yml
 - .github/actions-tmp/.github/workflows/translate-readme.yml
@@ -121,7 +122,6 @@ Last updated: 2025-09-20
 - .github/actions-tmp/.github_automation/callgraph/scripts/analyze-codeql.cjs
 - .github/actions-tmp/.github_automation/callgraph/scripts/callgraph-utils.cjs
 - .github/actions-tmp/.github_automation/callgraph/scripts/check-codeql-exists.cjs
-- .github/actions-tmp/.github_automation/callgraph/scripts/check-commits.cjs
 - .github/actions-tmp/.github_automation/callgraph/scripts/check-node-version.cjs
 - .github/actions-tmp/.github_automation/callgraph/scripts/common-utils.cjs
 - .github/actions-tmp/.github_automation/callgraph/scripts/copy-commit-results.cjs
@@ -129,6 +129,7 @@ Last updated: 2025-09-20
 - .github/actions-tmp/.github_automation/callgraph/scripts/find-process-results.cjs
 - .github/actions-tmp/.github_automation/callgraph/scripts/generate-html-graph.cjs
 - .github/actions-tmp/.github_automation/callgraph/scripts/generateHTML.cjs
+- .github/actions-tmp/.github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
 - .github/actions-tmp/.github_automation/project_summary/docs/daily-summary-setup.md
 - .github/actions-tmp/.github_automation/project_summary/prompts/development-status-prompt.md
 - .github/actions-tmp/.github_automation/project_summary/prompts/project-overview-prompt.md
@@ -177,6 +178,8 @@ Last updated: 2025-09-20
 - .github/actions-tmp/issue-notes/24.md
 - .github/actions-tmp/issue-notes/25.md
 - .github/actions-tmp/issue-notes/26.md
+- .github/actions-tmp/issue-notes/27.md
+- .github/actions-tmp/issue-notes/28.md
 - .github/actions-tmp/issue-notes/3.md
 - .github/actions-tmp/issue-notes/4.md
 - .github/actions-tmp/issue-notes/7.md
@@ -190,6 +193,7 @@ Last updated: 2025-09-20
 - .github/workflows/call-issue-note.yml
 - .github/workflows/call-translate-readme.yml
 - .github/workflows/callgraph.yml
+- .github/workflows/check-recent-human-commit.yml
 - .github/workflows/daily-project-summary.yml
 - .github/workflows/issue-note.yml
 - .github/workflows/translate-readme.yml
@@ -203,7 +207,6 @@ Last updated: 2025-09-20
 - .github_automation/callgraph/scripts/analyze-codeql.cjs
 - .github_automation/callgraph/scripts/callgraph-utils.cjs
 - .github_automation/callgraph/scripts/check-codeql-exists.cjs
-- .github_automation/callgraph/scripts/check-commits.cjs
 - .github_automation/callgraph/scripts/check-node-version.cjs
 - .github_automation/callgraph/scripts/common-utils.cjs
 - .github_automation/callgraph/scripts/copy-commit-results.cjs
@@ -211,6 +214,7 @@ Last updated: 2025-09-20
 - .github_automation/callgraph/scripts/find-process-results.cjs
 - .github_automation/callgraph/scripts/generate-html-graph.cjs
 - .github_automation/callgraph/scripts/generateHTML.cjs
+- .github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
 - .github_automation/project_summary/docs/daily-summary-setup.md
 - .github_automation/project_summary/prompts/development-status-prompt.md
 - .github_automation/project_summary/prompts/project-overview-prompt.md
@@ -256,6 +260,8 @@ Last updated: 2025-09-20
 - issue-notes/24.md
 - issue-notes/25.md
 - issue-notes/26.md
+- issue-notes/27.md
+- issue-notes/28.md
 - issue-notes/3.md
 - issue-notes/4.md
 - issue-notes/7.md
@@ -279,7 +285,35 @@ Last updated: 2025-09-20
 - logを確認する。24時間チェックがバグっている想定。
 - もしlogから判別できない場合は、logを改善する。
 
+# log確認結果
+- botによるcommitなのに、user commitとして誤判別されている
+```
+Checking for user commits in the last 24 hours...
+User commits found: true
+Recent user commits:
+7654bf7 Update callgraph.html [auto]
+abd2f2d Update project summaries (overview & development status)
+```
 
+# ざっくり調査結果
+- #27 が判明した
+
+# どうする？
+- [x] #27 を修正する。これで自動的に #26 も修正される想定。
+    - 当該処理を修正する。
+    - もしデータ不足なら、より詳細なlog生成を実装する。
+- 別件として、このチェックはむしろworkflow ymlの先頭で行うのが適切と考える。なぜなら、以降のムダな処理をカットできるのでエコ。
+    - [x] #28 を起票したので、そちらで実施する。
+
+# close条件は？
+- 前提
+    - [x] 先行タスクである #27 と #28 が完了済みであること
+- 誤爆がなくなること。
+    - つまり、userによるcommitがなくなって24時間超経過後の日次バッチにて、
+        - ムダなdevelopment status生成、等がないこと
+        - jobのlogに「commitがないので処理しません」的なmessageが出ること
+- どうする？
+    - 日次バッチを本番を流して本番testする
 
 ```
 
@@ -621,32 +655,12 @@ env:
   QUERIES: .github/actions-tmp/.github_automation/callgraph/codeql-queries
 
 jobs:
-  check-commits:
-    runs-on: ubuntu-latest
-    outputs:
-      should-run: ${{ steps.check.outputs.should-run }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 50 # 過去のコミットを取得
-
-      - name: Checkout shared github-actions repo ※共通ワークフロー側。こうしないと呼び出し元リポジトリ側の内容が上書きされて消える
-        uses: actions/checkout@v4
-        with:
-          repository: cat2151/github-actions
-          path: ${{ env.ACTION_TMP }}
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Check for user commits in last 24 hours
-        id: check
-        run: |
-          node ${{ env.CALLGRAPH }}/check-commits.cjs
+  check-recent-human-commit:
+    uses: ./.github/workflows/check-recent-human-commit.yml
 
   generate-callgraph:
-    needs: check-commits
-    if: needs.check-commits.outputs.should-run == 'true'
+    needs: check-recent-human-commit
+    if: needs.check-recent-human-commit.outputs.has_recent_human_commit == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -745,32 +759,12 @@ env:
   QUERIES: .github/actions-tmp/.github_automation/callgraph/codeql-queries
 
 jobs:
-  check-commits:
-    runs-on: ubuntu-latest
-    outputs:
-      should-run: ${{ steps.check.outputs.should-run }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 50 # 過去のコミットを取得
-
-      - name: Checkout shared github-actions repo ※共通ワークフロー側。こうしないと呼び出し元リポジトリ側の内容が上書きされて消える
-        uses: actions/checkout@v4
-        with:
-          repository: cat2151/github-actions
-          path: ${{ env.ACTION_TMP }}
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Check for user commits in last 24 hours
-        id: check
-        run: |
-          node ${{ env.CALLGRAPH }}/check-commits.cjs
+  check-recent-human-commit:
+    uses: ./.github/workflows/check-recent-human-commit.yml
 
   generate-callgraph:
-    needs: check-commits
-    if: needs.check-commits.outputs.should-run == 'true'
+    needs: check-recent-human-commit
+    if: needs.check-recent-human-commit.outputs.has_recent_human_commit == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -871,7 +865,12 @@ env:
   OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT: development-status-generated-prompt.md
 
 jobs:
+  check_recent_human_commit:
+    uses: ./.github/workflows/check-recent-human-commit.yml
+
   generate-summary:
+    needs: check_recent_human_commit
+    if: needs.check_recent_human_commit.outputs.has_recent_human_commit == 'true'
     runs-on: ubuntu-latest
 
     permissions:
@@ -946,15 +945,15 @@ jobs:
       - name: Commit and push summaries
         if: steps.check_summaries.outputs.summaries_generated == 'true'
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update project summaries (overview & development status)"
+            git commit -m "Update project summaries (overview & development status) [auto]"
             git push
           fi
 
@@ -989,7 +988,12 @@ env:
   OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT: development-status-generated-prompt.md
 
 jobs:
+  check_recent_human_commit:
+    uses: ./.github/workflows/check-recent-human-commit.yml
+
   generate-summary:
+    needs: check_recent_human_commit
+    if: needs.check_recent_human_commit.outputs.has_recent_human_commit == 'true'
     runs-on: ubuntu-latest
 
     permissions:
@@ -1064,15 +1068,15 @@ jobs:
       - name: Commit and push summaries
         if: steps.check_summaries.outputs.summaries_generated == 'true'
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update project summaries (overview & development status)"
+            git commit -m "Update project summaries (overview & development status) [auto]"
             git push
           fi
 
@@ -1130,10 +1134,10 @@ jobs:
           echo "${{ inputs.issue_body }}" >> issue-notes/${{ inputs.issue_number }}.md
       - name: Commit and push note
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add issue-notes/${{ inputs.issue_number }}.md
-          git commit -m "Add issue note for #${{ inputs.issue_number }}"
+          git commit -m "Add issue note for #${{ inputs.issue_number }} [auto]"
           git push
 
       - name: Add link to issue note in issue body
@@ -1200,10 +1204,10 @@ jobs:
           echo "${{ inputs.issue_body }}" >> issue-notes/${{ inputs.issue_number }}.md
       - name: Commit and push note
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add issue-notes/${{ inputs.issue_number }}.md
-          git commit -m "Add issue note for #${{ inputs.issue_number }}"
+          git commit -m "Add issue note for #${{ inputs.issue_number }} [auto]"
           git push
 
       - name: Add link to issue note in issue body
@@ -1248,7 +1252,12 @@ env:
   DOC_NAME: README
 
 jobs:
+  check_recent_human_commit:
+    uses: ./.github/workflows/check-recent-human-commit.yml
+
   translate:
+    needs: check_recent_human_commit
+    if: needs.check_recent_human_commit.outputs.has_recent_human_commit == 'true'
     runs-on: ubuntu-latest
 
     permissions:
@@ -1297,10 +1306,10 @@ jobs:
       - name: Commit and push changes
         if: steps.changes.outputs.changed == 'true'
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ${{ env.DOC_NAME }}.md
-          git commit -m "Auto-translate ${{ env.DOC_NAME }}.ja.md to ${{ env.DOC_NAME }}.md"
+          git commit -m "Auto-translate ${{ env.DOC_NAME }}.ja.md to ${{ env.DOC_NAME }}.md [auto]"
           git push
 
 ```
@@ -1326,7 +1335,12 @@ env:
   DOC_NAME: README
 
 jobs:
+  check_recent_human_commit:
+    uses: ./.github/workflows/check-recent-human-commit.yml
+
   translate:
+    needs: check_recent_human_commit
+    if: needs.check_recent_human_commit.outputs.has_recent_human_commit == 'true'
     runs-on: ubuntu-latest
 
     permissions:
@@ -1375,10 +1389,10 @@ jobs:
       - name: Commit and push changes
         if: steps.changes.outputs.changed == 'true'
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ${{ env.DOC_NAME }}.md
-          git commit -m "Auto-translate ${{ env.DOC_NAME }}.ja.md to ${{ env.DOC_NAME }}.md"
+          git commit -m "Auto-translate ${{ env.DOC_NAME }}.ja.md to ${{ env.DOC_NAME }}.md [auto]"
           git push
 
 ```
@@ -1613,6 +1627,282 @@ GitHub Actions の実行ログで詳細なエラー情報を確認できます�
 - 生成されたコンテンツはパブリックリポジトリの場合公開される
 - プライベート情報を含むプロンプトは避ける
 
+```
+
+### .github/actions-tmp/generated-docs/callgraph.html
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function Call Graph with Source Links</title>
+    <script src="https://unpkg.com/cytoscape@3.29.2/dist/cytoscape.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Function Call Graph with Source Links</h1>
+        <div class="stats-container">
+            <div class="stats">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Functions</div>
+            </div>
+            <div class="stats">
+                <div class="stat-value">2</div>
+                <div class="stat-label">Call Relationships</div>
+            </div>
+            <div class="stats">
+                <div class="stat-value">2</div>
+                <div class="stat-label">With Callee Location</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="graph-container">
+            <div id="cy"></div>
+            <div class="controls">
+                <button class="control-button" onclick="resetLayout()">Reset Layout</button>
+                <button class="control-button" onclick="switchLayout(this)">レイアウト切替</button>
+                <button class="control-button" onclick="fitToContent()">Fit to Content</button>
+                <button class="control-button" onclick="toggleNodeLabels()">Toggle Labels</button>
+                <button class="control-button" onclick="toggleCalleeLocationFilter()">Hide No-Callee-Location</button>
+                <button class="control-button" onclick="toggleInfoPanel()">Toggle Info Panel</button>
+            </div>
+        </div>
+
+        <div id="info-panel" class="info-panel hidden">
+            <div class="info-title">選択した要素の詳細</div>
+            <div id="info-content"></div>
+        </div>
+    </div>
+
+    <div class="generated-time">
+        Generated: 2025/9/20 20:06:49
+    </div>
+
+    <script>
+      const graphData = {
+  "nodes": [
+    {
+      "id": "main (main.js:6)",
+      "label": "main (main.js:6)",
+      "locations": [
+        {
+          "file": "src/main.js",
+          "line": 7,
+          "column": 5,
+          "type": "caller",
+          "sourceLine": "    greet('World');"
+        }
+      ],
+      "hasLocationInfo": true,
+      "hasCalleeLocationInfo": true
+    },
+    {
+      "id": "greet (main.js:2)",
+      "label": "greet (main.js:2)",
+      "locations": [
+        {
+          "file": "src/main.js",
+          "line": 7,
+          "column": 5,
+          "type": "definition",
+          "sourceLine": "    greet('World');"
+        }
+      ],
+      "hasLocationInfo": true,
+      "hasCalleeLocationInfo": true,
+      "calleeFncDef": "function greet(name) {"
+    },
+    {
+      "id": "global (main.js:10)",
+      "label": "global (main.js:10)",
+      "locations": [
+        {
+          "file": "src/main.js",
+          "line": 10,
+          "column": 1,
+          "type": "caller",
+          "sourceLine": "main();"
+        }
+      ],
+      "hasLocationInfo": true,
+      "hasCalleeLocationInfo": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-0",
+      "source": "main (main.js:6)",
+      "target": "greet (main.js:2)",
+      "hasCalleeLocationInfo": true,
+      "file": "src/main.js",
+      "line": 7,
+      "column": 5,
+      "location": "src/main.js:7:5",
+      "hasLocationInfo": true,
+      "sourceLine": "    greet('World');"
+    },
+    {
+      "id": "edge-1",
+      "source": "global (main.js:10)",
+      "target": "main (main.js:6)",
+      "hasCalleeLocationInfo": true,
+      "file": "src/main.js",
+      "line": 10,
+      "column": 1,
+      "location": "src/main.js:10:1",
+      "hasLocationInfo": true,
+      "sourceLine": "main();"
+    }
+  ]
+};
+      const repo = "cat2151/github-actions";
+      const branch = "main";
+    </script>
+    <script src="callgraph.js"></script>
+</body>
+</html>
+```
+
+### generated-docs/callgraph.html
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function Call Graph with Source Links</title>
+    <script src="https://unpkg.com/cytoscape@3.29.2/dist/cytoscape.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Function Call Graph with Source Links</h1>
+        <div class="stats-container">
+            <div class="stats">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Functions</div>
+            </div>
+            <div class="stats">
+                <div class="stat-value">2</div>
+                <div class="stat-label">Call Relationships</div>
+            </div>
+            <div class="stats">
+                <div class="stat-value">2</div>
+                <div class="stat-label">With Callee Location</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="graph-container">
+            <div id="cy"></div>
+            <div class="controls">
+                <button class="control-button" onclick="resetLayout()">Reset Layout</button>
+                <button class="control-button" onclick="switchLayout(this)">レイアウト切替</button>
+                <button class="control-button" onclick="fitToContent()">Fit to Content</button>
+                <button class="control-button" onclick="toggleNodeLabels()">Toggle Labels</button>
+                <button class="control-button" onclick="toggleCalleeLocationFilter()">Hide No-Callee-Location</button>
+                <button class="control-button" onclick="toggleInfoPanel()">Toggle Info Panel</button>
+            </div>
+        </div>
+
+        <div id="info-panel" class="info-panel hidden">
+            <div class="info-title">選択した要素の詳細</div>
+            <div id="info-content"></div>
+        </div>
+    </div>
+
+    <div class="generated-time">
+        Generated: 2025/9/20 20:06:49
+    </div>
+
+    <script>
+      const graphData = {
+  "nodes": [
+    {
+      "id": "main (main.js:6)",
+      "label": "main (main.js:6)",
+      "locations": [
+        {
+          "file": "src/main.js",
+          "line": 7,
+          "column": 5,
+          "type": "caller",
+          "sourceLine": "    greet('World');"
+        }
+      ],
+      "hasLocationInfo": true,
+      "hasCalleeLocationInfo": true
+    },
+    {
+      "id": "greet (main.js:2)",
+      "label": "greet (main.js:2)",
+      "locations": [
+        {
+          "file": "src/main.js",
+          "line": 7,
+          "column": 5,
+          "type": "definition",
+          "sourceLine": "    greet('World');"
+        }
+      ],
+      "hasLocationInfo": true,
+      "hasCalleeLocationInfo": true,
+      "calleeFncDef": "function greet(name) {"
+    },
+    {
+      "id": "global (main.js:10)",
+      "label": "global (main.js:10)",
+      "locations": [
+        {
+          "file": "src/main.js",
+          "line": 10,
+          "column": 1,
+          "type": "caller",
+          "sourceLine": "main();"
+        }
+      ],
+      "hasLocationInfo": true,
+      "hasCalleeLocationInfo": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-0",
+      "source": "main (main.js:6)",
+      "target": "greet (main.js:2)",
+      "hasCalleeLocationInfo": true,
+      "file": "src/main.js",
+      "line": 7,
+      "column": 5,
+      "location": "src/main.js:7:5",
+      "hasLocationInfo": true,
+      "sourceLine": "    greet('World');"
+    },
+    {
+      "id": "edge-1",
+      "source": "global (main.js:10)",
+      "target": "main (main.js:6)",
+      "hasCalleeLocationInfo": true,
+      "file": "src/main.js",
+      "line": 10,
+      "column": 1,
+      "location": "src/main.js:10:1",
+      "hasLocationInfo": true,
+      "sourceLine": "main();"
+    }
+  ]
+};
+      const repo = "cat2151/github-actions";
+      const branch = "main";
+    </script>
+    <script src="callgraph.js"></script>
+</body>
+</html>
 ```
 
 ### .github/actions-tmp/issue-notes/10.md
@@ -2220,7 +2510,35 @@ jobs:
 - logを確認する。24時間チェックがバグっている想定。
 - もしlogから判別できない場合は、logを改善する。
 
+# log確認結果
+- botによるcommitなのに、user commitとして誤判別されている
+```
+Checking for user commits in the last 24 hours...
+User commits found: true
+Recent user commits:
+7654bf7 Update callgraph.html [auto]
+abd2f2d Update project summaries (overview & development status)
+```
 
+# ざっくり調査結果
+- #27 が判明した
+
+# どうする？
+- [x] #27 を修正する。これで自動的に #26 も修正される想定。
+    - 当該処理を修正する。
+    - もしデータ不足なら、より詳細なlog生成を実装する。
+- 別件として、このチェックはむしろworkflow ymlの先頭で行うのが適切と考える。なぜなら、以降のムダな処理をカットできるのでエコ。
+    - [x] #28 を起票したので、そちらで実施する。
+
+# close条件は？
+- 前提
+    - [x] 先行タスクである #27 と #28 が完了済みであること
+- 誤爆がなくなること。
+    - つまり、userによるcommitがなくなって24時間超経過後の日次バッチにて、
+        - ムダなdevelopment status生成、等がないこと
+        - jobのlogに「commitがないので処理しません」的なmessageが出ること
+- どうする？
+    - 日次バッチを本番を流して本番testする
 
 ```
 
@@ -2233,7 +2551,35 @@ jobs:
 - logを確認する。24時間チェックがバグっている想定。
 - もしlogから判別できない場合は、logを改善する。
 
+# log確認結果
+- botによるcommitなのに、user commitとして誤判別されている
+```
+Checking for user commits in the last 24 hours...
+User commits found: true
+Recent user commits:
+7654bf7 Update callgraph.html [auto]
+abd2f2d Update project summaries (overview & development status)
+```
 
+# ざっくり調査結果
+- #27 が判明した
+
+# どうする？
+- [x] #27 を修正する。これで自動的に #26 も修正される想定。
+    - 当該処理を修正する。
+    - もしデータ不足なら、より詳細なlog生成を実装する。
+- 別件として、このチェックはむしろworkflow ymlの先頭で行うのが適切と考える。なぜなら、以降のムダな処理をカットできるのでエコ。
+    - [x] #28 を起票したので、そちらで実施する。
+
+# close条件は？
+- 前提
+    - [x] 先行タスクである #27 と #28 が完了済みであること
+- 誤爆がなくなること。
+    - つまり、userによるcommitがなくなって24時間超経過後の日次バッチにて、
+        - ムダなdevelopment status生成、等がないこと
+        - jobのlogに「commitがないので処理しません」的なmessageが出ること
+- どうする？
+    - 日次バッチを本番を流して本番testする
 
 ```
 
@@ -2397,27 +2743,26 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
-07d2f25 Update callgraph.html [auto]
-1c3f76a fix #25 test greenなのでcloseとする
-a4033fa Update project summaries (overview & development status)
-124a63f Update callgraph.html [auto]
-4bb146e #25 script調査対象dirを、共通workflow側でなく、呼び出し元project側に修正したつもり
-3888f7d Update project summaries (overview & development status)
-a40fdf9 Update callgraph.html [auto]
-d6acef2 #26 状況を反映
-97f0573 #25 状況を反映
-092255e Add issue note for #26
+5cc1bbd Update callgraph.html [auto]
+620c24f Merge branch 'main' of github.com:cat2151/github-actions into main
+bbbfa42 #26 mdメンテ
+4505799 Update callgraph.html [auto]
+134384f fix #27 issue28が修正され、close条件を満たしたので、closeとする
+ff6050f Merge branch 'main' of github.com:cat2151/github-actions into main
+6415664 fix #28 デバッグコードの削除漏れがあったので修正した。test greenなのでcloseとする
+0d805e6 Update callgraph.html [auto]
+afb0292 #28 根本的にymlの書き方が間違っていたことをagentが気づかずにずっとムダなデバッグをしていたらしいことが判明、ムダなデバッグはすべて削除した
+05cfc79 #28 さらに切り分け用に処理をagentに追加させた
 
 ### 変更されたファイル:
-.github/workflows/daily-project-summary.yml
-.github_automation/project_summary/scripts/overview/TechStackAnalyzer.cjs
-.github_automation/project_summary/scripts/shared/FileSystemUtils.cjs
+.github/workflows/callgraph.yml
+.github/workflows/check-recent-human-commit.yml
+.github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
 generated-docs/callgraph.html
-generated-docs/development-status-generated-prompt.md
-generated-docs/development-status.md
-generated-docs/project-overview.md
-issue-notes/25.md
+issue-notes/26.md
+issue-notes/27.md
+issue-notes/28.md
 
 
 ---
-Generated at: 2025-09-20 07:05:10 JST
+Generated at: 2025-09-21 07:04:11 JST
