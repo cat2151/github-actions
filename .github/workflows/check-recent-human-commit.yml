@@ -23,7 +23,15 @@ jobs:
         # jobのoutputsにマッピングされ、
         # 呼び出し元jobでは needs.<job_id>.outputs.has_recent_human_commit で参照される
         run: |
+          # Node.jsスクリプトを実行
           node .github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
+
+          # より明示的にoutputを設定
+          if grep -q "has_recent_human_commit=true" <<< "$(node .github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs 2>/dev/null)"; then
+            echo "has_recent_human_commit=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_recent_human_commit=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Debug - Verify output was set
         run: |
