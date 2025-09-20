@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // 過去24時間以内に人間のcommitがあるかどうかをチェックする
-import { execSync } from "child_process";
-import process from "process";
-import fs from "fs";
+const { execSync } = require("child_process");
+const process = require("process");
+const fs = require("fs");
 
 function run(cmd) {
   return execSync(cmd, { encoding: "utf-8" }).trim();

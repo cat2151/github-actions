@@ -17,18 +17,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm ci
-
       - name: Check recent human commit
         id: check
         # このstepが GITHUB_OUTPUT を更新して、
         # jobのoutputsにマッピングされ、
         # 呼び出し元jobでは needs.<job_id>.outputs.has_recent_human_commit で参照される
         run: |
-          node .github_automation/scripts/check-recent-human-commit.cjs
+          node .github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
