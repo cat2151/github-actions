@@ -3,6 +3,10 @@ name: "Check recent human commit"
 
 on:
   workflow_call:
+    outputs:
+      has_recent_human_commit:
+        description: "Whether there is a recent human commit"
+        value: ${{ jobs.check-recent-human-commit.outputs.has_recent_human_commit }}
 
 jobs:
   check-recent-human-commit:
@@ -19,34 +23,7 @@ jobs:
 
       - name: Check recent human commit
         id: check
-        # このstepが GITHUB_OUTPUT を更新して、
-        # jobのoutputsにマッピングされ、
-        # 呼び出し元jobでは needs.<job_id>.outputs.has_recent_human_commit で参照される
+        # cjs内で GITHUB_OUTPUT を更新している
         run: |
-          # Node.jsスクリプトを実行
           node .github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
 
-          # より明示的にoutputを設定
-          if grep -q "has_recent_human_commit=true" <<< "$(node .github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs 2>/dev/null)"; then
-            echo "has_recent_human_commit=true" >> $GITHUB_OUTPUT
-          else
-            echo "has_recent_human_commit=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Debug - Verify output was set
-        run: |
-          echo "=== DEBUG: Step outputs verification ==="
-          echo "GITHUB_OUTPUT env var: $GITHUB_OUTPUT"
-          echo "GITHUB_OUTPUT file exists: $(test -f "$GITHUB_OUTPUT" && echo 'YES' || echo 'NO')"
-          echo "GITHUB_OUTPUT file permissions: $(ls -la "$GITHUB_OUTPUT" 2>/dev/null || echo 'FILE NOT FOUND')"
-          echo "GITHUB_OUTPUT file contents:"
-          cat "$GITHUB_OUTPUT" 2>/dev/null || echo "Could not read GITHUB_OUTPUT file"
-          echo ""
-          echo "Step output value: ${{ steps.check.outputs.has_recent_human_commit }}"
-          echo "=== END DEBUG ==="
-
-      - name: Create workflow summary
-        run: |
-          echo "## Check Recent Human Commit Results" >> $GITHUB_STEP_SUMMARY
-          echo "- **has_recent_human_commit**: \`${{ steps.check.outputs.has_recent_human_commit }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **Will trigger downstream jobs**: ${{ steps.check.outputs.has_recent_human_commit == 'true' && '✅ Yes' || '❌ No' }}" >> $GITHUB_STEP_SUMMARY
