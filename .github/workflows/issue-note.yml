@@ -39,10 +39,10 @@ jobs:
           echo "${{ inputs.issue_body }}" >> issue-notes/${{ inputs.issue_number }}.md
       - name: Commit and push note
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add issue-notes/${{ inputs.issue_number }}.md
-          git commit -m "Add issue note for #${{ inputs.issue_number }}"
+          git commit -m "Add issue note for #${{ inputs.issue_number }} [auto]"
           git push
 
       - name: Add link to issue note in issue body

@@ -91,15 +91,15 @@ jobs:
       - name: Commit and push summaries
         if: steps.check_summaries.outputs.summaries_generated == 'true'
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update project summaries (overview & development status)"
+            git commit -m "Update project summaries (overview & development status) [auto]"
             git push
           fi
 
