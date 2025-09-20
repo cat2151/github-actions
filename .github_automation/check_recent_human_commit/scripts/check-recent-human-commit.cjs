@@ -45,7 +45,20 @@ function main() {
   console.log(output);
 
   // GitHub Actionsの出力に反映する
-  fs.appendFileSync(process.env.GITHUB_OUTPUT, output + "\n");
+  console.log(`DEBUG: GITHUB_OUTPUT env var: ${process.env.GITHUB_OUTPUT}`);
+  console.log(`DEBUG: Writing to GITHUB_OUTPUT: ${output}`);
+
+  try {
+    fs.appendFileSync(process.env.GITHUB_OUTPUT, output + "\n");
+    console.log(`DEBUG: Successfully wrote to GITHUB_OUTPUT`);
+
+    // 書き込み後の確認
+    const fileContent = fs.readFileSync(process.env.GITHUB_OUTPUT, 'utf-8');
+    console.log(`DEBUG: GITHUB_OUTPUT file content after write: ${fileContent}`);
+  } catch (error) {
+    console.error(`DEBUG: Error writing to GITHUB_OUTPUT: ${error.message}`);
+    throw error;
+  }
 }
 
 main();
