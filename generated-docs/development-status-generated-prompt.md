@@ -1,4 +1,4 @@
-Last updated: 2025-09-21
+Last updated: 2025-09-23
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -270,53 +270,6 @@ Last updated: 2025-09-21
 - src/main.js
 
 ## 現在のオープンIssues
-## [Issue #26](../issue-notes/26.md): userによるcommitがなくなって24時間超経過しているのに、毎日ムダにproject summaryとcallgraphの自動生成が行われてしまっている
-[issue-notes/26.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/26.md)
-
-...
-ラベル: 
---- issue-notes/26.md の内容 ---
-
-```markdown
-# issue userによるcommitがなくなって24時間超経過しているのに、毎日ムダにproject summaryとcallgraphの自動生成が行われてしまっている #26
-[issues #26](https://github.com/cat2151/github-actions/issues/26)
-
-# どうする？
-- logを確認する。24時間チェックがバグっている想定。
-- もしlogから判別できない場合は、logを改善する。
-
-# log確認結果
-- botによるcommitなのに、user commitとして誤判別されている
-```
-Checking for user commits in the last 24 hours...
-User commits found: true
-Recent user commits:
-7654bf7 Update callgraph.html [auto]
-abd2f2d Update project summaries (overview & development status)
-```
-
-# ざっくり調査結果
-- #27 が判明した
-
-# どうする？
-- [x] #27 を修正する。これで自動的に #26 も修正される想定。
-    - 当該処理を修正する。
-    - もしデータ不足なら、より詳細なlog生成を実装する。
-- 別件として、このチェックはむしろworkflow ymlの先頭で行うのが適切と考える。なぜなら、以降のムダな処理をカットできるのでエコ。
-    - [x] #28 を起票したので、そちらで実施する。
-
-# close条件は？
-- 前提
-    - [x] 先行タスクである #27 と #28 が完了済みであること
-- 誤爆がなくなること。
-    - つまり、userによるcommitがなくなって24時間超経過後の日次バッチにて、
-        - ムダなdevelopment status生成、等がないこと
-        - jobのlogに「commitがないので処理しません」的なmessageが出ること
-- どうする？
-    - 日次バッチを本番を流して本番testする
-
-```
-
 ## [Issue #16](../issue-notes/16.md): issue-note / project-summary / translate / callgraph をtonejs-mml-to-jsonから呼び出す
 [issue-notes/16.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/16.md)
 
@@ -1629,282 +1582,6 @@ GitHub Actions の実行ログで詳細なエラー情報を確認できます�
 
 ```
 
-### .github/actions-tmp/generated-docs/callgraph.html
-```html
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Function Call Graph with Source Links</title>
-    <script src="https://unpkg.com/cytoscape@3.29.2/dist/cytoscape.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="header">
-        <h1>Function Call Graph with Source Links</h1>
-        <div class="stats-container">
-            <div class="stats">
-                <div class="stat-value">3</div>
-                <div class="stat-label">Functions</div>
-            </div>
-            <div class="stats">
-                <div class="stat-value">2</div>
-                <div class="stat-label">Call Relationships</div>
-            </div>
-            <div class="stats">
-                <div class="stat-value">2</div>
-                <div class="stat-label">With Callee Location</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="main-container">
-        <div class="graph-container">
-            <div id="cy"></div>
-            <div class="controls">
-                <button class="control-button" onclick="resetLayout()">Reset Layout</button>
-                <button class="control-button" onclick="switchLayout(this)">レイアウト切替</button>
-                <button class="control-button" onclick="fitToContent()">Fit to Content</button>
-                <button class="control-button" onclick="toggleNodeLabels()">Toggle Labels</button>
-                <button class="control-button" onclick="toggleCalleeLocationFilter()">Hide No-Callee-Location</button>
-                <button class="control-button" onclick="toggleInfoPanel()">Toggle Info Panel</button>
-            </div>
-        </div>
-
-        <div id="info-panel" class="info-panel hidden">
-            <div class="info-title">選択した要素の詳細</div>
-            <div id="info-content"></div>
-        </div>
-    </div>
-
-    <div class="generated-time">
-        Generated: 2025/9/20 20:06:49
-    </div>
-
-    <script>
-      const graphData = {
-  "nodes": [
-    {
-      "id": "main (main.js:6)",
-      "label": "main (main.js:6)",
-      "locations": [
-        {
-          "file": "src/main.js",
-          "line": 7,
-          "column": 5,
-          "type": "caller",
-          "sourceLine": "    greet('World');"
-        }
-      ],
-      "hasLocationInfo": true,
-      "hasCalleeLocationInfo": true
-    },
-    {
-      "id": "greet (main.js:2)",
-      "label": "greet (main.js:2)",
-      "locations": [
-        {
-          "file": "src/main.js",
-          "line": 7,
-          "column": 5,
-          "type": "definition",
-          "sourceLine": "    greet('World');"
-        }
-      ],
-      "hasLocationInfo": true,
-      "hasCalleeLocationInfo": true,
-      "calleeFncDef": "function greet(name) {"
-    },
-    {
-      "id": "global (main.js:10)",
-      "label": "global (main.js:10)",
-      "locations": [
-        {
-          "file": "src/main.js",
-          "line": 10,
-          "column": 1,
-          "type": "caller",
-          "sourceLine": "main();"
-        }
-      ],
-      "hasLocationInfo": true,
-      "hasCalleeLocationInfo": false
-    }
-  ],
-  "edges": [
-    {
-      "id": "edge-0",
-      "source": "main (main.js:6)",
-      "target": "greet (main.js:2)",
-      "hasCalleeLocationInfo": true,
-      "file": "src/main.js",
-      "line": 7,
-      "column": 5,
-      "location": "src/main.js:7:5",
-      "hasLocationInfo": true,
-      "sourceLine": "    greet('World');"
-    },
-    {
-      "id": "edge-1",
-      "source": "global (main.js:10)",
-      "target": "main (main.js:6)",
-      "hasCalleeLocationInfo": true,
-      "file": "src/main.js",
-      "line": 10,
-      "column": 1,
-      "location": "src/main.js:10:1",
-      "hasLocationInfo": true,
-      "sourceLine": "main();"
-    }
-  ]
-};
-      const repo = "cat2151/github-actions";
-      const branch = "main";
-    </script>
-    <script src="callgraph.js"></script>
-</body>
-</html>
-```
-
-### generated-docs/callgraph.html
-```html
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Function Call Graph with Source Links</title>
-    <script src="https://unpkg.com/cytoscape@3.29.2/dist/cytoscape.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="header">
-        <h1>Function Call Graph with Source Links</h1>
-        <div class="stats-container">
-            <div class="stats">
-                <div class="stat-value">3</div>
-                <div class="stat-label">Functions</div>
-            </div>
-            <div class="stats">
-                <div class="stat-value">2</div>
-                <div class="stat-label">Call Relationships</div>
-            </div>
-            <div class="stats">
-                <div class="stat-value">2</div>
-                <div class="stat-label">With Callee Location</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="main-container">
-        <div class="graph-container">
-            <div id="cy"></div>
-            <div class="controls">
-                <button class="control-button" onclick="resetLayout()">Reset Layout</button>
-                <button class="control-button" onclick="switchLayout(this)">レイアウト切替</button>
-                <button class="control-button" onclick="fitToContent()">Fit to Content</button>
-                <button class="control-button" onclick="toggleNodeLabels()">Toggle Labels</button>
-                <button class="control-button" onclick="toggleCalleeLocationFilter()">Hide No-Callee-Location</button>
-                <button class="control-button" onclick="toggleInfoPanel()">Toggle Info Panel</button>
-            </div>
-        </div>
-
-        <div id="info-panel" class="info-panel hidden">
-            <div class="info-title">選択した要素の詳細</div>
-            <div id="info-content"></div>
-        </div>
-    </div>
-
-    <div class="generated-time">
-        Generated: 2025/9/20 20:06:49
-    </div>
-
-    <script>
-      const graphData = {
-  "nodes": [
-    {
-      "id": "main (main.js:6)",
-      "label": "main (main.js:6)",
-      "locations": [
-        {
-          "file": "src/main.js",
-          "line": 7,
-          "column": 5,
-          "type": "caller",
-          "sourceLine": "    greet('World');"
-        }
-      ],
-      "hasLocationInfo": true,
-      "hasCalleeLocationInfo": true
-    },
-    {
-      "id": "greet (main.js:2)",
-      "label": "greet (main.js:2)",
-      "locations": [
-        {
-          "file": "src/main.js",
-          "line": 7,
-          "column": 5,
-          "type": "definition",
-          "sourceLine": "    greet('World');"
-        }
-      ],
-      "hasLocationInfo": true,
-      "hasCalleeLocationInfo": true,
-      "calleeFncDef": "function greet(name) {"
-    },
-    {
-      "id": "global (main.js:10)",
-      "label": "global (main.js:10)",
-      "locations": [
-        {
-          "file": "src/main.js",
-          "line": 10,
-          "column": 1,
-          "type": "caller",
-          "sourceLine": "main();"
-        }
-      ],
-      "hasLocationInfo": true,
-      "hasCalleeLocationInfo": false
-    }
-  ],
-  "edges": [
-    {
-      "id": "edge-0",
-      "source": "main (main.js:6)",
-      "target": "greet (main.js:2)",
-      "hasCalleeLocationInfo": true,
-      "file": "src/main.js",
-      "line": 7,
-      "column": 5,
-      "location": "src/main.js:7:5",
-      "hasLocationInfo": true,
-      "sourceLine": "    greet('World');"
-    },
-    {
-      "id": "edge-1",
-      "source": "global (main.js:10)",
-      "target": "main (main.js:6)",
-      "hasCalleeLocationInfo": true,
-      "file": "src/main.js",
-      "line": 10,
-      "column": 1,
-      "location": "src/main.js:10:1",
-      "hasLocationInfo": true,
-      "sourceLine": "main();"
-    }
-  ]
-};
-      const repo = "cat2151/github-actions";
-      const branch = "main";
-    </script>
-    <script src="callgraph.js"></script>
-</body>
-</html>
-```
-
 ### .github/actions-tmp/issue-notes/10.md
 ```md
 # issue callgraph を他projectから使いやすくする #10
@@ -2501,88 +2178,6 @@ jobs:
 
 ```
 
-### .github/actions-tmp/issue-notes/26.md
-```md
-# issue userによるcommitがなくなって24時間超経過しているのに、毎日ムダにproject summaryとcallgraphの自動生成が行われてしまっている #26
-[issues #26](https://github.com/cat2151/github-actions/issues/26)
-
-# どうする？
-- logを確認する。24時間チェックがバグっている想定。
-- もしlogから判別できない場合は、logを改善する。
-
-# log確認結果
-- botによるcommitなのに、user commitとして誤判別されている
-```
-Checking for user commits in the last 24 hours...
-User commits found: true
-Recent user commits:
-7654bf7 Update callgraph.html [auto]
-abd2f2d Update project summaries (overview & development status)
-```
-
-# ざっくり調査結果
-- #27 が判明した
-
-# どうする？
-- [x] #27 を修正する。これで自動的に #26 も修正される想定。
-    - 当該処理を修正する。
-    - もしデータ不足なら、より詳細なlog生成を実装する。
-- 別件として、このチェックはむしろworkflow ymlの先頭で行うのが適切と考える。なぜなら、以降のムダな処理をカットできるのでエコ。
-    - [x] #28 を起票したので、そちらで実施する。
-
-# close条件は？
-- 前提
-    - [x] 先行タスクである #27 と #28 が完了済みであること
-- 誤爆がなくなること。
-    - つまり、userによるcommitがなくなって24時間超経過後の日次バッチにて、
-        - ムダなdevelopment status生成、等がないこと
-        - jobのlogに「commitがないので処理しません」的なmessageが出ること
-- どうする？
-    - 日次バッチを本番を流して本番testする
-
-```
-
-### issue-notes/26.md
-```md
-# issue userによるcommitがなくなって24時間超経過しているのに、毎日ムダにproject summaryとcallgraphの自動生成が行われてしまっている #26
-[issues #26](https://github.com/cat2151/github-actions/issues/26)
-
-# どうする？
-- logを確認する。24時間チェックがバグっている想定。
-- もしlogから判別できない場合は、logを改善する。
-
-# log確認結果
-- botによるcommitなのに、user commitとして誤判別されている
-```
-Checking for user commits in the last 24 hours...
-User commits found: true
-Recent user commits:
-7654bf7 Update callgraph.html [auto]
-abd2f2d Update project summaries (overview & development status)
-```
-
-# ざっくり調査結果
-- #27 が判明した
-
-# どうする？
-- [x] #27 を修正する。これで自動的に #26 も修正される想定。
-    - 当該処理を修正する。
-    - もしデータ不足なら、より詳細なlog生成を実装する。
-- 別件として、このチェックはむしろworkflow ymlの先頭で行うのが適切と考える。なぜなら、以降のムダな処理をカットできるのでエコ。
-    - [x] #28 を起票したので、そちらで実施する。
-
-# close条件は？
-- 前提
-    - [x] 先行タスクである #27 と #28 が完了済みであること
-- 誤爆がなくなること。
-    - つまり、userによるcommitがなくなって24時間超経過後の日次バッチにて、
-        - ムダなdevelopment status生成、等がないこと
-        - jobのlogに「commitがないので処理しません」的なmessageが出ること
-- どうする？
-    - 日次バッチを本番を流して本番testする
-
-```
-
 ### .github/actions-tmp/issue-notes/3.md
 ```md
 # issue GitHub Actions「issue note生成」を共通ワークフロー化する #3
@@ -2743,6 +2338,9 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+938b85f Update callgraph.html [auto]
+be2c26b fix #26 test greenとなったのでcloseとする
+5897f0c Update project summaries (overview & development status) [auto]
 5cc1bbd Update callgraph.html [auto]
 620c24f Merge branch 'main' of github.com:cat2151/github-actions into main
 bbbfa42 #26 mdメンテ
@@ -2750,19 +2348,15 @@ bbbfa42 #26 mdメンテ
 134384f fix #27 issue28が修正され、close条件を満たしたので、closeとする
 ff6050f Merge branch 'main' of github.com:cat2151/github-actions into main
 6415664 fix #28 デバッグコードの削除漏れがあったので修正した。test greenなのでcloseとする
-0d805e6 Update callgraph.html [auto]
-afb0292 #28 根本的にymlの書き方が間違っていたことをagentが気づかずにずっとムダなデバッグをしていたらしいことが判明、ムダなデバッグはすべて削除した
-05cfc79 #28 さらに切り分け用に処理をagentに追加させた
 
 ### 変更されたファイル:
-.github/workflows/callgraph.yml
-.github/workflows/check-recent-human-commit.yml
-.github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
 generated-docs/callgraph.html
+generated-docs/development-status-generated-prompt.md
+generated-docs/development-status.md
+generated-docs/project-overview.md
 issue-notes/26.md
 issue-notes/27.md
-issue-notes/28.md
 
 
 ---
-Generated at: 2025-09-21 07:04:11 JST
+Generated at: 2025-09-23 07:04:59 JST
