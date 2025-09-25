@@ -1,4 +1,4 @@
-Last updated: 2025-09-23
+Last updated: 2025-09-25
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -308,6 +308,20 @@ Last updated: 2025-09-23
     - github-actions リポジトリにある、call-issue-note.yml をcpして使うようにする、まず単純cpして動くかを確認する
 - project-summary
     - github-actions リポジトリにある、call-daily-project-summary.yml をcpして使うようにする、まず単純cpして動くかを確認する
+- translate
+    - github-actions リポジトリにある、call-translate-readme.yml をcpして使うようにする、まず単純cpして動くかを確認する
+- callgraph
+    - github-actions リポジトリにある、call-callgraph.yml をcpして使うようにする、まず単純cpして動くかを確認する
+
+# 状況
+- issue-note
+    - tonejs-mml-to-jsonリポジトリにて、test green
+    - issue-noteについては当issueのタスクは完了した、と判断する
+- project-summary
+    - tonejs-mml-to-jsonリポジトリにて、test green
+    - project-summaryについては当issueのタスクは完了した、と判断する
+
+# どうする？
 - translate
     - github-actions リポジトリにある、call-translate-readme.yml をcpして使うようにする、まず単純cpして動くかを確認する
 - callgraph
@@ -1791,6 +1805,20 @@ GitHub Actions の実行ログで詳細なエラー情報を確認できます�
 - callgraph
     - github-actions リポジトリにある、call-callgraph.yml をcpして使うようにする、まず単純cpして動くかを確認する
 
+# 状況
+- issue-note
+    - tonejs-mml-to-jsonリポジトリにて、test green
+    - issue-noteについては当issueのタスクは完了した、と判断する
+- project-summary
+    - tonejs-mml-to-jsonリポジトリにて、test green
+    - project-summaryについては当issueのタスクは完了した、と判断する
+
+# どうする？
+- translate
+    - github-actions リポジトリにある、call-translate-readme.yml をcpして使うようにする、まず単純cpして動くかを確認する
+- callgraph
+    - github-actions リポジトリにある、call-callgraph.yml をcpして使うようにする、まず単純cpして動くかを確認する
+
 ```
 
 ### issue-notes/16.md
@@ -1825,6 +1853,20 @@ GitHub Actions の実行ログで詳細なエラー情報を確認できます�
     - github-actions リポジトリにある、call-issue-note.yml をcpして使うようにする、まず単純cpして動くかを確認する
 - project-summary
     - github-actions リポジトリにある、call-daily-project-summary.yml をcpして使うようにする、まず単純cpして動くかを確認する
+- translate
+    - github-actions リポジトリにある、call-translate-readme.yml をcpして使うようにする、まず単純cpして動くかを確認する
+- callgraph
+    - github-actions リポジトリにある、call-callgraph.yml をcpして使うようにする、まず単純cpして動くかを確認する
+
+# 状況
+- issue-note
+    - tonejs-mml-to-jsonリポジトリにて、test green
+    - issue-noteについては当issueのタスクは完了した、と判断する
+- project-summary
+    - tonejs-mml-to-jsonリポジトリにて、test green
+    - project-summaryについては当issueのタスクは完了した、と判断する
+
+# どうする？
 - translate
     - github-actions リポジトリにある、call-translate-readme.yml をcpして使うようにする、まず単純cpして動くかを確認する
 - callgraph
@@ -2338,6 +2380,9 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+8a4e4e7 Update callgraph.html [auto]
+faf3b1d #16 状況を反映した
+135c030 Update project summaries (overview & development status) [auto]
 938b85f Update callgraph.html [auto]
 be2c26b fix #26 test greenとなったのでcloseとする
 5897f0c Update project summaries (overview & development status) [auto]
@@ -2345,18 +2390,15 @@ be2c26b fix #26 test greenとなったのでcloseとする
 620c24f Merge branch 'main' of github.com:cat2151/github-actions into main
 bbbfa42 #26 mdメンテ
 4505799 Update callgraph.html [auto]
-134384f fix #27 issue28が修正され、close条件を満たしたので、closeとする
-ff6050f Merge branch 'main' of github.com:cat2151/github-actions into main
-6415664 fix #28 デバッグコードの削除漏れがあったので修正した。test greenなのでcloseとする
 
 ### 変更されたファイル:
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
+issue-notes/16.md
 issue-notes/26.md
-issue-notes/27.md
 
 
 ---
-Generated at: 2025-09-23 07:04:59 JST
+Generated at: 2025-09-25 07:05:03 JST
