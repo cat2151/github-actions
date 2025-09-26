@@ -1,4 +1,4 @@
-Last updated: 2025-09-25
+Last updated: 2025-09-26
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -324,6 +324,10 @@ Last updated: 2025-09-25
 # どうする？
 - translate
     - github-actions リポジトリにある、call-translate-readme.yml をcpして使うようにする、まず単純cpして動くかを確認する
+        - 状況
+            - 単純cpした
+            - 次は
+                - 動くかを確認する
 - callgraph
     - github-actions リポジトリにある、call-callgraph.yml をcpして使うようにする、まず単純cpして動くかを確認する
 
@@ -1816,6 +1820,10 @@ GitHub Actions の実行ログで詳細なエラー情報を確認できます�
 # どうする？
 - translate
     - github-actions リポジトリにある、call-translate-readme.yml をcpして使うようにする、まず単純cpして動くかを確認する
+        - 状況
+            - 単純cpした
+            - 次は
+                - 動くかを確認する
 - callgraph
     - github-actions リポジトリにある、call-callgraph.yml をcpして使うようにする、まず単純cpして動くかを確認する
 
@@ -1869,6 +1877,10 @@ GitHub Actions の実行ログで詳細なエラー情報を確認できます�
 # どうする？
 - translate
     - github-actions リポジトリにある、call-translate-readme.yml をcpして使うようにする、まず単純cpして動くかを確認する
+        - 状況
+            - 単純cpした
+            - 次は
+                - 動くかを確認する
 - callgraph
     - github-actions リポジトリにある、call-callgraph.yml をcpして使うようにする、まず単純cpして動くかを確認する
 
@@ -2380,16 +2392,16 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+231ee57 Update callgraph.html [auto]
+a57718c Merge branch 'main' of github.com:cat2151/github-actions into main
+a5eb122 #16 mdメンテ
+f9cdb36 Update project summaries (overview & development status) [auto]
 8a4e4e7 Update callgraph.html [auto]
 faf3b1d #16 状況を反映した
 135c030 Update project summaries (overview & development status) [auto]
 938b85f Update callgraph.html [auto]
 be2c26b fix #26 test greenとなったのでcloseとする
 5897f0c Update project summaries (overview & development status) [auto]
-5cc1bbd Update callgraph.html [auto]
-620c24f Merge branch 'main' of github.com:cat2151/github-actions into main
-bbbfa42 #26 mdメンテ
-4505799 Update callgraph.html [auto]
 
 ### 変更されたファイル:
 generated-docs/callgraph.html
@@ -2401,4 +2413,4 @@ issue-notes/26.md
 
 
 ---
-Generated at: 2025-09-25 07:05:03 JST
+Generated at: 2025-09-26 07:04:07 JST
