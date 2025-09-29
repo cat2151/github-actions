@@ -1,4 +1,4 @@
-Last updated: 2025-09-27
+Last updated: 2025-09-30
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -2469,18 +2469,20 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+fd3add1 エラー対策のため、チェック対象リポジトリをcheckoutするようにしたつもり
+a755f2d Merge branch 'main' of github.com:cat2151/github-actions into main
+203570b logでチェック対象リポジトリ名やチェック対象commit日時がわかるようにしたつもり。あわせて、チェック対象リポジトリ指定を修正したつもり（これまでは共通ワークフロー側をチェック対象にしてしまっていた想定）
+420f55d Update project summaries (overview & development status) [auto]
 61ad3b4 Update callgraph.html [auto]
 f6756d5 Merge branch 'main' of github.com:cat2151/github-actions into main
 6ad9493 #16 mdメンテ
 1a6da5f Update project summaries (overview & development status) [auto]
 231ee57 Update callgraph.html [auto]
 a57718c Merge branch 'main' of github.com:cat2151/github-actions into main
-a5eb122 #16 mdメンテ
-f9cdb36 Update project summaries (overview & development status) [auto]
-8a4e4e7 Update callgraph.html [auto]
-faf3b1d #16 状況を反映した
 
 ### 変更されたファイル:
+.github/workflows/check-recent-human-commit.yml
+.github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
@@ -2489,4 +2491,4 @@ issue-notes/16.md
 
 
 ---
-Generated at: 2025-09-27 07:04:51 JST
+Generated at: 2025-09-30 08:48:28 JST
