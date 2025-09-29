@@ -14,7 +14,12 @@ jobs:
     outputs:
       has_recent_human_commit: ${{ steps.check.outputs.has_recent_human_commit }}
     steps:
-      - name: Checkout shared github-actions repo # ※呼び出し元ではなく、共通ワークフロー側
+      - name: Checkout caller repository  # 呼び出し元リポジトリ。これがないと呼び出し元リポジトリのcommit履歴が得られない
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout shared github-actions repo # 共通ワークフローのリポジトリ。これがないとscriptを実行できない
         uses: actions/checkout@v4
         with:
           repository: cat2151/github-actions
