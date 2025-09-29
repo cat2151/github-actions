@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: cat2151/github-actions
+          path: _shared-actions-temp
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -25,5 +26,4 @@ jobs:
         id: check
         # cjs内で GITHUB_OUTPUT を更新している
         run: |
-          node .github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
-
+          node _shared-actions-temp/.github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
