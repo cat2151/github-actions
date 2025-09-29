@@ -1,4 +1,4 @@
-Last updated: 2025-09-26
+Last updated: 2025-09-27
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -321,13 +321,18 @@ Last updated: 2025-09-26
     - tonejs-mml-to-jsonリポジトリにて、test green
     - project-summaryについては当issueのタスクは完了した、と判断する
 
-# どうする？
+# 状況
 - translate
     - github-actions リポジトリにある、call-translate-readme.yml をcpして使うようにする、まず単純cpして動くかを確認する
         - 状況
             - 単純cpした
-            - 次は
-                - 動くかを確認する
+            - ソース机上レビューした。OK
+            - トリガーはREADME.ja.mdのcommit
+            - testは省略とする
+            - もし今後README.ja.mdのcommit時にうまく動作しないとしても、そのとき対処すればOK、と判断する
+    - translateについては当issueのタスクは完了した、と判断する
+
+# どうする？
 - callgraph
     - github-actions リポジトリにある、call-callgraph.yml をcpして使うようにする、まず単純cpして動くかを確認する
 
@@ -1600,6 +1605,68 @@ GitHub Actions の実行ログで詳細なエラー情報を確認できます�
 
 ```
 
+### .github/actions-tmp/README.ja.md
+```md
+# GitHub Actions 共通ワークフロー集
+
+このリポジトリは、**複数プロジェクトで使い回せるGitHub Actions共通ワークフロー集**です
+
+<p align="left">
+  <a href="README.ja.md"><img src="https://img.shields.io/badge/🇯🇵-Japanese-red.svg" alt="Japanese"></a>
+  <a href="README.md"><img src="https://img.shields.io/badge/🇺🇸-English-blue.svg" alt="English"></a>
+</p>
+
+# 3行で説明
+- 🚀 プロジェクトごとのGitHub Actions管理をもっと楽に
+- 🔗 共通化されたワークフローで、どのプロジェクトからも呼ぶだけでOK
+- ✅ メンテは一括、プロジェクト開発に集中できます
+
+## Quick Links
+| 項目 | リンク |
+|------|--------|
+| 📖 プロジェクト概要 | [generated-docs/project-overview.md](generated-docs/project-overview.md) |
+| 📖 コールグラフ | [generated-docs/callgraph.html](https://cat2151.github.io/github-actions/generated-docs/callgraph.html) |
+| 📊 開発状況 | [generated-docs/development-status.md](generated-docs/development-status.md) |
+
+# notes
+- まだ共通化の作業中です
+- まだワークフロー内容を改善中です
+
+※README.md は README.ja.md を元にGeminiの翻訳でGitHub Actionsで自動生成しています
+
+```
+
+### README.ja.md
+```md
+# GitHub Actions 共通ワークフロー集
+
+このリポジトリは、**複数プロジェクトで使い回せるGitHub Actions共通ワークフロー集**です
+
+<p align="left">
+  <a href="README.ja.md"><img src="https://img.shields.io/badge/🇯🇵-Japanese-red.svg" alt="Japanese"></a>
+  <a href="README.md"><img src="https://img.shields.io/badge/🇺🇸-English-blue.svg" alt="English"></a>
+</p>
+
+# 3行で説明
+- 🚀 プロジェクトごとのGitHub Actions管理をもっと楽に
+- 🔗 共通化されたワークフローで、どのプロジェクトからも呼ぶだけでOK
+- ✅ メンテは一括、プロジェクト開発に集中できます
+
+## Quick Links
+| 項目 | リンク |
+|------|--------|
+| 📖 プロジェクト概要 | [generated-docs/project-overview.md](generated-docs/project-overview.md) |
+| 📖 コールグラフ | [generated-docs/callgraph.html](https://cat2151.github.io/github-actions/generated-docs/callgraph.html) |
+| 📊 開発状況 | [generated-docs/development-status.md](generated-docs/development-status.md) |
+
+# notes
+- まだ共通化の作業中です
+- まだワークフロー内容を改善中です
+
+※README.md は README.ja.md を元にGeminiの翻訳でGitHub Actionsで自動生成しています
+
+```
+
 ### .github/actions-tmp/issue-notes/10.md
 ```md
 # issue callgraph を他projectから使いやすくする #10
@@ -1817,13 +1884,18 @@ GitHub Actions の実行ログで詳細なエラー情報を確認できます�
     - tonejs-mml-to-jsonリポジトリにて、test green
     - project-summaryについては当issueのタスクは完了した、と判断する
 
-# どうする？
+# 状況
 - translate
     - github-actions リポジトリにある、call-translate-readme.yml をcpして使うようにする、まず単純cpして動くかを確認する
         - 状況
             - 単純cpした
-            - 次は
-                - 動くかを確認する
+            - ソース机上レビューした。OK
+            - トリガーはREADME.ja.mdのcommit
+            - testは省略とする
+            - もし今後README.ja.mdのcommit時にうまく動作しないとしても、そのとき対処すればOK、と判断する
+    - translateについては当issueのタスクは完了した、と判断する
+
+# どうする？
 - callgraph
     - github-actions リポジトリにある、call-callgraph.yml をcpして使うようにする、まず単純cpして動くかを確認する
 
@@ -1874,13 +1946,18 @@ GitHub Actions の実行ログで詳細なエラー情報を確認できます�
     - tonejs-mml-to-jsonリポジトリにて、test green
     - project-summaryについては当issueのタスクは完了した、と判断する
 
-# どうする？
+# 状況
 - translate
     - github-actions リポジトリにある、call-translate-readme.yml をcpして使うようにする、まず単純cpして動くかを確認する
         - 状況
             - 単純cpした
-            - 次は
-                - 動くかを確認する
+            - ソース机上レビューした。OK
+            - トリガーはREADME.ja.mdのcommit
+            - testは省略とする
+            - もし今後README.ja.mdのcommit時にうまく動作しないとしても、そのとき対処すればOK、と判断する
+    - translateについては当issueのタスクは完了した、と判断する
+
+# どうする？
 - callgraph
     - github-actions リポジトリにある、call-callgraph.yml をcpして使うようにする、まず単純cpして動くかを確認する
 
@@ -2392,16 +2469,16 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+61ad3b4 Update callgraph.html [auto]
+f6756d5 Merge branch 'main' of github.com:cat2151/github-actions into main
+6ad9493 #16 mdメンテ
+1a6da5f Update project summaries (overview & development status) [auto]
 231ee57 Update callgraph.html [auto]
 a57718c Merge branch 'main' of github.com:cat2151/github-actions into main
 a5eb122 #16 mdメンテ
 f9cdb36 Update project summaries (overview & development status) [auto]
 8a4e4e7 Update callgraph.html [auto]
 faf3b1d #16 状況を反映した
-135c030 Update project summaries (overview & development status) [auto]
-938b85f Update callgraph.html [auto]
-be2c26b fix #26 test greenとなったのでcloseとする
-5897f0c Update project summaries (overview & development status) [auto]
 
 ### 変更されたファイル:
 generated-docs/callgraph.html
@@ -2409,8 +2486,7 @@ generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
 issue-notes/16.md
-issue-notes/26.md
 
 
 ---
-Generated at: 2025-09-26 07:04:07 JST
+Generated at: 2025-09-27 07:04:51 JST
