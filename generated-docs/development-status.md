@@ -1,56 +1,60 @@
-Last updated: 2025-09-30
+Last updated: 2025-10-01
 
 # Development Status
 
 ## 現在のIssues
-- [Issue #16](../issue-notes/16.md) は、issue-note, project-summary, translateが他のリポジトリで動作することを確認し、残るcallgraphワークフローの動作検証が進行中です。
-- [Issue #10](../issue-notes/10.md) ではcallgraphワークフローを他プロジェクトから利用しやすくするための導入手順書の作成が必要とされています。
-- [Issue #12](../issue-notes/12.md) および [Issue #13](../issue-notes/13.md) では、それぞれproject-summaryとissue-noteワークフローの導入手順書のドキュメント化が課題として挙げられています。
+- 共通ワークフロー（issue-note, project-summary, translate, callgraph）の他プロジェクトへの導入検証タスク [#16](../issue-notes/16.md) が進行中ですが、Callgraphのみが未完了です。
+- 各共通ワークフロー（issue-note [#13](../issue-notes/13.md), project-summary [#12](../issue-notes/12.md), translate [#11](../issue-notes/11.md), callgraph [#10](../issue-notes/10.md)）を他プロジェクトで利用するための導入手順ドキュメント作成が課題となっています。
+- 特に [#12](../issue-notes/12.md) では、promptsを呼び出し元で指定可能にする機能はYAGNI原則に基づき保留されています。
 
 ## 次の一手候補
-1. [Issue #16](../issue-notes/16.md) tonejs-mml-to-jsonでのCallgraph動作確認
-   - 最初の小さな一歩: `tonejs-mml-to-json` リポジトリに最新の `call-callgraph.yml` をコピーし、設定を見直して動作検証を行う。
-   - Agent実行プロンプト:
+1. Callgraphワークフローの他プロジェクトへの導入検証完了とIssue [#16](../issue-notes/16.md) のクローズ
+   - 最初の小さな一歩: `tonejs-mml-to-json` リポジトリにて、github-actionsにある `call-callgraph.yml` をコピーし、動作を確認する。
+   - Agent実行プロンプ:
      ```
-     対象ファイル:
-     - .github/workflows/call-callgraph.yml
-     - .github/workflows/callgraph.yml
+     対象ファイル: .github/workflows/call-callgraph.yml, .github/workflows/callgraph.yml
 
-     実行内容: `call-callgraph.yml` を `tonejs-mml-to-json` リポジトリへコピーする際の具体的な手順を記述してください。特に、`uses` パスが `cat2151/github-actions/.github/workflows/callgraph.yml@main` であること、`CONFIG_NAME` が `tonejs-mml-to-json` リポジトリ内で適切に参照されるパス（例: `.github/actions-tmp/.github_automation/callgraph/config/example.json` または `tonejs-mml-to-json` 内の新しい設定ファイル）になっているかを確認し、設定方法を明確にしてください。
+     実行内容: `call-callgraph.yml` を他リポジトリで利用する際に、`callgraph.yml` が期待する `CONFIG_NAME` のパスが正しく指定されているかを確認し、適切な利用例を提示してください。特に、`CONFIG_NAME` の値が`.github/actions-tmp/.github_automation/callgraph/config/example.json` のような共通ワークフロー側のパスを指している点と、もし呼び出し元リポジトリ側で設定ファイルを用意する場合のパス指定の例を分析してください。
 
-     確認事項: `tonejs-mml-to-json` リポジリの構造と `callgraph` が必要とする設定ファイルのパスの整合性、`GITHUB_TOKEN` の権限要件。`callgraph.yml` が `actions-tmp` ディレクトリに適切にチェックアウトされるための設定。
+     確認事項: 呼び出し元のリポジトリの構造と、`CONFIG_NAME` が指す設定ファイルの配置（共通リポジトリ内か、呼び出し元リポジトリ内か）を考慮してください。
 
-     期待する出力: `tonejs-mml-to-json` リポジリで `call-callgraph.yml` を設定し、`callgraph` を動作させるための具体的な手順書をMarkdown形式で生成してください。
+     期待する出力: 他リポジトリ (`tonejs-mml-to-json` のようなリポジトリ) に `call-callgraph.yml` を導入する際の `CONFIG_NAME` の設定に関する具体的なガイダンスをMarkdown形式で提供してください。
      ```
 
-2. [Issue #10](../issue-notes/10.md) Callgraph導入手順書の作成
-   - 最初の小さな一歩: `callgraph.yml` の `workflow_call` の `inputs` と `env` を分析し、導入手順書に必要な情報を整理する。
-   - Agent実行プロンプト:
+2. Callgraphワークフローの導入ドキュメント作成とIssue [#10](../issue-notes/10.md) の進捗可視化
+   - 最初の小さな一歩: `call-callgraph.yml` と `callgraph.yml` を分析し、`callgraph` ワークフローを外部プロジェクトで利用するために必要な設定項目（パラメータ、シークレット、前提ファイルなど）を洗い出す。
+   - Agent実行プロンプ:
      ```
-     対象ファイル:
-     - .github/workflows/callgraph.yml
-     - .github_automation/callgraph/docs/callgraph.md
+     対象ファイル: .github/workflows/call-callgraph.yml, .github/workflows/callgraph.yml, .github_automation/callgraph/docs/callgraph.md
 
-     実行内容: `callgraph` ワークフローを外部プロジェクトに導入するための手順書を、`workflow_call` の `inputs` (`CONFIG_NAME`)、`env` 変数 (`ACTION_TMP`, `CALLGRAPH`, `PRESETS`, `QUERIES`)、および必要な`permissions` (contents: write, security-events: write, actions: read) の観点から詳細に分析し、記述してください。既存の `callgraph.md` に書かれていない、`call-callgraph.yml` の設定方法や、`CONFIG_NAME` のパスの指定方法、共通ワークフローを `actions-tmp` にチェックアウトすることの重要性を含めてください。
+     実行内容: `callgraph` ワークフローを外部プロジェクトで利用する際に必要な設定項目を洗い出し、以下の観点から導入手順を分析してください：
+     1) 必須入力パラメータ (`CONFIG_NAME` など)
+     2) 必須シークレット (GitHub Tokenなど)
+     3) ファイル配置の前提条件 (設定ファイル `.github_automation/callgraph/config/example.json` のパスなど)
+     4) 外部プロジェクトでの利用時に必要な追加設定や考慮事項
+     また、Issue [#10](../issue-notes/10.md) で言及されている「別dirへの切り分け」や「名前enhancedの削除」といった完了済みタスクの現状も可視化してください。
 
-     確認事項: `callgraph.yml` の依存関係（例: `check-recent-human-commit.yml`）とそれらの導入手順への影響。外部プロジェクトで `CONFIG_NAME` ファイルを配置する場合の推奨パス。
+     確認事項: `callgraph.yml` 内の `env` 変数や、`uses: cat2151/github-actions/.github/workflows/callgraph.yml@main` のパスの解釈、および `CONFIG_NAME` の使い方を正確に理解してください。
 
-     期待する出力: `callgraph` ワークフローの導入手順書をMarkdown形式で生成してください。必須入力パラメータ、権限、共通ワークフローのチェックアウトパス、および設定ファイルの作成例を含めてください。
+     期待する出力: `callgraph` ワークフローを外部プロジェクトに導入する際の手順書をmarkdown形式で生成してください。具体的には：必須パラメータの設定方法、シークレットの登録手順、前提条件の確認項目、およびIssue [#10](../issue-notes/10.md) の現状の可視化を含めてください。
      ```
 
-3. [Issue #12](../issue-notes/12.md) Project Summary導入手順書の作成
-   - 最初の小さな一歩: `daily-project-summary.yml` の `workflow_call` の `secrets` を分析し、導入手順書に必要な情報を整理する。
-   - Agent実行プロンプト:
+3. Project Summaryワークフローの導入ドキュメント作成とIssue [#12](../issue-notes/12.md) の進捗可視化
+   - 最初の小さな一歩: `call-daily-project-summary.yml` と `daily-project-summary.yml`、および既存の `daily-summary-setup.md` を分析し、`project-summary` ワークフローを外部プロジェクトで利用するために必要な設定項目を洗い出す。
+   - Agent実行プロンプ:
      ```
-     対象ファイル:
-     - .github/workflows/daily-project-summary.yml
-     - .github_automation/project_summary/docs/daily-summary-setup.md
+     対象ファイル: .github/workflows/call-daily-project-summary.yml, .github/workflows/daily-project-summary.yml, .github_automation/project_summary/docs/daily-summary-setup.md
 
-     実行内容: `daily-project-summary` ワークフローを外部プロジェクトに導入するための手順書を、`workflow_call` の `secrets` (`GEMINI_API_KEY`)、`env` 変数 (`TMP_DIR`, `SCRIPT_DIR`, `PROMPT_DIR`, `DOCS_DIR` 等)、および必要な`permissions` (contents: write, issues: read, pull-requests: read) の観点から詳細に分析し、記述してください。既存の `daily-summary-setup.md` を補完する形で、`call-daily-project-summary.yml` の設定方法、`GEMINI_API_KEY` の登録手順、`GITHUB_TOKEN` の権限設定の注意点、共通ワークフローのチェックアウトパスについて記述してください。
+     実行内容: `project-summary` ワークフローを外部プロジェクトで利用する際に必要な設定項目を洗い出し、`daily-summary-setup.md` を更新するために必要な情報を分析してください：
+     1) 必須入力パラメータ（現時点では直接のinputsはないが、今後必要になる可能性のある項目）
+     2) 必須シークレット (`GEMINI_API_KEY`)
+     3) ファイル配置の前提条件 (プロンプトファイルなどのパス)
+     4) 外部プロジェクトでの利用時に必要な追加設定や考慮事項
+     また、Issue [#12](../issue-notes/12.md) で「promptsをcall側ymlで指定可能にする」が保留されている状況も踏まえてください。
 
-     確認事項: `daily-project-summary.yml` の依存関係（例: `check-recent-human-commit.yml`）とそれらの導入手順への影響。`GITHUB_TOKEN` に必要な具体的な権限。
+     確認事項: `daily-project-summary.yml` 内の `secrets` 宣言、`env` 変数、および `generate-project-summary.cjs` スクリプトへの引数の渡し方を正確に理解してください。`daily-summary-setup.md` の既存の内容との整合性も確認してください。
 
-     期待する出力: `daily-project-summary` ワークフローの導入手順書をMarkdown形式で生成してください。必須シークレット、権限、共通ワークフローのチェックアウトパス、およびプロンプトファイルのカスタマイズに関する情報を含めてください。
+     期待する出力: `daily-summary-setup.md` の「必要な設定」セクションを更新するための内容をmarkdown形式で生成してください。特に、`call-daily-project-summary.yml` を導入する際の手順と、`GEMINI_API_KEY` の設定方法、および関連ファイルの配置に関する詳細、そして保留タスクの現状を含めてください。
 
 ---
-Generated at: 2025-09-30 08:48:53 JST
+Generated at: 2025-10-01 07:05:35 JST
