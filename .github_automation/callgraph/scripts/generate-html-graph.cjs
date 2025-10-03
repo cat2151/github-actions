@@ -43,19 +43,79 @@ if (!fs.existsSync(sarifPath)) {
   process.exit(1);
 }
 
+console.log('処理開始...');
+console.log('SARIFファイル:', sarifPath);
+console.log('許可ファイル:', allowedFiles);
 
-const callerInfo = extractCallerinfo(sarifPath, allowedFiles);
-const calleeInfo = extractCalleeinfo(sarifPath, allowedFiles);
-const graphData = convertDetailedData(callerInfo, calleeInfo, allowedFiles);
-const html = generateHTML(graphData, { repo: process.env.GITHUB_REPOSITORY || '', branch: process.env.GITHUB_REF_NAME || 'main' });
+let callerInfo, calleeInfo, graphData;
 
-fs.writeFileSync(outputPath, html);
-console.log('コールグラフHTMLを生成しました:', outputPath);
+try {
+  console.log('1. Caller情報を抽出中...');
+  callerInfo = extractCallerinfo(sarifPath, allowedFiles);
+  console.log(`✓ Caller情報抽出完了 (${callerInfo.length}件)`);
+} catch (error) {
+  console.error('❌ Caller情報の抽出でエラーが発生しました:');
+  console.error('エラーメッセージ:', error.message);
+  console.error('スタックトレース:', error.stack);
+  process.exit(1);
+}
+
+try {
+  console.log('2. Callee情報を抽出中...');
+  calleeInfo = extractCalleeinfo(sarifPath, allowedFiles);
+  console.log(`✓ Callee情報抽出完了 (${calleeInfo.length}件)`);
+} catch (error) {
+  console.error('❌ Callee情報の抽出でエラーが発生しました:');
+  console.error('エラーメッセージ:', error.message);
+  console.error('スタックトレース:', error.stack);
+  process.exit(1);
+}
+
+try {
+  console.log('3. グラフデータを変換中...');
+  graphData = convertDetailedData(callerInfo, calleeInfo, allowedFiles);
+  console.log(`✓ グラフデータ変換完了 (ノード: ${graphData.nodes.length}個, エッジ: ${graphData.edges.length}個)`);
+} catch (error) {
+  console.error('❌ グラフデータの変換でエラーが発生しました:');
+  console.error('エラーメッセージ:', error.message);
+  console.error('スタックトレース:', error.stack);
+  console.error('Caller情報件数:', callerInfo ? callerInfo.length : 'undefined');
+  console.error('Callee情報件数:', calleeInfo ? calleeInfo.length : 'undefined');
+  process.exit(1);
+}
+
+try {
+  console.log('4. HTML生成中...');
+  const html = generateHTML(graphData, { repo: process.env.GITHUB_REPOSITORY || '', branch: process.env.GITHUB_REF_NAME || 'main' });
+  fs.writeFileSync(outputPath, html);
+  console.log('✓ コールグラフHTMLを生成しました:', outputPath);
+} catch (error) {
+  console.error('❌ HTML生成でエラーが発生しました:');
+  console.error('エラーメッセージ:', error.message);
+  console.error('スタックトレース:', error.stack);
+  process.exit(1);
+}
 
 // デバッグ用: Caller sourceLine 付きの詳細データをJSONで出力
-writeDebugCallerSourceLines(sarifPath, path.resolve('generated-docs/callerSourceLines.json'), extractCallerinfo, allowedFiles);
-console.log('✓ callerSourceLines.json (with sourceLine) generated');
+try {
+  console.log('5. デバッグファイル(caller)を生成中...');
+  writeDebugCallerSourceLines(sarifPath, path.resolve('generated-docs/callerSourceLines.json'), extractCallerinfo, allowedFiles);
+  console.log('✓ callerSourceLines.json (with sourceLine) generated');
+} catch (error) {
+  console.error('❌ callerSourceLines.json生成でエラーが発生しました:');
+  console.error('エラーメッセージ:', error.message);
+  console.error('スタックトレース:', error.stack);
+  // ここではexitしない（メイン処理は成功しているため）
+}
 
 // デバッグ用: Callee sourceLine 付きの詳細データをJSONで出力
-writeDebugCalleeSourceLines(sarifPath, path.resolve('generated-docs/calleeSourceLines.json'), extractCalleeinfo, allowedFiles);
-console.log('✓ calleeSourceLines.json (with callee sourceLine) generated');
+try {
+  console.log('6. デバッグファイル(callee)を生成中...');
+  writeDebugCalleeSourceLines(sarifPath, path.resolve('generated-docs/calleeSourceLines.json'), extractCalleeinfo, allowedFiles);
+  console.log('✓ calleeSourceLines.json (with callee sourceLine) generated');
+} catch (error) {
+  console.error('❌ calleeSourceLines.json生成でエラーが発生しました:');
+  console.error('エラーメッセージ:', error.message);
+  console.error('スタックトレース:', error.stack);
+  // ここではexitしない（メイン処理は成功しているため）
+}
