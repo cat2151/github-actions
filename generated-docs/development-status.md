@@ -1,51 +1,57 @@
-Last updated: 2025-10-09
+Last updated: 2025-10-10
 
 # Development Status
 
 ## 現在のIssues
-- Callgraph ([Issue #10](../issue-notes/10.md))、Translate ([Issue #11](../issue-notes/11.md))、Project Summary ([Issue #12](../issue-notes/12.md))、Issue Note ([Issue #13](../issue-notes/13.md))の各GitHub Actionsについて、他プロジェクトからの利用を容易にするためのドキュメント整備が主要な課題として挙げられています。
-- 具体的には、各アクションの`call`ワークフロー導入手順書の作成が求められています。
-- 一部のアクションではスクリプトの別ディレクトリへの移動やpromptの切り出しといった内部的な改善も検討されましたが、多くは既に実施済み、またはYAGNI原則により保留されています。
+- GitHub Actionsの`issue-note` ([Issue #13](../issue-notes/13.md))、`project-summary` ([Issue #12](../issue-notes/12.md))、`translate` ([Issue #11](../issue-notes/11.md))の各共通ワークフローについて、他プロジェクトからの導入・利用を容易にするためのドキュメント整備が主な課題です。
+- 特に`project-summary` ([Issue #12](../issue-notes/12.md))では`daily-summary-setup.md`の更新が、`issue-note` ([Issue #13](../issue-notes/13.md))と`translate` ([Issue #11](../issue-notes/11.md))では`call`導入手順の記述が求められています。
+- `translate` ([Issue #11](../issue-notes/11.md))は一部のコード分離は完了しており、その状況の可視化とドキュメント化も課題に含まれます。
 
 ## 次の一手候補
-1. Project Summaryの導入手順書（daily-summary-setup.md）を更新する [Issue #12](../issue-notes/12.md)
-   - 最初の小さな一歩: `.github_automation/project_summary/docs/daily-summary-setup.md` の内容を、現在の `call-daily-project-summary.yml` の利用方法に合わせて見直し、必要な更新箇所を特定する。
+1. `project-summary`導入手順のドキュメント更新 ([Issue #12](../issue-notes/12.md))
+   - 最初の小さな一歩: `.github_automation/project_summary/docs/daily-summary-setup.md` を開き、現状の`call-daily-project-summary.yml`の利用に必要な情報がすべて記載されているかレビューする。
    - Agent実行プロンプ:
      ```
-     対象ファイル: .github_automation/project_summary/docs/daily-summary-setup.md, .github/workflows/call-daily-project-summary.yml, .github/workflows/daily-project-summary.yml
+     対象ファイル: .github_automation/project_summary/docs/daily-summary-setup.mdと.github/workflows/call-daily-project-summary.yml
 
-     実行内容: `.github_automation/project_summary/docs/daily-summary-setup.md` を分析し、現在の `.github/workflows/call-daily-project-summary.yml` および `.github/workflows/daily-project-summary.yml` の構成と利用方法に整合しているかを確認してください。特に、`call-daily-project-summary.yml` を外部リポジトリから利用する際の手順が明確に記述されているか、および記載されているファイルパスや設定項目が最新の状態を反映しているかをレビューしてください。
+     実行内容: `daily-summary-setup.md` を分析し、`call-daily-project-summary.yml` を他プロジェクトで利用するために必要な設定や手順が網羅されているかを確認してください。特に、`uses` の設定方法、`secrets` の渡し方、前提条件（Node.jsのバージョン、依存関係のインストール等）に焦点を当て、不足している情報を追記してください。
 
-     確認事項: `.github_automation/project_summary/docs/daily-summary-setup.md` に記載されているファイルパスや変数名が、実際のワークフローファイル（`daily-project-summary.yml` および `call-daily-project-summary.yml`）と一致していることを確認してください。また、外部プロジェクトでの利用に必要な `uses` 構文や `secrets` の渡し方についての説明が適切かを確認してください。
+     確認事項: `daily-summary-setup.md` の既存内容との整合性、および `call-daily-project-summary.yml` の最新の構成と一致していることを確認してください。
 
-     期待する出力: レビュー結果をmarkdown形式で出力してください。改善点がある場合は、具体的な修正案を記述してください。
+     期待する出力: `call-daily-project-summary.yml` の導入手順を具体的に説明するよう更新された `daily-summary-setup.md` の内容をmarkdown形式で出力してください。
      ```
 
-2. Translateの導入手順書を作成する [Issue #11](../issue-notes/11.md)
-   - 最初の小さな一歩: `translate-readme.cjs` と `call-translate-readme.yml` の関係性を理解し、必要なパラメータとシークレットを洗い出す。
-   - Agent実行プロンプ:
+2. `translate`導入手順のドキュメント更新 ([Issue #11](../issue-notes/11.md))
+   - 最初の小さな一歩: `.github_automation/translate/docs/TRANSLATION_SETUP.md` を開き、現在の `call-translate-readme.yml` を他プロジェクトから利用するために必要な情報を書き出す。
+   - Agent実行プロンプト:
      ```
-     対象ファイル: .github_automation/translate/docs/TRANSLATION_SETUP.md, .github/workflows/call-translate-readme.yml, .github/workflows/translate-readme.yml
+     対象ファイル: .github_automation/translate/docs/TRANSLATION_SETUP.mdと.github/workflows/call-translate-readme.yml、.github/workflows/translate-readme.yml
 
-     実行内容: `.github/workflows/call-translate-readme.yml` が `cat2151/github-actions/.github/workflows/translate-readme.yml@main` を呼び出す際の具体的な導入手順を、外部プロジェクトのユーザー向けにmarkdown形式で生成してください。特に、`target-branch` の設定や `GEMINI_API_KEY` の登録方法、および `README.ja.md` の存在といった前提条件を明確に記述してください。
+     実行内容: `TRANSLATION_SETUP.md` を分析し、`call-translate-readme.yml` を他プロジェクトで利用するために必要な設定や手順が網羅されているかを確認してください。特に、`uses` の設定方法、`secrets` の渡し方（`GEMINI_API_KEY`）、ファイル配置の前提条件（`README.ja.md`の存在）、および`translate-readme.cjs`スクリプトの配置に関する情報に焦点を当て、不足している情報を追記してください。`issue-notes/11.md` に記載されている「別dirへの切り分け等実施済みのはず」の状況もドキュメントに反映してください。
 
-     確認事項: `call-translate-readme.yml` で `uses` キーワードを使って `translate-readme.yml` を呼び出す際の必須パラメータとシークレットが網羅されていることを確認してください。また、手順書がユーザーにとって分かりやすいか、あいまいな点がないかを確認してください。
+     確認事項: `TRANSLATION_SETUP.md` の既存内容との整合性、および `call-translate-readme.yml`と`translate-readme.yml` の最新の構成と一致していることを確認してください。
 
-     期待する出力: `.github_automation/translate/docs/TRANSLATION_SETUP.md` を更新するための具体的なmarkdownコンテンツを生成してください。
+     期待する出力: `call-translate-readme.yml` の導入手順を具体的に説明するよう更新された `TRANSLATION_SETUP.md` の内容をmarkdown形式で出力してください。
      ```
 
-3. Callgraphの導入手順書を作成する [Issue #10](../issue-notes/10.md)
-   - 最初の小さな一歩: `callgraph.yml` と `call-callgraph.yml` の関係性を理解し、CodeQLに関する依存関係や環境設定の要件を洗い出す。
-   - Agent実行プロンプ:
+3. `issue-note`導入手順のドキュメント作成 ([Issue #13](../issue-notes/13.md))
+   - 最初の小さな一歩: `issue-note` ワークフローの現状の利用方法を把握し、導入手順を記載する新規ドキュメントファイル名（例: `ISSUE_NOTE_SETUP.md`）を決定する。
+   - Agent実行プロンプト:
      ```
-     対象ファイル: .github_automation/callgraph/docs/callgraph.md, .github/workflows/call-callgraph.yml, .github/workflows/callgraph.yml
+     対象ファイル: .github/workflows/call-issue-note.ymlと.github/workflows/issue-note.yml
 
-     実行内容: `call-callgraph.yml` を外部プロジェクトから利用する際の導入手順をmarkdown形式で生成してください。CodeQL CLIのインストール、クエリパックのセットアップ、Node.jsのバージョン要件など、`callgraph.yml` ワークフローが正しく機能するために必要な全ての事前設定と手順を具体的に記述してください。
+     実行内容: `call-issue-note.yml` を他プロジェクトで利用するための導入手順書を新規に作成してください。以下の要素を必ず含めてください：
+     1. `call-issue-note.yml` と `issue-note.yml` を配置する場所。
+     2. `on: workflow_dispatch` や `on: issues` などのトリガー設定。
+     3. `uses` の設定方法。
+     4. `inputs` の渡し方（`issue_title`, `issue_number`, `issue_body`, `issue_url` など）。
+     5. `secrets` の設定（`GITHUB_TOKEN`）。
+     6. 前提条件（Node.jsのバージョン、依存関係のインストール等）。
 
-     確認事項: `callgraph.yml` の `jobs.generate-callgraph` ステップで実行されている各スクリプト（例: `analyze-codeql.cjs`, `generate-html-graph.cjs`）の前提条件が手順書に反映されていることを確認してください。また、必要なパーミッション（`contents: write`, `security-events: write` など）についても言及されているか確認してください。
+     確認事項: `issue-note` ワークフローが正しく動作するために必要なすべての情報が含まれていることを確認してください。
 
-     期待する出力: `.github_automation/callgraph/docs/callgraph.md` を新規作成または更新するための具体的なmarkdownコンテンツを生成してください。
+     期待する出力: `call-issue-note.yml` の導入手順を説明する新規ドキュメント `ISSUE_NOTE_SETUP.md` の内容をmarkdown形式で出力してください。
      ```
 
 ---
-Generated at: 2025-10-09 07:05:18 JST
+Generated at: 2025-10-10 07:05:31 JST

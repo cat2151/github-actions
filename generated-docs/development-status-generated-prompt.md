@@ -1,4 +1,4 @@
-Last updated: 2025-10-09
+Last updated: 2025-10-10
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -333,43 +333,6 @@ Last updated: 2025-10-09
     - 対策、シンプル優先でREADME決め打ちにする
         - 理由、README以外の用途となると、複数ファイルをどうGemini APIにわたすか？等、仕様が爆発的にふくらんでいくリスクがある
         - README以外の用途が明確でないうちは、README決め打ちにするほうがよい
-- docs
-    - call導入手順を書く
-
-# 状況
-- 上記のうち、別dirへの切り分け等は実施済みのはず
-- どうする？
-    - それをここに可視化する。
-
-```
-
-## [Issue #10](../issue-notes/10.md): callgraph を他projectから使いやすくする
-[issue-notes/10.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/10.md)
-
-...
-ラベル: 
---- issue-notes/10.md の内容 ---
-
-```markdown
-# issue callgraph を他projectから使いやすくする #10
-[issues #10](https://github.com/cat2151/github-actions/issues/10)
-
-# ブレインストーミング
-- 洗い出し
-    - 他projectから使う場合の問題を洗い出す、今見えている範囲で、手早く、このnoteに可視化する
-    - 洗い出したものは、一部は別issueに切り分ける
-- close条件
-    - まずは4つそれぞれを個別のdirに切り分けてtest greenとなること、とするつもり
-    - それ以外は別issueに切り分けるつもり
-- 切り分け
-    - 別dirに切り分ける
-        - 課題、`codeql-queries/` が `.github/` 配下にある。対策、`.github_automation/callgraph_enhanced/codeql-queries/` とする
-        - 課題、scriptも、`.github/`配下にある。対策、移動する
-        - 方法、agentを試し、ハルシネーションで時間が取られるなら人力に切り替える
-- test
-    - local WSL + act でtestする
-- 名前
-    - 課題、名前 enhanced が不要。対策、名前から enhanced を削除してymlなどもそれぞれ同期して修正すべし
 - docs
     - call導入手順を書く
 
@@ -894,68 +857,6 @@ GitHub Actions の実行ログで詳細なエラー情報を確認できます�
 - APIキーはGitHub Secretsで管理
 - 生成されたコンテンツはパブリックリポジトリの場合公開される
 - プライベート情報を含むプロンプトは避ける
-
-```
-
-### .github/actions-tmp/issue-notes/10.md
-```md
-# issue callgraph を他projectから使いやすくする #10
-[issues #10](https://github.com/cat2151/github-actions/issues/10)
-
-# ブレインストーミング
-- 洗い出し
-    - 他projectから使う場合の問題を洗い出す、今見えている範囲で、手早く、このnoteに可視化する
-    - 洗い出したものは、一部は別issueに切り分ける
-- close条件
-    - まずは4つそれぞれを個別のdirに切り分けてtest greenとなること、とするつもり
-    - それ以外は別issueに切り分けるつもり
-- 切り分け
-    - 別dirに切り分ける
-        - 課題、`codeql-queries/` が `.github/` 配下にある。対策、`.github_automation/callgraph_enhanced/codeql-queries/` とする
-        - 課題、scriptも、`.github/`配下にある。対策、移動する
-        - 方法、agentを試し、ハルシネーションで時間が取られるなら人力に切り替える
-- test
-    - local WSL + act でtestする
-- 名前
-    - 課題、名前 enhanced が不要。対策、名前から enhanced を削除してymlなどもそれぞれ同期して修正すべし
-- docs
-    - call導入手順を書く
-
-# 状況
-- 上記のうち、別dirへの切り分け等は実施済みのはず
-- どうする？
-    - それをここに可視化する。
-
-```
-
-### issue-notes/10.md
-```md
-# issue callgraph を他projectから使いやすくする #10
-[issues #10](https://github.com/cat2151/github-actions/issues/10)
-
-# ブレインストーミング
-- 洗い出し
-    - 他projectから使う場合の問題を洗い出す、今見えている範囲で、手早く、このnoteに可視化する
-    - 洗い出したものは、一部は別issueに切り分ける
-- close条件
-    - まずは4つそれぞれを個別のdirに切り分けてtest greenとなること、とするつもり
-    - それ以外は別issueに切り分けるつもり
-- 切り分け
-    - 別dirに切り分ける
-        - 課題、`codeql-queries/` が `.github/` 配下にある。対策、`.github_automation/callgraph_enhanced/codeql-queries/` とする
-        - 課題、scriptも、`.github/`配下にある。対策、移動する
-        - 方法、agentを試し、ハルシネーションで時間が取られるなら人力に切り替える
-- test
-    - local WSL + act でtestする
-- 名前
-    - 課題、名前 enhanced が不要。対策、名前から enhanced を削除してymlなどもそれぞれ同期して修正すべし
-- docs
-    - call導入手順を書く
-
-# 状況
-- 上記のうち、別dirへの切り分け等は実施済みのはず
-- どうする？
-    - それをここに可視化する。
 
 ```
 
@@ -1575,22 +1476,26 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+e20c0c6 Update callgraph.html [auto]
+603ddba #10 document改善
+2cf5f56 Merge branch 'main' of github.com:cat2151/github-actions into main
+c5fe30e fix #10 close条件を満たしたと判断し、closeとする
+4020f8b Update project summaries (overview & development status) [auto]
 f23ec9c Update callgraph.html [auto]
 162a8ee fix #16 test greenなのでcloseとする
 1dfa193 Update project summaries (overview & development status) [auto]
 c5aa840 Update callgraph.html [auto]
 9218e5b Merge branch 'main' of github.com:cat2151/github-actions into main
-13a3000 #16 エラー対策。logに情報追加
 
 ### 変更されたファイル:
-.github_automation/callgraph/scripts/extract-sarif-info.cjs
-.github_automation/callgraph/scripts/generate-html-graph.cjs
+.github_automation/callgraph/docs/callgraph.md
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
+issue-notes/10.md
 issue-notes/16.md
 
 
 ---
-Generated at: 2025-10-09 07:04:58 JST
+Generated at: 2025-10-10 07:05:05 JST
