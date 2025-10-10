@@ -1,4 +1,4 @@
-Last updated: 2025-10-10
+Last updated: 2025-10-11
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -1476,6 +1476,9 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+b8e2fa6 Update callgraph.html [auto]
+caebafd #10 document改善。agentのハルシネーションによるdocument破壊があったので、対策としてdocument行数を400行から100行に削減した。のち、全体をできるだけ見直して修正した
+48d20a8 Update project summaries (overview & development status) [auto]
 e20c0c6 Update callgraph.html [auto]
 603ddba #10 document改善
 2cf5f56 Merge branch 'main' of github.com:cat2151/github-actions into main
@@ -1483,9 +1486,6 @@ c5fe30e fix #10 close条件を満たしたと判断し、closeとする
 4020f8b Update project summaries (overview & development status) [auto]
 f23ec9c Update callgraph.html [auto]
 162a8ee fix #16 test greenなのでcloseとする
-1dfa193 Update project summaries (overview & development status) [auto]
-c5aa840 Update callgraph.html [auto]
-9218e5b Merge branch 'main' of github.com:cat2151/github-actions into main
 
 ### 変更されたファイル:
 .github_automation/callgraph/docs/callgraph.md
@@ -1494,8 +1494,7 @@ generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
 issue-notes/10.md
-issue-notes/16.md
 
 
 ---
-Generated at: 2025-10-10 07:05:05 JST
+Generated at: 2025-10-11 07:04:57 JST
