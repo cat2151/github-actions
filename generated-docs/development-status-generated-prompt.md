@@ -1,4 +1,4 @@
-Last updated: 2025-10-15
+Last updated: 2025-11-10
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -143,7 +143,6 @@ Last updated: 2025-10-15
 - .github/actions-tmp/.github_automation/project_summary/scripts/overview/ProjectDataCollector.cjs
 - .github/actions-tmp/.github_automation/project_summary/scripts/overview/ProjectDataFormatter.cjs
 - .github/actions-tmp/.github_automation/project_summary/scripts/overview/ProjectOverviewGenerator.cjs
-- .github/actions-tmp/.github_automation/project_summary/scripts/overview/TechStackAnalyzer.cjs
 - .github/actions-tmp/.github_automation/project_summary/scripts/shared/BaseGenerator.cjs
 - .github/actions-tmp/.github_automation/project_summary/scripts/shared/FileSystemUtils.cjs
 - .github/actions-tmp/.github_automation/project_summary/scripts/shared/ProjectFileUtils.cjs
@@ -154,6 +153,7 @@ Last updated: 2025-10-15
 - .github/actions-tmp/LICENSE
 - .github/actions-tmp/README.ja.md
 - .github/actions-tmp/README.md
+- .github/actions-tmp/_config.yml
 - .github/actions-tmp/generated-docs/callgraph.html
 - .github/actions-tmp/generated-docs/callgraph.js
 - .github/actions-tmp/generated-docs/development-status-generated-prompt.md
@@ -180,6 +180,7 @@ Last updated: 2025-10-15
 - .github/actions-tmp/issue-notes/26.md
 - .github/actions-tmp/issue-notes/27.md
 - .github/actions-tmp/issue-notes/28.md
+- .github/actions-tmp/issue-notes/29.md
 - .github/actions-tmp/issue-notes/3.md
 - .github/actions-tmp/issue-notes/4.md
 - .github/actions-tmp/issue-notes/7.md
@@ -228,7 +229,6 @@ Last updated: 2025-10-15
 - .github_automation/project_summary/scripts/overview/ProjectDataCollector.cjs
 - .github_automation/project_summary/scripts/overview/ProjectDataFormatter.cjs
 - .github_automation/project_summary/scripts/overview/ProjectOverviewGenerator.cjs
-- .github_automation/project_summary/scripts/overview/TechStackAnalyzer.cjs
 - .github_automation/project_summary/scripts/shared/BaseGenerator.cjs
 - .github_automation/project_summary/scripts/shared/FileSystemUtils.cjs
 - .github_automation/project_summary/scripts/shared/ProjectFileUtils.cjs
@@ -239,8 +239,10 @@ Last updated: 2025-10-15
 - LICENSE
 - README.ja.md
 - README.md
+- _config.yml
 - generated-docs/callgraph.html
 - generated-docs/callgraph.js
+- generated-docs/project-overview-generated-prompt.md
 - generated-docs/style.css
 - issue-notes/10.md
 - issue-notes/11.md
@@ -262,6 +264,7 @@ Last updated: 2025-10-15
 - issue-notes/26.md
 - issue-notes/27.md
 - issue-notes/28.md
+- issue-notes/29.md
 - issue-notes/3.md
 - issue-notes/4.md
 - issue-notes/7.md
@@ -545,26 +548,30 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
-6ee6365 Update callgraph.html [auto]
-8a01b60 fix #12 導入手順を改善し、他projectから使いやすくしたので、closeとする
-daee382 Update project summaries (overview & development status) [auto]
-b8e2fa6 Update callgraph.html [auto]
-caebafd #10 document改善。agentのハルシネーションによるdocument破壊があったので、対策としてdocument行数を400行から100行に削減した。のち、全体をできるだけ見直して修正した
-48d20a8 Update project summaries (overview & development status) [auto]
-e20c0c6 Update callgraph.html [auto]
-603ddba #10 document改善
-2cf5f56 Merge branch 'main' of github.com:cat2151/github-actions into main
-c5fe30e fix #10 close条件を満たしたと判断し、closeとする
+2fc9e68 Update callgraph.html [auto]
+3e1ccc5 fix #29
+db14944 #29 project-overview用のプロンプトもcommit pushの対応にした（今回のような課題の調査をしやすくする用）
+7971465 #29 README文字数制限を撤廃。project-overview用のプロンプトもcommit pushの対応にした（今回のような課題の調査をしやすくする用）
+d9c9d4d #29 技術スタック欄を削除
+f997564 Add issue note for #29 [auto]
+d05392f Merge branch 'main' of github.com:cat2151/github-actions into main
+84639a6 jekyll settings
 
 ### 変更されたファイル:
-.github_automation/callgraph/docs/callgraph.md
-.github_automation/project_summary/docs/daily-summary-setup.md
+.github/workflows/daily-project-summary.yml
+.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs
+.github_automation/project_summary/scripts/generate-project-summary.cjs
+.github_automation/project_summary/scripts/overview/ProjectAnalysisOrchestrator.cjs
+.github_automation/project_summary/scripts/overview/ProjectDataCollector.cjs
+.github_automation/project_summary/scripts/overview/ProjectDataFormatter.cjs
+.github_automation/project_summary/scripts/overview/ProjectOverviewGenerator.cjs
+.github_automation/project_summary/scripts/overview/TechStackAnalyzer.cjs
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview.md
-issue-notes/12.md
+issue-notes/29.md
 
 
 ---
-Generated at: 2025-10-15 07:05:30 JST
+Generated at: 2025-11-10 07:04:42 JST
