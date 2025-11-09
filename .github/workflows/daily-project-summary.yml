@@ -14,6 +14,7 @@ env:
   OUT_OVERVIEW: project-overview.md
   OUT_DEVELOPMENT_STATUS: development-status.md
   OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT: development-status-generated-prompt.md
+  OUT_OVERVIEW_GENERATED_PROMPT: project-overview-generated-prompt.md
 
 jobs:
   check_recent_human_commit:
@@ -61,6 +62,7 @@ jobs:
           rm -f ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}
           rm -f ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
           rm -f ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}
+          rm -f ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW_GENERATED_PROMPT }}
 
       - name: Generate project summary
         env:
@@ -76,6 +78,7 @@ jobs:
             ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }} \
             ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }} \
             ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }} \
+            ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW_GENERATED_PROMPT }} \
             ${{ github.workspace }}
 
       - name: Verify generated files # 生成後のtimestampやfilesizeのチェック用
@@ -83,11 +86,12 @@ jobs:
           ls -la ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}
           ls -la ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
           ls -la ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}
+          ls -la ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW_GENERATED_PROMPT }}
 
       - name: Check for generated summaries
         id: check_summaries
         run: |
-          if [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}" ] && [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}" ] && [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}" ]; then
+          if [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}" ] && [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}" ] && [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}" ] && [ -f "${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW_GENERATED_PROMPT }}" ]; then
             echo "summaries_generated=true" >> $GITHUB_OUTPUT
           else
             echo "summaries_generated=false" >> $GITHUB_OUTPUT
@@ -101,6 +105,7 @@ jobs:
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW }}
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS }}
           git add ${{ env.DOCS_DIR }}/${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}
+          git add ${{ env.DOCS_DIR }}/${{ env.OUT_OVERVIEW_GENERATED_PROMPT }}
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
@@ -112,7 +117,7 @@ jobs:
         run: |
           if [ "${{ steps.check_summaries.outputs.summaries_generated }}" == "true" ]; then
             echo "✅ Project summaries updated successfully"
-            echo "📊 Generated: ${{ env.OUT_OVERVIEW }} & ${{ env.OUT_DEVELOPMENT_STATUS }} & ${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }}"
+            echo "📊 Generated: ${{ env.OUT_OVERVIEW }} & ${{ env.OUT_DEVELOPMENT_STATUS }} & ${{ env.OUT_DEVELOPMENT_STATUS_GENERATED_PROMPT }} & ${{ env.OUT_OVERVIEW_GENERATED_PROMPT }}"
           else
             echo "ℹ️ No summaries generated (likely no user commits in the last 24 hours)"
           fi
