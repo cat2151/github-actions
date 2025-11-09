@@ -22,7 +22,7 @@ class ProjectDataCollector {
    */
   async collectBasicInfo() {
     console.log('Collecting basic project information...');
-    
+
     const basicInfo = {
       name: '',
       description: '',
@@ -44,8 +44,8 @@ class ProjectDataCollector {
     try {
       const readmeContent = await this._readReadme();
       if (readmeContent) {
-        // READMEの内容を優先（最初の500文字）
-        basicInfo.description = readmeContent.substring(0, 500) + '...';
+        // READMEの内容を優先
+        basicInfo.description = readmeContent;
       }
     } catch (error) {
       console.warn('Could not read README:', error.message);
@@ -59,7 +59,7 @@ class ProjectDataCollector {
    */
   async collectStructureInfo() {
     console.log('Collecting project structure...');
-    
+
     const structureInfo = {
       structure: '',
       fileTree: ''
@@ -86,7 +86,7 @@ class ProjectDataCollector {
    */
   async collectCodeAnalysis() {
     console.log('Collecting code analysis...');
-    
+
     const codeInfo = {
       fileAnalysis: [],
       functionHierarchy: {}
@@ -145,7 +145,7 @@ class ProjectDataCollector {
    */
   async _readReadme() {
     let readmePath = path.join(this.projectRoot, 'README.ja.md');
-    
+
     try {
       await fs.access(readmePath);
     } catch {

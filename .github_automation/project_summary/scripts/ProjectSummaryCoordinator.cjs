@@ -13,9 +13,10 @@ class ProjectSummaryCoordinator {
    * @param {string} overviewPath - プロジェクト概要出力先パス（必須）
    * @param {string} developmentPath - 開発状況出力先パス（必須）
    * @param {string} developmentGeneratedPath - 開発状況生成プロンプトのパス（必須）
+   * @param {string} overviewGeneratedPath - プロジェクト概要生成プロンプトのパス（必須）
    * @param {string} projectRoot - プロジェクトルートパス（必須）
    */
-  constructor(overviewPromptPath, developmentStatusPromptPath, overviewPath, developmentPath, developmentGeneratedPath, projectRoot) {
+  constructor(overviewPromptPath, developmentStatusPromptPath, overviewPath, developmentPath, developmentGeneratedPath, overviewGeneratedPath, projectRoot) {
     // 引数のバリデーション
     if (!overviewPromptPath) {
       throw new Error('overviewPromptPath is required as the first argument');
@@ -32,12 +33,15 @@ class ProjectSummaryCoordinator {
     if (!developmentGeneratedPath) {
       throw new Error('developmentGeneratedPath is required as the fifth argument');
     }
+    if (!overviewGeneratedPath) {
+      throw new Error('overviewGeneratedPath is required as the sixth argument');
+    }
     if (!projectRoot) {
-      throw new Error('projectRoot is required as the sixth argument');
+      throw new Error('projectRoot is required as the seventh argument');
     }
 
     // 各生成器を初期化
-    this.overviewGenerator = new ProjectOverviewGenerator(overviewPromptPath, overviewPath, projectRoot);
+    this.overviewGenerator = new ProjectOverviewGenerator(overviewPromptPath, overviewPath, overviewGeneratedPath, projectRoot);
     this.developmentGenerator = new DevelopmentStatusGenerator(developmentStatusPromptPath, developmentPath, developmentGeneratedPath, projectRoot);
   }
 

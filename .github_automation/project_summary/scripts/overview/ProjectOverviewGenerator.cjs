@@ -9,9 +9,10 @@ class ProjectOverviewGenerator extends BaseGenerator {
   /**
    * @param {string} overviewPromptPath - プロジェクト概要プロンプトのパス（必須）
    * @param {string} overviewPath - プロジェクト概要出力先パス（必須）
+   * @param {string} overviewGeneratedPath - プロンプト生成結果出力先パス（必須）
    * @param {string} projectRoot - プロジェクトルートパス（必須）
    */
-  constructor(overviewPromptPath, overviewPath, projectRoot) {
+  constructor(overviewPromptPath, overviewPath, overviewGeneratedPath, projectRoot) {
     super(projectRoot);
 
     if (!overviewPromptPath) {
@@ -20,9 +21,13 @@ class ProjectOverviewGenerator extends BaseGenerator {
     if (!overviewPath) {
       throw new Error('overviewPath is required as the second argument');
     }
+    if (!overviewGeneratedPath) {
+      throw new Error('overviewGeneratedPath is required as the third argument');
+    }
 
     this.overviewPromptPath = overviewPromptPath;
     this.overviewPath = overviewPath;
+    this.overviewGeneratedPath = overviewGeneratedPath;
     this.orchestrator = new ProjectAnalysisOrchestrator(projectRoot);
   }
 
@@ -75,6 +80,10 @@ class ProjectOverviewGenerator extends BaseGenerator {
     console.log('Generating project overview with Gemini API...');
 
     const overviewPrompt = this._buildPrompt(formattedReport, prompt);
+
+    // プロンプトをファイルに保存する。開発効率化用。
+    await this.saveToFile(overviewPrompt, this.overviewGeneratedPath);
+    console.log(`Project overview prompt saved to: ${this.overviewGeneratedPath}`);
 
     try {
       const result = await this.generateContent(overviewPrompt);

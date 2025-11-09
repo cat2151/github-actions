@@ -7,7 +7,8 @@ const developmentStatusPromptPath = process.argv[3];
 const overviewPath = process.argv[4];
 const developmentPath = process.argv[5];
 const developmentGeneratedPath = process.argv[6];
-const projectRoot = process.argv[7];
+const overviewGeneratedPath = process.argv[7];
+const projectRoot = process.argv[8];
 
 const coordinator = new ProjectSummaryCoordinator(
   overviewPromptPath,
@@ -15,6 +16,7 @@ const coordinator = new ProjectSummaryCoordinator(
   overviewPath,
   developmentPath,
   developmentGeneratedPath,
+  overviewGeneratedPath,
   projectRoot
 );
 coordinator.run();
