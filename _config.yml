@@ -1,0 +1,6 @@
+title: "github-actions"
+description: "github-actions"
+theme: jekyll-theme-slate
+github:
+  is_project_page: true
+  repository_url: https://github.com/cat2151/github-actions
