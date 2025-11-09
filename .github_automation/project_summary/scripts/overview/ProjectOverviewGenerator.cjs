@@ -102,9 +102,6 @@ ${basePrompt}
 依存関係:
 ${JSON.stringify(formattedReport.dependencies, null, 2)}
 
-## 技術スタック
-${formattedReport.formatted.techStack}
-
 ## ファイル階層ツリー
 ${formattedReport.fileTree}
 

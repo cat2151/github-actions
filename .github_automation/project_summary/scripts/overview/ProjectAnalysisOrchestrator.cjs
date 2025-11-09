@@ -2,7 +2,6 @@ const BaseGenerator = require('../shared/BaseGenerator.cjs');
 const FileSystemUtils = require('../shared/FileSystemUtils.cjs');
 const CodeAnalyzer = require('./CodeAnalyzer.cjs');
 const ProjectDataCollector = require('./ProjectDataCollector.cjs');
-const TechStackAnalyzer = require('./TechStackAnalyzer.cjs');
 const ProjectDataFormatter = require('./ProjectDataFormatter.cjs');
 
 /**
@@ -28,12 +27,11 @@ class ProjectAnalysisOrchestrator extends BaseGenerator {
     // 1. データ収集
     const projectData = await this.dataCollector.collectAll();
 
-    // 2. 技術スタック分析
+    // 2. パッケージ情報取得
     const packageJson = await this._getPackageJson();
-    const techStack = this.techStackAnalyzer.analyzeTechStack(packageJson, projectData);
 
     // 3. 結果統合
-    const analysisResult = this._combineAnalysisResults(projectData, techStack, packageJson);
+    const analysisResult = this._combineAnalysisResults(projectData, packageJson);
 
     console.log('Project analysis completed.');
     return analysisResult;
@@ -49,7 +47,6 @@ class ProjectAnalysisOrchestrator extends BaseGenerator {
     return {
       ...analysisResult,
       formatted: {
-        techStack: this.formatter.formatTechStack(analysisResult.techStack),
         fileDetails: this.formatter.formatFileDetails(analysisResult.fileAnalysis),
         functionHierarchy: this.formatter.formatFunctionHierarchy(analysisResult.functionHierarchy),
         projectSummary: this.formatter.formatProjectSummary(analysisResult)
@@ -69,7 +66,6 @@ class ProjectAnalysisOrchestrator extends BaseGenerator {
       this.fileSystemUtils,
       this.codeAnalyzer
     );
-    this.techStackAnalyzer = new TechStackAnalyzer(this.fileSystemUtils);
     this.formatter = new ProjectDataFormatter();
   }
 
@@ -77,13 +73,12 @@ class ProjectAnalysisOrchestrator extends BaseGenerator {
    * 分析結果を統合
    * @private
    */
-  _combineAnalysisResults(projectData, techStack, packageJson) {
+  _combineAnalysisResults(projectData, packageJson) {
     return {
       name: projectData.name,
       description: projectData.description,
       structure: projectData.structure,
       dependencies: projectData.dependencies,
-      techStack: techStack,
       fileTree: projectData.fileTree,
       fileAnalysis: projectData.fileAnalysis,
       functionHierarchy: projectData.functionHierarchy,
