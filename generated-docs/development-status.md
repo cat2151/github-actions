@@ -1,51 +1,58 @@
-Last updated: 2025-11-10
+Last updated: 2025-11-11
 
 # Development Status
 
 ## 現在のIssues
-- [Issue #13](../issue-notes/13.md) では、`issue-note`生成アクションを他のプロジェクトで容易に利用できるよう、詳細な導入手順書の作成が主な課題です。
-- [Issue #11](../issue-notes/11.md) では、翻訳アクションの導入手順書作成に加え、プロンプトのハードコーディングを解消し外部から指定可能にする改善が検討されています。
-- 現在、これら共通ワークフローの導入ドキュメント整備と機能改善が優先課題となっています。
+- Issueノートが存在しない場合に進捗状況生成がエラーになる [Issue #30](../issue-notes/30.md) は、処理を改善し空文字を返すことで解消されました。
+- `issue-note` 共通ワークフロー [Issue #13](../issue-notes/13.md) を他プロジェクトで利用するための導入手順書の作成が未完了です。
+- `translate` 共通ワークフロー [Issue #11](../issue-notes/11.md) については、導入手順書とプロンプトの外部指定化が主要な課題として残っています。
 
 ## 次の一手候補
-1. [Issue #11](../issue-notes/11.md) 翻訳アクションの導入手順書作成
-   - 最初の小さな一歩: `.github_automation/translate/docs/TRANSLATION_SETUP.md` を参考に、`call-translate-readme.yml` を外部プロジェクトで利用する際に必要な設定項目（パラメータ、シークレット、ファイル配置）を洗い出し、手順書の骨子を作成する。
+1. [Issue #13](../issue-notes/13.md) `issue-note` 共通ワークフローの導入手順書を作成する
+   - 最初の小さな一歩: `issue-note.yml` の `workflow_call` セクションを確認し、必須となる `inputs` や `secrets` を洗い出す。
    - Agent実行プロンプト:
      ```
-     対象ファイル: .github_automation/translate/docs/TRANSLATION_SETUP.md, .github/workflows/call-translate-readme.yml
+     対象ファイル: .github/workflows/issue-note.yml
 
-     実行内容: `call-translate-readme.yml`を外部プロジェクトから利用するための手順書をMarkdown形式で生成してください。この手順書には、必須入力パラメータ（例: `target-branch`）、必須シークレット（例: `GEMINI_API_KEY`）、ファイル配置の前提条件（例: `README.ja.md`の存在）、および外部プロジェクトで利用する際に必要な追加設定を具体的に記述してください。
+     実行内容: 対象ファイルである `issue-note.yml` を分析し、外部プロジェクトで共通ワークフローとして利用する際に必要な設定項目を洗い出してください。具体的には、以下の観点から分析し、その結果をmarkdown形式で出力してください：
+     1) 必須入力パラメータ（issue_title, issue_number, issue_body, issue_url など）
+     2) 必須シークレット（GITHUB_TOKEN など）
+     3) ファイル配置の前提条件（例: `issue-notes` ディレクトリの存在や構造）
 
-     確認事項: 既存のREADME翻訳ワークフローの動作原理と、関連するGitHub Actionsファイル（`translate-readme.yml`など）との整合性を確認してください。
+     確認事項: `issue-note.yml` の `workflow_call` 定義と、スクリプト（特に `actions/github-script` ステップ）内で参照されている `inputs` や `env` 変数を詳細に確認し、全ての設定項目が網羅されていることを確認してください。
 
-     期待する出力: 外部プロジェクトがこの`call-translate-readme.yml`を導入する際の手順書をmarkdown形式で生成してください。
+     期待する出力: 外部プロジェクトがこの `issue-note.yml` 共通ワークフローを導入する際の手順書をmarkdown形式で生成してください。具体的には：必須パラメータの設定方法、シークレットの登録手順、前提条件の確認項目を含めてください。
      ```
 
-2. [Issue #13](../issue-notes/13.md) issue-noteアクションの導入手順書作成
-   - 最初の小さな一歩: 既存の`issue-note.yml`の動作と、[Issue #3](../issue-notes/3.md)での共通ワークフロー化の経緯を参照し、`call-issue-note.yml`の外部プロジェクト向け導入手順書の骨子を作成する。
+2. [Issue #11](../issue-notes/11.md) `translate` 共通ワークフローの導入手順書を作成する
+   - 最初の小さな一歩: `translate-readme.yml` の `workflow_call` セクションを確認し、必須となる `inputs` や `secrets` を洗い出す。
    - Agent実行プロンプト:
      ```
-     対象ファイル: .github/workflows/call-issue-note.yml, issue-notes/3.md
+     対象ファイル: .github/workflows/translate-readme.yml
 
-     実行内容: `call-issue-note.yml`を外部プロジェクトから利用するための手順書をMarkdown形式で生成してください。手順書には、必要な入力パラメータ（例: `issue_title`, `issue_number`）、必須シークレット（例: `GITHUB_TOKEN`）、および`actions/github-script`における`inputs`の参照方法（`env`経由の利用など、[Issue #3](../issue-notes/3.md)で指摘された点）を考慮して詳述してください。
+     実行内容: 対象ファイルである `translate-readme.yml` を分析し、外部プロジェクトで共通ワークフローとして利用する際に必要な設定項目を洗い出してください。具体的には、以下の観点から分析し、その結果をmarkdown形式で出力してください：
+     1) 必須入力パラメータ（target-branch, file-path など）
+     2) 必須シークレット（GEMINI_API_KEY, GITHUB_TOKEN など）
+     3) ファイル配置の前提条件（例: `README.ja.md` の存在）
+     4) 外部プロジェクトでの利用時に必要な追加設定や考慮事項
 
-     確認事項: 既存のissue-note生成ワークフローの動作、特に[Issue #3](../issue-notes/3.md)で解決された`actions/github-script`内での変数参照の問題点と、関連ファイルの整合性を確認してください。
+     確認事項: `translate-readme.yml` の `workflow_call` 定義と、スクリプト（`translate-readme.cjs`）内で参照されている `inputs` や `env` 変数を詳細に確認し、全ての設定項目が網羅されていることを確認してください。
 
-     期待する出力: 外部プロジェクトが`call-issue-note.yml`を導入する際の手順書をmarkdown形式で生成してください。
+     期待する出力: 外部プロジェクトがこの `translate-readme.yml` 共通ワークフローを導入する際の手順書をmarkdown形式で生成してください。具体的には：必須パラメータの設定方法、シークレットの登録手順、前提条件の確認項目を含めてください。
      ```
 
-3. [Issue #11](../issue-notes/11.md) 翻訳プロンプトの外部化と設定可能化の検討
-   - 最初の小さな一歩: `.github_automation/translate/scripts/translate-readme.cjs` 内で翻訳プロンプトがハードコードされている箇所を特定し、外部ファイルからの読み込み、または`workflow_call`の`inputs`として受け取れるようにするための改修計画の初案を文書化する。
+3. [Issue #11](../issue-notes/11.md) `translate` ワークフローのプロンプト外部指定化を検討する
+   - 最初の小さな一歩: 現在 `translate-readme.cjs` でプロンプトがどのように定義され、利用されているかを特定する。
    - Agent実行プロンプト:
      ```
-     対象ファイル: .github_automation/translate/scripts/translate-readme.cjs, .github/workflows/translate-readme.yml, .github/workflows/call-translate-readme.yml
+     対象ファイル: .github_automation/translate/scripts/translate-readme.cjs
 
-     実行内容: `translate-readme.cjs`内で現在ハードコードされている翻訳プロンプトを外部のMarkdownファイル（例: `.github_automation/translate/prompts/translate-readme-prompt.md`）から読み込む形にリファクタリングするための詳細な計画をMarkdown形式で提案してください。また、`call-translate-readme.yml`が`workflow_call`の`inputs`を通じてこのプロンプトファイルを指定できるようにする修正案も含めてください。
+     実行内容: `translate-readme.cjs` ファイルを分析し、現在プロンプトがどのようにコード内で定義され、利用されているかを特定してください。その後、プロンプトを外部ファイル（例: `prompts` ディレクトリ内のファイル）として管理し、`translate-readme.yml` の `workflow_call` の `inputs` からその外部ファイルパスを指定できるようにするための具体的な変更点を洗い出し、その実装案をmarkdown形式で出力してください。
 
-     確認事項: プロンプトの外部化が翻訳ロジックに影響を与えないこと、および既存のワークフローが引き続き期待通りに動作することを確認してください。
+     確認事項: プロンプトの外部指定化が既存の翻訳ロジックに影響を与えないこと、および新しいプロンプトファイルが存在しない場合のデフォルト動作やエラーハンドリングについて考慮してください。
 
-     期待する出力: プロンプト外部化のための詳細なリファクタリング計画と、関連するワークフローファイル（`translate-readme.yml`, `call-translate-readme.yml`）の修正案をmarkdown形式で生成してください。
+     期待する出力: プロンプトの外部指定化のための実装案をmarkdown形式で出力してください。具体的には、`translate-readme.cjs` と `translate-readme.yml` の変更箇所（追加する `inputs`、スクリプトの修正内容、プロンプトファイルの読み込みロジック）を含めてください。
      ```
 
 ---
-Generated at: 2025-11-10 07:04:58 JST
+Generated at: 2025-11-11 07:06:04 JST
