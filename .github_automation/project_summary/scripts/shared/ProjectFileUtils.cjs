@@ -63,8 +63,10 @@ class ProjectFileUtils {
       const ext = relPath.split('.').pop();
       return [
         `### ${relPath}`,
-        '```' + ext,
+        '```' + ext, // for chord2mml : https://github.com/cat2151/chord2mml/issues/4
+        '{% raw %}',
         content,
+        '{% endraw %}',
         '```'
       ].join('\n');
     }).join('\n\n');
@@ -116,3 +118,4 @@ class ProjectFileUtils {
 }
 
 module.exports = ProjectFileUtils;
+
