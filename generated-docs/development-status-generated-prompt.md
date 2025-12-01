@@ -1,4 +1,4 @@
-Last updated: 2025-11-11
+Last updated: 2025-12-02
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -161,6 +161,7 @@ Last updated: 2025-11-11
 - .github/actions-tmp/generated-docs/project-overview-generated-prompt.md
 - .github/actions-tmp/generated-docs/project-overview.md
 - .github/actions-tmp/generated-docs/style.css
+- .github/actions-tmp/googled947dc864c270e07.html
 - .github/actions-tmp/issue-notes/10.md
 - .github/actions-tmp/issue-notes/11.md
 - .github/actions-tmp/issue-notes/12.md
@@ -246,6 +247,7 @@ Last updated: 2025-11-11
 - generated-docs/callgraph.js
 - generated-docs/project-overview-generated-prompt.md
 - generated-docs/style.css
+- googled947dc864c270e07.html
 - issue-notes/10.md
 - issue-notes/11.md
 - issue-notes/12.md
@@ -638,31 +640,21 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
-023f4da Update callgraph.html [auto]
-bafdfeb Issueノートが存在しない場合の処理を改善し、警告を出力して空文字を返すように変更
-2418bc0 Add issue note for #30 [auto]
-d3fb3b5 Update project summaries (overview & development status) [auto]
-2fc9e68 Update callgraph.html [auto]
-3e1ccc5 fix #29
-db14944 #29 project-overview用のプロンプトもcommit pushの対応にした（今回のような課題の調査をしやすくする用）
-7971465 #29 README文字数制限を撤廃。project-overview用のプロンプトもcommit pushの対応にした（今回のような課題の調査をしやすくする用）
-d9c9d4d #29 技術スタック欄を削除
-f997564 Add issue note for #29 [auto]
+3e7cd7f Update callgraph.html [auto]
+e1edae1 Google検索にindexさせる用
+d7e711a Google検索にindexさせる用
 
 ### 変更されたファイル:
-.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs
 .github_automation/project_summary/scripts/development/IssueTracker.cjs
-.github_automation/project_summary/scripts/generate-project-summary.cjs
-.github_automation/project_summary/scripts/overview/ProjectDataCollector.cjs
-.github_automation/project_summary/scripts/overview/ProjectOverviewGenerator.cjs
+_config.yml
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview-generated-prompt.md
 generated-docs/project-overview.md
-issue-notes/29.md
+googled947dc864c270e07.html
 issue-notes/30.md
 
 
 ---
-Generated at: 2025-11-11 07:05:49 JST
+Generated at: 2025-12-02 07:04:30 JST
