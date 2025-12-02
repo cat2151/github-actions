@@ -1,4 +1,4 @@
-Last updated: 2025-12-02
+Last updated: 2025-12-03
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -360,6 +360,7 @@ Last updated: 2025-12-02
 ## ドキュメントで言及されているファイルの内容
 ### .github/actions-tmp/issue-notes/11.md
 ```md
+{% raw %}
 # issue translate を他projectから使いやすくする #11
 [issues #11](https://github.com/cat2151/github-actions/issues/11)
 
@@ -380,10 +381,12 @@ Last updated: 2025-12-02
 - どうする？
     - それをここに可視化する。
 
+{% endraw %}
 ```
 
 ### issue-notes/11.md
 ```md
+{% raw %}
 # issue translate を他projectから使いやすくする #11
 [issues #11](https://github.com/cat2151/github-actions/issues/11)
 
@@ -404,30 +407,36 @@ Last updated: 2025-12-02
 - どうする？
     - それをここに可視化する。
 
+{% endraw %}
 ```
 
 ### .github/actions-tmp/issue-notes/13.md
 ```md
+{% raw %}
 # issue issue-note を他projectから使いやすくする #13
 [issues #13](https://github.com/cat2151/github-actions/issues/13)
 
 - docs
     - call導入手順を書く
 
+{% endraw %}
 ```
 
 ### issue-notes/13.md
 ```md
+{% raw %}
 # issue issue-note を他projectから使いやすくする #13
 [issues #13](https://github.com/cat2151/github-actions/issues/13)
 
 - docs
     - call導入手順を書く
 
+{% endraw %}
 ```
 
 ### .github/actions-tmp/issue-notes/3.md
 ```md
+{% raw %}
 # issue GitHub Actions「issue note生成」を共通ワークフロー化する #3
 [issues #3](https://github.com/cat2151/github-actions/issues/3)
 
@@ -503,10 +512,12 @@ env: で値を渡し、process.env で参照するのが正しい
 - test green
 - closeとする
 
+{% endraw %}
 ```
 
 ### issue-notes/3.md
 ```md
+{% raw %}
 # issue GitHub Actions「issue note生成」を共通ワークフロー化する #3
 [issues #3](https://github.com/cat2151/github-actions/issues/3)
 
@@ -582,10 +593,12 @@ env: で値を渡し、process.env で参照するのが正しい
 - test green
 - closeとする
 
+{% endraw %}
 ```
 
 ### .github/actions-tmp/issue-notes/30.md
 ```md
+{% raw %}
 # issue 進捗状況生成時、issueに紐付くissue-notesがないときエラー終了してしまう #30
 [issues #30](https://github.com/cat2151/github-actions/issues/30)
 
@@ -609,10 +622,12 @@ env: で値を渡し、process.env で参照するのが正しい
 
 
 
+{% endraw %}
 ```
 
 ### issue-notes/30.md
 ```md
+{% raw %}
 # issue 進捗状況生成時、issueに紐付くissue-notesがないときエラー終了してしまう #30
 [issues #30](https://github.com/cat2151/github-actions/issues/30)
 
@@ -636,16 +651,20 @@ env: で値を渡し、process.env で参照するのが正しい
 
 
 
+{% endraw %}
 ```
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+9b38008 Update callgraph.html [auto]
+de1eac7 生成されたmarkdownを、Google検索index用のJekyllにかけたとき、Jekyllが落ちないよう修正したつもり : https://github.com/cat2151/chord2mml/issues/4
+8d11fb7 Update project summaries (overview & development status) [auto]
 3e7cd7f Update callgraph.html [auto]
 e1edae1 Google検索にindexさせる用
 d7e711a Google検索にindexさせる用
 
 ### 変更されたファイル:
-.github_automation/project_summary/scripts/development/IssueTracker.cjs
+.github_automation/project_summary/scripts/shared/ProjectFileUtils.cjs
 _config.yml
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
@@ -653,8 +672,7 @@ generated-docs/development-status.md
 generated-docs/project-overview-generated-prompt.md
 generated-docs/project-overview.md
 googled947dc864c270e07.html
-issue-notes/30.md
 
 
 ---
-Generated at: 2025-12-02 07:04:30 JST
+Generated at: 2025-12-03 07:05:11 JST
