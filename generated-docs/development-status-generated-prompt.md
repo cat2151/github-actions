@@ -1,4 +1,4 @@
-Last updated: 2025-12-03
+Last updated: 2025-12-07
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -106,11 +106,13 @@ Last updated: 2025-12-03
 - .github/actions-tmp/.github/workflows/call-callgraph.yml
 - .github/actions-tmp/.github/workflows/call-daily-project-summary.yml
 - .github/actions-tmp/.github/workflows/call-issue-note.yml
+- .github/actions-tmp/.github/workflows/call-rust-windows-check.yml
 - .github/actions-tmp/.github/workflows/call-translate-readme.yml
 - .github/actions-tmp/.github/workflows/callgraph.yml
 - .github/actions-tmp/.github/workflows/check-recent-human-commit.yml
 - .github/actions-tmp/.github/workflows/daily-project-summary.yml
 - .github/actions-tmp/.github/workflows/issue-note.yml
+- .github/actions-tmp/.github/workflows/rust-windows-check.yml
 - .github/actions-tmp/.github/workflows/translate-readme.yml
 - .github/actions-tmp/.github_automation/callgraph/codeql-queries/callgraph.ql
 - .github/actions-tmp/.github_automation/callgraph/codeql-queries/codeql-pack.lock.yml
@@ -195,11 +197,13 @@ Last updated: 2025-12-03
 - .github/workflows/call-callgraph.yml
 - .github/workflows/call-daily-project-summary.yml
 - .github/workflows/call-issue-note.yml
+- .github/workflows/call-rust-windows-check.yml
 - .github/workflows/call-translate-readme.yml
 - .github/workflows/callgraph.yml
 - .github/workflows/check-recent-human-commit.yml
 - .github/workflows/daily-project-summary.yml
 - .github/workflows/issue-note.yml
+- .github/workflows/rust-windows-check.yml
 - .github/workflows/translate-readme.yml
 - .github_automation/callgraph/codeql-queries/callgraph.ql
 - .github_automation/callgraph/codeql-queries/codeql-pack.lock.yml
@@ -656,6 +660,10 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+a10c1a3 Update callgraph.html [auto]
+55cd53b Merge branch 'main' of github.com:cat2151/github-actions into main
+8f338d2 Rust Windows check
+5853d43 Update project summaries (overview & development status) [auto]
 9b38008 Update callgraph.html [auto]
 de1eac7 生成されたmarkdownを、Google検索index用のJekyllにかけたとき、Jekyllが落ちないよう修正したつもり : https://github.com/cat2151/chord2mml/issues/4
 8d11fb7 Update project summaries (overview & development status) [auto]
@@ -664,6 +672,8 @@ e1edae1 Google検索にindexさせる用
 d7e711a Google検索にindexさせる用
 
 ### 変更されたファイル:
+.github/workflows/call-rust-windows-check.yml
+.github/workflows/rust-windows-check.yml
 .github_automation/project_summary/scripts/shared/ProjectFileUtils.cjs
 _config.yml
 generated-docs/callgraph.html
@@ -675,4 +685,4 @@ googled947dc864c270e07.html
 
 
 ---
-Generated at: 2025-12-03 07:05:11 JST
+Generated at: 2025-12-07 07:04:55 JST
