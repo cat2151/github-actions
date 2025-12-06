@@ -1,4 +1,4 @@
-Last updated: 2025-11-11
+Last updated: 2025-12-03
 
 
 # プロジェクト概要生成プロンプト（来訪者向け）
@@ -159,6 +159,7 @@ Last updated: 2025-11-11
   🌐 callgraph.html
   📜 callgraph.js
   🎨 style.css
+🌐 googled947dc864c270e07.html
 📁 issue-notes/
   📖 10.md
   📖 11.md
@@ -199,7 +200,7 @@ Last updated: 2025-11-11
   - 関数: なし
   - インポート: なし
 
-**generated-docs/callgraph.html** (134行, 3955バイト)
+**generated-docs/callgraph.html** (134行, 3954バイト)
   - 関数: なし
   - インポート: なし
 
@@ -208,6 +209,10 @@ Last updated: 2025-11-11
   - インポート: なし
 
 **generated-docs/style.css** (276行, 5034バイト)
+  - 関数: なし
+  - インポート: なし
+
+**googled947dc864c270e07.html** (1行, 53バイト)
   - 関数: なし
   - インポート: なし
 
@@ -260,6 +265,7 @@ README.md
 generated-docs/callgraph.html
 generated-docs/callgraph.js
 generated-docs/style.css
+googled947dc864c270e07.html
 issue-notes/10.md
 issue-notes/11.md
 issue-notes/12.md
@@ -275,7 +281,6 @@ issue-notes/20.md
 issue-notes/21.md
 issue-notes/22.md
 issue-notes/23.md
-issue-notes/24.md
 src/main.js
 
 上記の情報を基に、プロンプトで指定された形式でプロジェクト概要を生成してください。
@@ -288,4 +293,4 @@ src/main.js
 
 
 ---
-Generated at: 2025-11-11 07:05:49 JST
+Generated at: 2025-12-03 07:05:10 JST

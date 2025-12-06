@@ -1,4 +1,4 @@
-Last updated: 2025-11-11
+Last updated: 2025-12-03
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -161,6 +161,7 @@ Last updated: 2025-11-11
 - .github/actions-tmp/generated-docs/project-overview-generated-prompt.md
 - .github/actions-tmp/generated-docs/project-overview.md
 - .github/actions-tmp/generated-docs/style.css
+- .github/actions-tmp/googled947dc864c270e07.html
 - .github/actions-tmp/issue-notes/10.md
 - .github/actions-tmp/issue-notes/11.md
 - .github/actions-tmp/issue-notes/12.md
@@ -246,6 +247,7 @@ Last updated: 2025-11-11
 - generated-docs/callgraph.js
 - generated-docs/project-overview-generated-prompt.md
 - generated-docs/style.css
+- googled947dc864c270e07.html
 - issue-notes/10.md
 - issue-notes/11.md
 - issue-notes/12.md
@@ -358,6 +360,7 @@ Last updated: 2025-11-11
 ## ドキュメントで言及されているファイルの内容
 ### .github/actions-tmp/issue-notes/11.md
 ```md
+{% raw %}
 # issue translate を他projectから使いやすくする #11
 [issues #11](https://github.com/cat2151/github-actions/issues/11)
 
@@ -378,10 +381,12 @@ Last updated: 2025-11-11
 - どうする？
     - それをここに可視化する。
 
+{% endraw %}
 ```
 
 ### issue-notes/11.md
 ```md
+{% raw %}
 # issue translate を他projectから使いやすくする #11
 [issues #11](https://github.com/cat2151/github-actions/issues/11)
 
@@ -402,30 +407,36 @@ Last updated: 2025-11-11
 - どうする？
     - それをここに可視化する。
 
+{% endraw %}
 ```
 
 ### .github/actions-tmp/issue-notes/13.md
 ```md
+{% raw %}
 # issue issue-note を他projectから使いやすくする #13
 [issues #13](https://github.com/cat2151/github-actions/issues/13)
 
 - docs
     - call導入手順を書く
 
+{% endraw %}
 ```
 
 ### issue-notes/13.md
 ```md
+{% raw %}
 # issue issue-note を他projectから使いやすくする #13
 [issues #13](https://github.com/cat2151/github-actions/issues/13)
 
 - docs
     - call導入手順を書く
 
+{% endraw %}
 ```
 
 ### .github/actions-tmp/issue-notes/3.md
 ```md
+{% raw %}
 # issue GitHub Actions「issue note生成」を共通ワークフロー化する #3
 [issues #3](https://github.com/cat2151/github-actions/issues/3)
 
@@ -501,10 +512,12 @@ env: で値を渡し、process.env で参照するのが正しい
 - test green
 - closeとする
 
+{% endraw %}
 ```
 
 ### issue-notes/3.md
 ```md
+{% raw %}
 # issue GitHub Actions「issue note生成」を共通ワークフロー化する #3
 [issues #3](https://github.com/cat2151/github-actions/issues/3)
 
@@ -580,10 +593,12 @@ env: で値を渡し、process.env で参照するのが正しい
 - test green
 - closeとする
 
+{% endraw %}
 ```
 
 ### .github/actions-tmp/issue-notes/30.md
 ```md
+{% raw %}
 # issue 進捗状況生成時、issueに紐付くissue-notesがないときエラー終了してしまう #30
 [issues #30](https://github.com/cat2151/github-actions/issues/30)
 
@@ -607,10 +622,12 @@ env: で値を渡し、process.env で参照するのが正しい
 
 
 
+{% endraw %}
 ```
 
 ### issue-notes/30.md
 ```md
+{% raw %}
 # issue 進捗状況生成時、issueに紐付くissue-notesがないときエラー終了してしまう #30
 [issues #30](https://github.com/cat2151/github-actions/issues/30)
 
@@ -634,35 +651,28 @@ env: で値を渡し、process.env で参照するのが正しい
 
 
 
+{% endraw %}
 ```
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
-023f4da Update callgraph.html [auto]
-bafdfeb Issueノートが存在しない場合の処理を改善し、警告を出力して空文字を返すように変更
-2418bc0 Add issue note for #30 [auto]
-d3fb3b5 Update project summaries (overview & development status) [auto]
-2fc9e68 Update callgraph.html [auto]
-3e1ccc5 fix #29
-db14944 #29 project-overview用のプロンプトもcommit pushの対応にした（今回のような課題の調査をしやすくする用）
-7971465 #29 README文字数制限を撤廃。project-overview用のプロンプトもcommit pushの対応にした（今回のような課題の調査をしやすくする用）
-d9c9d4d #29 技術スタック欄を削除
-f997564 Add issue note for #29 [auto]
+9b38008 Update callgraph.html [auto]
+de1eac7 生成されたmarkdownを、Google検索index用のJekyllにかけたとき、Jekyllが落ちないよう修正したつもり : https://github.com/cat2151/chord2mml/issues/4
+8d11fb7 Update project summaries (overview & development status) [auto]
+3e7cd7f Update callgraph.html [auto]
+e1edae1 Google検索にindexさせる用
+d7e711a Google検索にindexさせる用
 
 ### 変更されたファイル:
-.github_automation/project_summary/scripts/ProjectSummaryCoordinator.cjs
-.github_automation/project_summary/scripts/development/IssueTracker.cjs
-.github_automation/project_summary/scripts/generate-project-summary.cjs
-.github_automation/project_summary/scripts/overview/ProjectDataCollector.cjs
-.github_automation/project_summary/scripts/overview/ProjectOverviewGenerator.cjs
+.github_automation/project_summary/scripts/shared/ProjectFileUtils.cjs
+_config.yml
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview-generated-prompt.md
 generated-docs/project-overview.md
-issue-notes/29.md
-issue-notes/30.md
+googled947dc864c270e07.html
 
 
 ---
-Generated at: 2025-11-11 07:05:49 JST
+Generated at: 2025-12-03 07:05:11 JST
