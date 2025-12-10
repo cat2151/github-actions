@@ -44,6 +44,8 @@ jobs:
 
       - name: Check compilation for Windows GNU target
         run: cargo check --all-targets --target x86_64-pc-windows-gnu
+        env:
+          RUSTFLAGS: "-D warnings"
 
       - name: Create issue if check fails
         if: failure() && github.event_name == 'schedule'
