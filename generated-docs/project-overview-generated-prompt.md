@@ -1,4 +1,4 @@
-Last updated: 2025-12-07
+Last updated: 2025-12-12
 
 
 # プロジェクト概要生成プロンプト（来訪者向け）
@@ -200,7 +200,7 @@ Last updated: 2025-12-07
   - 関数: なし
   - インポート: なし
 
-**generated-docs/callgraph.html** (134行, 3954バイト)
+**generated-docs/callgraph.html** (134行, 3955バイト)
   - 関数: なし
   - インポート: なし
 
@@ -293,4 +293,4 @@ src/main.js
 
 
 ---
-Generated at: 2025-12-07 07:04:55 JST
+Generated at: 2025-12-12 07:05:18 JST
