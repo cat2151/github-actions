@@ -1,4 +1,4 @@
-Last updated: 2025-12-12
+Last updated: 2026-02-09
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -109,6 +109,7 @@ Last updated: 2025-12-12
 - .github/actions-tmp/.github/workflows/call-rust-windows-check.yml
 - .github/actions-tmp/.github/workflows/call-translate-readme.yml
 - .github/actions-tmp/.github/workflows/callgraph.yml
+- .github/actions-tmp/.github/workflows/check-large-files.yml
 - .github/actions-tmp/.github/workflows/check-recent-human-commit.yml
 - .github/actions-tmp/.github/workflows/daily-project-summary.yml
 - .github/actions-tmp/.github/workflows/issue-note.yml
@@ -131,6 +132,9 @@ Last updated: 2025-12-12
 - .github/actions-tmp/.github_automation/callgraph/scripts/find-process-results.cjs
 - .github/actions-tmp/.github_automation/callgraph/scripts/generate-html-graph.cjs
 - .github/actions-tmp/.github_automation/callgraph/scripts/generateHTML.cjs
+- .github/actions-tmp/.github_automation/check-large-files/README.md
+- .github/actions-tmp/.github_automation/check-large-files/check-large-files.toml.example
+- .github/actions-tmp/.github_automation/check-large-files/scripts/check_large_files.py
 - .github/actions-tmp/.github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
 - .github/actions-tmp/.github_automation/project_summary/docs/daily-summary-setup.md
 - .github/actions-tmp/.github_automation/project_summary/prompts/development-status-prompt.md
@@ -187,6 +191,7 @@ Last updated: 2025-12-12
 - .github/actions-tmp/issue-notes/29.md
 - .github/actions-tmp/issue-notes/3.md
 - .github/actions-tmp/issue-notes/30.md
+- .github/actions-tmp/issue-notes/31.md
 - .github/actions-tmp/issue-notes/4.md
 - .github/actions-tmp/issue-notes/7.md
 - .github/actions-tmp/issue-notes/8.md
@@ -200,6 +205,7 @@ Last updated: 2025-12-12
 - .github/workflows/call-rust-windows-check.yml
 - .github/workflows/call-translate-readme.yml
 - .github/workflows/callgraph.yml
+- .github/workflows/check-large-files.yml
 - .github/workflows/check-recent-human-commit.yml
 - .github/workflows/daily-project-summary.yml
 - .github/workflows/issue-note.yml
@@ -222,6 +228,9 @@ Last updated: 2025-12-12
 - .github_automation/callgraph/scripts/find-process-results.cjs
 - .github_automation/callgraph/scripts/generate-html-graph.cjs
 - .github_automation/callgraph/scripts/generateHTML.cjs
+- .github_automation/check-large-files/README.md
+- .github_automation/check-large-files/check-large-files.toml.example
+- .github_automation/check-large-files/scripts/check_large_files.py
 - .github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
 - .github_automation/project_summary/docs/daily-summary-setup.md
 - .github_automation/project_summary/prompts/development-status-prompt.md
@@ -275,6 +284,7 @@ Last updated: 2025-12-12
 - issue-notes/29.md
 - issue-notes/3.md
 - issue-notes/30.md
+- issue-notes/31.md
 - issue-notes/4.md
 - issue-notes/7.md
 - issue-notes/8.md
@@ -660,24 +670,27 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
-79ee8fb Update callgraph.html [auto]
-ac13fb8 Modify issue creation condition in workflow
-1fdeb2e Set RUSTFLAGS to treat warnings as errors
-2ad1906 Update project summaries (overview & development status) [auto]
-a10c1a3 Update callgraph.html [auto]
-55cd53b Merge branch 'main' of github.com:cat2151/github-actions into main
-8f338d2 Rust Windows check
+00d1986 Update callgraph.html [auto]
+1ace321 Merge pull request #32 from cat2151/claude/common-workflow-yml-check
+0195ab5 Fix label handling, auto-exclude temp dir, and default include patterns
+875e9fb Add README for check-large-files workflow
+e72048e Add check-large-files reusable workflow
+cf9d923 Initial plan
+6d51b41 Add issue note for #31 [auto]
 
 ### 変更されたファイル:
-.github/workflows/call-rust-windows-check.yml
+.github/workflows/check-large-files.yml
 .github/workflows/rust-windows-check.yml
-.github_automation/project_summary/scripts/shared/ProjectFileUtils.cjs
+.github_automation/check-large-files/README.md
+.github_automation/check-large-files/check-large-files.toml.example
+.github_automation/check-large-files/scripts/check_large_files.py
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview-generated-prompt.md
 generated-docs/project-overview.md
+issue-notes/31.md
 
 
 ---
-Generated at: 2025-12-12 07:05:18 JST
+Generated at: 2026-02-09 07:07:06 JST

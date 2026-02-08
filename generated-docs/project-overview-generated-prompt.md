@@ -1,4 +1,4 @@
-Last updated: 2025-12-12
+Last updated: 2026-02-09
 
 
 # プロジェクト概要生成プロンプト（来訪者向け）
@@ -117,6 +117,11 @@ Last updated: 2025-12-12
       📄 find-process-results.cjs
       📄 generate-html-graph.cjs
       📄 generateHTML.cjs
+  📁 check-large-files/
+    📖 README.md
+    📄 check-large-files.toml.example
+    📁 scripts/
+      📄 check_large_files.py
   📁 check_recent_human_commit/
     📁 scripts/
       📄 check-recent-human-commit.cjs
@@ -184,6 +189,7 @@ Last updated: 2025-12-12
   📖 29.md
   📖 3.md
   📖 30.md
+  📖 31.md
   📖 4.md
   📖 7.md
   📖 8.md
@@ -200,7 +206,7 @@ Last updated: 2025-12-12
   - 関数: なし
   - インポート: なし
 
-**generated-docs/callgraph.html** (134行, 3955バイト)
+**generated-docs/callgraph.html** (134行, 3953バイト)
   - 関数: なし
   - インポート: なし
 
@@ -255,6 +261,7 @@ Last updated: 2025-12-12
 .github_automation/callgraph/docs/callgraph.md
 .github_automation/callgraph/presets/callgraph.js
 .github_automation/callgraph/presets/style.css
+.github_automation/check-large-files/README.md
 .github_automation/project_summary/docs/daily-summary-setup.md
 .github_automation/project_summary/prompts/development-status-prompt.md
 .github_automation/project_summary/prompts/project-overview-prompt.md
@@ -280,7 +287,6 @@ issue-notes/2.md
 issue-notes/20.md
 issue-notes/21.md
 issue-notes/22.md
-issue-notes/23.md
 src/main.js
 
 上記の情報を基に、プロンプトで指定された形式でプロジェクト概要を生成してください。
@@ -293,4 +299,4 @@ src/main.js
 
 
 ---
-Generated at: 2025-12-12 07:05:18 JST
+Generated at: 2026-02-09 07:07:05 JST
