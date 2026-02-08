@@ -102,9 +102,20 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> List[Dict[str, A
         sys.exit(1)
 
     max_lines = settings['max_lines']
-    include_patterns = scan.get('include_patterns', [])
+    include_patterns = scan.get('include_patterns')
+    if not include_patterns:
+        # Default to scanning all files when patterns are not provided or empty
+        include_patterns = ["**/*"]
     exclude_patterns = scan.get('exclude_patterns', [])
     exclude_files = scan.get('exclude_files', [])
+
+    # Automatically exclude the workflow's temporary checkout directory if set
+    exclude_tmp_dir = os.getenv('EXCLUDE_TMP_DIR')
+    if exclude_tmp_dir:
+        tmp_dir_pattern = f"{exclude_tmp_dir}/**"
+        if tmp_dir_pattern not in exclude_patterns:
+            exclude_patterns = list(exclude_patterns) + [tmp_dir_pattern]
+            print(f"Auto-excluding workflow temp directory: {tmp_dir_pattern}")
 
     large_files = []
 

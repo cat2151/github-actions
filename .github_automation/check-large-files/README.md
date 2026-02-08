@@ -28,6 +28,7 @@ exclude_patterns = [
     "**/*.test.ts",
     "**/*.md",
     # Add more patterns as needed
+    # Note: The workflow automatically excludes .github/actions-tmp/**
 ]
 exclude_files = []
 ```
@@ -73,12 +74,14 @@ jobs:
 ## How It Works
 
 1. The workflow checks out your repository
-2. Checks out this shared repository to access the Python script
+2. Checks out this shared repository to access the Python script (into `.github/actions-tmp/`, automatically excluded from scanning)
 3. Runs the `check_large_files.py` script to scan for large files
 4. If large files are found:
    - Checks if a similar issue already exists (by title pattern)
    - If exists: Adds a comment with updated information
    - If not: Creates a new issue with file details and recommendations
+
+**Note**: The workflow automatically excludes the `.github/actions-tmp/**` directory where it checks out the shared repository, so you don't need to add this exclusion manually.
 
 ## Issue Format
 

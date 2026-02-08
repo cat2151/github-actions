@@ -20,6 +20,9 @@ include_patterns = [
 
 # 除外するディレクトリパターン
 exclude_patterns = [
+    # Workflow temporary directory (automatically excluded by the workflow)
+    # ".github/actions-tmp/**",
+
     # ビルド成果物・依存関係
     "**/node_modules/**",
     "**/dist/**",

@@ -36,6 +36,7 @@ jobs:
         id: check
         env:
           OUTPUT_DIR: ${{ runner.temp }}/check-large-files-output
+          EXCLUDE_TMP_DIR: ${{ env.TMP_DIR }}
         run: |
           python ${{ env.TMP_DIR }}/${{ env.SCRIPT_DIR }}/check_large_files.py
 
@@ -72,7 +73,9 @@ jobs:
             const body = fs.readFileSync(path.join(outputDir, 'issue_body.txt'), 'utf8');
             const labelsStr = fs.readFileSync(path.join(outputDir, 'issue_labels.txt'), 'utf8').trim();
             const titlePattern = fs.readFileSync(path.join(outputDir, 'issue_title_pattern.txt'), 'utf8').trim();
-            const labels = labelsStr.split(',');
+            const labels = labelsStr
+              ? labelsStr.split(',').map(label => label.trim()).filter(label => label.length > 0)
+              : [];
 
             // Check if similar issue already exists
             // We search all open issues and then filter by title to avoid
