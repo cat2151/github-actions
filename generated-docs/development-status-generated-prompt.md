@@ -1,4 +1,4 @@
-Last updated: 2026-02-09
+Last updated: 2026-02-11
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -192,6 +192,8 @@ Last updated: 2026-02-09
 - .github/actions-tmp/issue-notes/3.md
 - .github/actions-tmp/issue-notes/30.md
 - .github/actions-tmp/issue-notes/31.md
+- .github/actions-tmp/issue-notes/33.md
+- .github/actions-tmp/issue-notes/35.md
 - .github/actions-tmp/issue-notes/4.md
 - .github/actions-tmp/issue-notes/7.md
 - .github/actions-tmp/issue-notes/8.md
@@ -285,6 +287,8 @@ Last updated: 2026-02-09
 - issue-notes/3.md
 - issue-notes/30.md
 - issue-notes/31.md
+- issue-notes/33.md
+- issue-notes/35.md
 - issue-notes/4.md
 - issue-notes/7.md
 - issue-notes/8.md
@@ -292,6 +296,35 @@ Last updated: 2026-02-09
 - src/main.js
 
 ## 現在のオープンIssues
+## [Issue #35](../issue-notes/35.md): issue-notes作成時に、既存のnotesを調査して不要note削除を行うようにする。clean up
+[issue-notes/35.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/35.md)
+
+...
+ラベル: 
+--- issue-notes/35.md の内容 ---
+
+```markdown
+# issue issue-notes作成時に、既存のnotesを調査して不要note削除を行うようにする。clean up #35
+[issues #35](https://github.com/cat2151/github-actions/issues/35)
+
+# 定義：
+- 紐付くissueがある
+    - issueがopen中である → 必要note。PRを進めるために必要。
+    - issueがcloseされた
+        - noteの中身が、先頭2行だけで、あとは空である → 不要note。closeされたが、空っぽのnoteである。
+        - noteの中身が、上記以外である → 必要note。closeされて、issueの履歴としてナレッジとなるnoteである。
+- 紐付くissueがない
+    - noteの中身が、先頭2行だけで、あとは空である → 不要note。issueが削除されたし、空っぽのnoteである。
+    - noteの中身が、上記以外である → 必要note。issueが削除されたが、issueの履歴としてナレッジとなるnoteである。
+
+# なぜこのワークフローymlで実施するの？
+- 利用者の利用コストを下げるため。
+- もし別ワークフローymlだと、全てのリポジトリに新たにワークフローymlが追加となり、導入初期コストが高い。
+- 別ワークフローにするメリットが小さい
+- 位置づけとしては、issue-noteのメンテは、このワークフローで行う、として許容範囲内である、と考える
+
+```
+
 ## [Issue #30](../issue-notes/30.md): 進捗状況生成時、issueに紐付くissue-notesがないときエラー終了してしまう
 [issue-notes/30.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/30.md)
 
@@ -668,29 +701,80 @@ env: で値を渡し、process.env で参照するのが正しい
 {% endraw %}
 ```
 
+### .github/actions-tmp/issue-notes/35.md
+```md
+{% raw %}
+# issue issue-notes作成時に、既存のnotesを調査して不要note削除を行うようにする。clean up #35
+[issues #35](https://github.com/cat2151/github-actions/issues/35)
+
+# 定義：
+- 紐付くissueがある
+    - issueがopen中である → 必要note。PRを進めるために必要。
+    - issueがcloseされた
+        - noteの中身が、先頭2行だけで、あとは空である → 不要note。closeされたが、空っぽのnoteである。
+        - noteの中身が、上記以外である → 必要note。closeされて、issueの履歴としてナレッジとなるnoteである。
+- 紐付くissueがない
+    - noteの中身が、先頭2行だけで、あとは空である → 不要note。issueが削除されたし、空っぽのnoteである。
+    - noteの中身が、上記以外である → 必要note。issueが削除されたが、issueの履歴としてナレッジとなるnoteである。
+
+# なぜこのワークフローymlで実施するの？
+- 利用者の利用コストを下げるため。
+- もし別ワークフローymlだと、全てのリポジトリに新たにワークフローymlが追加となり、導入初期コストが高い。
+- 別ワークフローにするメリットが小さい
+- 位置づけとしては、issue-noteのメンテは、このワークフローで行う、として許容範囲内である、と考える
+
+{% endraw %}
+```
+
+### issue-notes/35.md
+```md
+{% raw %}
+# issue issue-notes作成時に、既存のnotesを調査して不要note削除を行うようにする。clean up #35
+[issues #35](https://github.com/cat2151/github-actions/issues/35)
+
+# 定義：
+- 紐付くissueがある
+    - issueがopen中である → 必要note。PRを進めるために必要。
+    - issueがcloseされた
+        - noteの中身が、先頭2行だけで、あとは空である → 不要note。closeされたが、空っぽのnoteである。
+        - noteの中身が、上記以外である → 必要note。closeされて、issueの履歴としてナレッジとなるnoteである。
+- 紐付くissueがない
+    - noteの中身が、先頭2行だけで、あとは空である → 不要note。issueが削除されたし、空っぽのnoteである。
+    - noteの中身が、上記以外である → 必要note。issueが削除されたが、issueの履歴としてナレッジとなるnoteである。
+
+# なぜこのワークフローymlで実施するの？
+- 利用者の利用コストを下げるため。
+- もし別ワークフローymlだと、全てのリポジトリに新たにワークフローymlが追加となり、導入初期コストが高い。
+- 別ワークフローにするメリットが小さい
+- 位置づけとしては、issue-noteのメンテは、このワークフローで行う、として許容範囲内である、と考える
+
+{% endraw %}
+```
+
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+80bfdaa Update callgraph.html [auto]
+2ed97c9 Merge pull request #34 from cat2151/codex/fix-package-lock-detection
+9ac1e12 Document cleanup process for issue notes
+8410cd6 Add issue note for #35 [auto]
+5904134 feat: make lockfile exclusion configurable
+e79a9c2 fix: auto-ignore lockfiles in large-file scan
+d294292 Initial plan
+d2e599e Add issue note for #33 [auto]
+599c97b Update project summaries (overview & development status) [auto]
 00d1986 Update callgraph.html [auto]
-1ace321 Merge pull request #32 from cat2151/claude/common-workflow-yml-check
-0195ab5 Fix label handling, auto-exclude temp dir, and default include patterns
-875e9fb Add README for check-large-files workflow
-e72048e Add check-large-files reusable workflow
-cf9d923 Initial plan
-6d51b41 Add issue note for #31 [auto]
 
 ### 変更されたファイル:
-.github/workflows/check-large-files.yml
-.github/workflows/rust-windows-check.yml
 .github_automation/check-large-files/README.md
-.github_automation/check-large-files/check-large-files.toml.example
 .github_automation/check-large-files/scripts/check_large_files.py
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview-generated-prompt.md
 generated-docs/project-overview.md
-issue-notes/31.md
+issue-notes/33.md
+issue-notes/35.md
 
 
 ---
-Generated at: 2026-02-09 07:07:06 JST
+Generated at: 2026-02-11 07:16:05 JST
