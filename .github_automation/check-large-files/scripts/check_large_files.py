@@ -14,6 +14,12 @@ import json
 
 # Constants
 TITLE_PATTERN_FALLBACK_LENGTH = 20  # Length to use when extracting title pattern if no separator found
+LOCKFILE_PATTERNS = [
+    "**/package-lock.json",
+    "**/npm-shrinkwrap.json",
+    "**/yarn.lock",
+    "**/pnpm-lock.yaml",
+]
 
 
 def load_config(config_path: str) -> Dict[str, Any]:
@@ -106,16 +112,23 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> List[Dict[str, A
     if not include_patterns:
         # Default to scanning all files when patterns are not provided or empty
         include_patterns = ["**/*"]
-    exclude_patterns = scan.get('exclude_patterns', [])
-    exclude_files = scan.get('exclude_files', [])
+    exclude_patterns = list(scan.get('exclude_patterns', []))
+    exclude_files = list(scan.get('exclude_files', []))
+    auto_exclude_lockfiles = scan.get('auto_exclude_lockfiles', True)
 
     # Automatically exclude the workflow's temporary checkout directory if set
     exclude_tmp_dir = os.getenv('EXCLUDE_TMP_DIR')
     if exclude_tmp_dir:
         tmp_dir_pattern = f"{exclude_tmp_dir}/**"
         if tmp_dir_pattern not in exclude_patterns:
-            exclude_patterns = list(exclude_patterns) + [tmp_dir_pattern]
+            exclude_patterns.append(tmp_dir_pattern)
             print(f"Auto-excluding workflow temp directory: {tmp_dir_pattern}")
+
+    # Optionally ignore common lockfiles to avoid noise
+    if auto_exclude_lockfiles:
+        for pattern in LOCKFILE_PATTERNS:
+            if pattern not in exclude_patterns:
+                exclude_patterns.append(pattern)
 
     large_files = []
 

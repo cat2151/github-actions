@@ -69,6 +69,7 @@ jobs:
 
 - `include_patterns`: Glob patterns for files to check (default: `["**/*"]`)
 - `exclude_patterns`: Glob patterns for files/directories to exclude
+  - Common lockfiles (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `npm-shrinkwrap.json`) are excluded by default; set `scan.auto_exclude_lockfiles = false` to include them
 - `exclude_files`: Specific file paths to exclude
 
 ## How It Works
