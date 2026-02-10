@@ -114,19 +114,21 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> List[Dict[str, A
         include_patterns = ["**/*"]
     exclude_patterns = list(scan.get('exclude_patterns', []))
     exclude_files = list(scan.get('exclude_files', []))
+    auto_exclude_lockfiles = scan.get('auto_exclude_lockfiles', True)
 
     # Automatically exclude the workflow's temporary checkout directory if set
     exclude_tmp_dir = os.getenv('EXCLUDE_TMP_DIR')
     if exclude_tmp_dir:
         tmp_dir_pattern = f"{exclude_tmp_dir}/**"
         if tmp_dir_pattern not in exclude_patterns:
-            exclude_patterns = list(exclude_patterns) + [tmp_dir_pattern]
+            exclude_patterns.append(tmp_dir_pattern)
             print(f"Auto-excluding workflow temp directory: {tmp_dir_pattern}")
 
-    # Always ignore common lockfiles to avoid noise
-    for pattern in LOCKFILE_PATTERNS:
-        if pattern not in exclude_patterns:
-            exclude_patterns.append(pattern)
+    # Optionally ignore common lockfiles to avoid noise
+    if auto_exclude_lockfiles:
+        for pattern in LOCKFILE_PATTERNS:
+            if pattern not in exclude_patterns:
+                exclude_patterns.append(pattern)
 
     large_files = []
 
