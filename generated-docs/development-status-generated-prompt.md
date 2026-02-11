@@ -1,4 +1,4 @@
-Last updated: 2026-02-11
+Last updated: 2026-02-12
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -191,9 +191,8 @@ Last updated: 2026-02-11
 - .github/actions-tmp/issue-notes/29.md
 - .github/actions-tmp/issue-notes/3.md
 - .github/actions-tmp/issue-notes/30.md
-- .github/actions-tmp/issue-notes/31.md
-- .github/actions-tmp/issue-notes/33.md
 - .github/actions-tmp/issue-notes/35.md
+- .github/actions-tmp/issue-notes/38.md
 - .github/actions-tmp/issue-notes/4.md
 - .github/actions-tmp/issue-notes/7.md
 - .github/actions-tmp/issue-notes/8.md
@@ -286,9 +285,8 @@ Last updated: 2026-02-11
 - issue-notes/29.md
 - issue-notes/3.md
 - issue-notes/30.md
-- issue-notes/31.md
-- issue-notes/33.md
 - issue-notes/35.md
+- issue-notes/38.md
 - issue-notes/4.md
 - issue-notes/7.md
 - issue-notes/8.md
@@ -296,68 +294,6 @@ Last updated: 2026-02-11
 - src/main.js
 
 ## 現在のオープンIssues
-## [Issue #35](../issue-notes/35.md): issue-notes作成時に、既存のnotesを調査して不要note削除を行うようにする。clean up
-[issue-notes/35.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/35.md)
-
-...
-ラベル: 
---- issue-notes/35.md の内容 ---
-
-```markdown
-# issue issue-notes作成時に、既存のnotesを調査して不要note削除を行うようにする。clean up #35
-[issues #35](https://github.com/cat2151/github-actions/issues/35)
-
-# 定義：
-- 紐付くissueがある
-    - issueがopen中である → 必要note。PRを進めるために必要。
-    - issueがcloseされた
-        - noteの中身が、先頭2行だけで、あとは空である → 不要note。closeされたが、空っぽのnoteである。
-        - noteの中身が、上記以外である → 必要note。closeされて、issueの履歴としてナレッジとなるnoteである。
-- 紐付くissueがない
-    - noteの中身が、先頭2行だけで、あとは空である → 不要note。issueが削除されたし、空っぽのnoteである。
-    - noteの中身が、上記以外である → 必要note。issueが削除されたが、issueの履歴としてナレッジとなるnoteである。
-
-# なぜこのワークフローymlで実施するの？
-- 利用者の利用コストを下げるため。
-- もし別ワークフローymlだと、全てのリポジトリに新たにワークフローymlが追加となり、導入初期コストが高い。
-- 別ワークフローにするメリットが小さい
-- 位置づけとしては、issue-noteのメンテは、このワークフローで行う、として許容範囲内である、と考える
-
-```
-
-## [Issue #30](../issue-notes/30.md): 進捗状況生成時、issueに紐付くissue-notesがないときエラー終了してしまう
-[issue-notes/30.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/30.md)
-
-...
-ラベル: 
---- issue-notes/30.md の内容 ---
-
-```markdown
-# issue 進捗状況生成時、issueに紐付くissue-notesがないときエラー終了してしまう #30
-[issues #30](https://github.com/cat2151/github-actions/issues/30)
-
-# 何が困るの？
-- 生成されない
-
-# 分析
-- issue紐付くissue-notesが存在しないことは普通にある
-- 今回も、そうなっていることを確認済み
-    - issue 1～8はissue-notesがあった
-    - 当該のissue 9は、issue本体のコメントに書いて進行していた
-        - issue-notesの仕組みを使う前に書いたissueなので、そうなっていた
-- こうするのがよい
-    - エラーにならず、空文字として扱う
-
-# close条件
-- 当該部分で落ちなくなること
-    - 当該部分とは：
-    - https://github.com/cat2151/fighting-game-button-challenge
-        - issue 9
-
-
-
-```
-
 ## [Issue #13](../issue-notes/13.md): issue-note を他projectから使いやすくする
 [issue-notes/13.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/13.md)
 
@@ -643,138 +579,31 @@ env: で値を渡し、process.env で参照するのが正しい
 {% endraw %}
 ```
 
-### .github/actions-tmp/issue-notes/30.md
-```md
-{% raw %}
-# issue 進捗状況生成時、issueに紐付くissue-notesがないときエラー終了してしまう #30
-[issues #30](https://github.com/cat2151/github-actions/issues/30)
-
-# 何が困るの？
-- 生成されない
-
-# 分析
-- issue紐付くissue-notesが存在しないことは普通にある
-- 今回も、そうなっていることを確認済み
-    - issue 1～8はissue-notesがあった
-    - 当該のissue 9は、issue本体のコメントに書いて進行していた
-        - issue-notesの仕組みを使う前に書いたissueなので、そうなっていた
-- こうするのがよい
-    - エラーにならず、空文字として扱う
-
-# close条件
-- 当該部分で落ちなくなること
-    - 当該部分とは：
-    - https://github.com/cat2151/fighting-game-button-challenge
-        - issue 9
-
-
-
-{% endraw %}
-```
-
-### issue-notes/30.md
-```md
-{% raw %}
-# issue 進捗状況生成時、issueに紐付くissue-notesがないときエラー終了してしまう #30
-[issues #30](https://github.com/cat2151/github-actions/issues/30)
-
-# 何が困るの？
-- 生成されない
-
-# 分析
-- issue紐付くissue-notesが存在しないことは普通にある
-- 今回も、そうなっていることを確認済み
-    - issue 1～8はissue-notesがあった
-    - 当該のissue 9は、issue本体のコメントに書いて進行していた
-        - issue-notesの仕組みを使う前に書いたissueなので、そうなっていた
-- こうするのがよい
-    - エラーにならず、空文字として扱う
-
-# close条件
-- 当該部分で落ちなくなること
-    - 当該部分とは：
-    - https://github.com/cat2151/fighting-game-button-challenge
-        - issue 9
-
-
-
-{% endraw %}
-```
-
-### .github/actions-tmp/issue-notes/35.md
-```md
-{% raw %}
-# issue issue-notes作成時に、既存のnotesを調査して不要note削除を行うようにする。clean up #35
-[issues #35](https://github.com/cat2151/github-actions/issues/35)
-
-# 定義：
-- 紐付くissueがある
-    - issueがopen中である → 必要note。PRを進めるために必要。
-    - issueがcloseされた
-        - noteの中身が、先頭2行だけで、あとは空である → 不要note。closeされたが、空っぽのnoteである。
-        - noteの中身が、上記以外である → 必要note。closeされて、issueの履歴としてナレッジとなるnoteである。
-- 紐付くissueがない
-    - noteの中身が、先頭2行だけで、あとは空である → 不要note。issueが削除されたし、空っぽのnoteである。
-    - noteの中身が、上記以外である → 必要note。issueが削除されたが、issueの履歴としてナレッジとなるnoteである。
-
-# なぜこのワークフローymlで実施するの？
-- 利用者の利用コストを下げるため。
-- もし別ワークフローymlだと、全てのリポジトリに新たにワークフローymlが追加となり、導入初期コストが高い。
-- 別ワークフローにするメリットが小さい
-- 位置づけとしては、issue-noteのメンテは、このワークフローで行う、として許容範囲内である、と考える
-
-{% endraw %}
-```
-
-### issue-notes/35.md
-```md
-{% raw %}
-# issue issue-notes作成時に、既存のnotesを調査して不要note削除を行うようにする。clean up #35
-[issues #35](https://github.com/cat2151/github-actions/issues/35)
-
-# 定義：
-- 紐付くissueがある
-    - issueがopen中である → 必要note。PRを進めるために必要。
-    - issueがcloseされた
-        - noteの中身が、先頭2行だけで、あとは空である → 不要note。closeされたが、空っぽのnoteである。
-        - noteの中身が、上記以外である → 必要note。closeされて、issueの履歴としてナレッジとなるnoteである。
-- 紐付くissueがない
-    - noteの中身が、先頭2行だけで、あとは空である → 不要note。issueが削除されたし、空っぽのnoteである。
-    - noteの中身が、上記以外である → 必要note。issueが削除されたが、issueの履歴としてナレッジとなるnoteである。
-
-# なぜこのワークフローymlで実施するの？
-- 利用者の利用コストを下げるため。
-- もし別ワークフローymlだと、全てのリポジトリに新たにワークフローymlが追加となり、導入初期コストが高い。
-- 別ワークフローにするメリットが小さい
-- 位置づけとしては、issue-noteのメンテは、このワークフローで行う、として許容範囲内である、と考える
-
-{% endraw %}
-```
-
 ## 最近の変更（過去7日間）
 ### コミット履歴:
-80bfdaa Update callgraph.html [auto]
-2ed97c9 Merge pull request #34 from cat2151/codex/fix-package-lock-detection
-9ac1e12 Document cleanup process for issue notes
-8410cd6 Add issue note for #35 [auto]
-5904134 feat: make lockfile exclusion configurable
-e79a9c2 fix: auto-ignore lockfiles in large-file scan
-d294292 Initial plan
-d2e599e Add issue note for #33 [auto]
-599c97b Update project summaries (overview & development status) [auto]
-00d1986 Update callgraph.html [auto]
+b50fd11 Update callgraph.html [auto]
+63124e5 Merge pull request #39 from cat2151/codex/fix-workflow-error-issue-38
+246e008 fix: handle deleted issues in issue note cleanup
+6ad4559 Initial plan
+cdaf5bf Update issue notes for issue #38
+863c650 Add issue note for #38 [auto]
+586e488 Merge pull request #37 from cat2151/codex/fix-error-on-issue-notes
+e894a2d Simplify issue note read error handling
+adb912b Handle missing issue note lookup errors
+5a30363 Initial plan
 
 ### 変更されたファイル:
-.github_automation/check-large-files/README.md
-.github_automation/check-large-files/scripts/check_large_files.py
+.github/workflows/issue-note.yml
+.github_automation/project_summary/scripts/development/IssueTracker.cjs
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview-generated-prompt.md
 generated-docs/project-overview.md
+issue-notes/31.md
 issue-notes/33.md
-issue-notes/35.md
+issue-notes/38.md
 
 
 ---
-Generated at: 2026-02-11 07:16:05 JST
+Generated at: 2026-02-12 07:09:44 JST
