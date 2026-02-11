@@ -63,18 +63,19 @@ function getIssueNoteSync(issueNumber, projectRoot) {
   const path = require('path');
   const notePath = path.resolve(projectRoot, 'issue-notes', `${issueNumber}.md`);
 
-  if (!fs.existsSync(notePath)) {
-    // 致命的終了させず、呼び出し元で欠落を許容できるよう空文字を返す
-    console.warn(`Issueノートが存在しません: ${notePath}`);
-    return '';
-  }
-
   try {
     return fs.readFileSync(notePath, 'utf-8');
   } catch (e) {
     // 読み取り失敗も致命的扱いせず警告で済ませる
-    console.warn(`Issueノートの読み取りに失敗しました: ${notePath}`);
-    console.warn(e);
+    if (e && e.code === 'ENOENT') {
+      // ファイルが存在しない場合も空文字を返して処理継続可能にする
+      console.warn(`Issueノートが存在しません: ${notePath}`);
+      return '';
+    }
+
+    const code = e && e.code ? ` (${e.code})` : '';
+    const message = e && e.message ? e.message : e;
+    console.warn(`Issueノートの読み取りに失敗しました${code}: ${notePath} - ${message}`);
     return '';
   }
 }
