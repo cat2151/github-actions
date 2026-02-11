@@ -64,7 +64,7 @@ jobs:
                 });
                 issueState = data.state;
               } catch (error) {
-                if (error.status === 404) {
+                if (error.status === 404 || error.status === 410) {
                   issueState = 'missing';
                 } else {
                   throw error;
