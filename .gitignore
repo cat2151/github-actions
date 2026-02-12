@@ -1,2 +1,3 @@
 .secrets
 copilot-instructions.md
+__pycache__/
