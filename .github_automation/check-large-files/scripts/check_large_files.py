@@ -181,6 +181,10 @@ def generate_issue_body(large_files: List[Dict[str, Any]], config: Dict[str, Any
         over = lines - max_lines
         body += f"| `{path}` | {lines} | +{over} |\n"
 
+    body += "\n## テスト実施のお願い\n\n"
+    body += "- リファクタリング前後にテストを実行し、それぞれのテスト失敗件数を報告してください\n"
+    body += "- リファクタリング前後のどちらかでテストがredの場合、まず別issueでtest greenにしてからリファクタリングしてください\n"
+
     body += f"\n## 推奨事項\n\n"
     body += "1. ファイルを機能ごとに分割する\n"
     body += "2. 共通ロジックを別モジュールに抽出する\n"

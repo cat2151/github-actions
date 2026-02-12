@@ -14,6 +14,8 @@ This reusable workflow checks for source files that exceed a configured line cou
 
 In your repository, create `.github/check-large-files.toml` with the following content:
 
+Test files are included in the scan; avoid excluding them unless there's a specific reason.
+
 ```toml
 [settings]
 max_lines = 500
@@ -25,7 +27,6 @@ include_patterns = ["**/*"]
 exclude_patterns = [
     "**/node_modules/**",
     "**/dist/**",
-    "**/*.test.ts",
     "**/*.md",
     # Add more patterns as needed
     # Note: The workflow automatically excludes .github/actions-tmp/**
@@ -103,8 +104,6 @@ max_lines = 300  # Stricter limit for TypeScript
 [scan]
 include_patterns = ["src/**/*.ts", "src/**/*.tsx"]
 exclude_patterns = [
-    "**/*.test.ts",
-    "**/*.spec.ts",
     "**/*.d.ts"
 ]
 ```

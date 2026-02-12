@@ -33,16 +33,6 @@ exclude_patterns = [
     "**/.git/**",
     "**/target/**",
 
-    # テストファイル
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.test.js",
-    "**/*.test.jsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx",
-    "**/*.spec.js",
-    "**/*.spec.jsx",
-
     # ドキュメント・設定ファイル（拡張子で除外）
     "**/*.md",
     "**/*.json",
