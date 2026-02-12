@@ -92,6 +92,7 @@ Created issues include:
 - Table of detected files with line counts and excess lines
 - Recommendations for refactoring
 - Automatic labels for tracking
+- A warning at the top when large files exist but no test files are found, prompting you to add tests first
 
 ## Example
 
