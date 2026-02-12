@@ -110,15 +110,26 @@ def should_exclude(file_path: str, exclude_patterns: List[str], exclude_files: L
 def has_test_files(repo_root: str, exclude_tmp_dir: str | None = None) -> bool:
     """Detect if the repository already contains test files"""
     original_cwd = os.getcwd()
-    os.chdir(repo_root)
+    try:
+        os.chdir(repo_root)
+    except OSError as e:
+        print(f"Warning: Could not change directory to {repo_root}: {e}", file=sys.stderr)
+        return False
+
+    exclude_tmp_path = Path(exclude_tmp_dir) if exclude_tmp_dir else None
 
     try:
         for pattern in TEST_FILE_PATTERNS:
             for matched in glob.glob(pattern, recursive=True):
                 if not os.path.isfile(matched):
                     continue
-                if exclude_tmp_dir and matched.startswith(f"{exclude_tmp_dir}/"):
-                    continue
+                matched_path = Path(matched)
+                if exclude_tmp_path is not None:
+                    try:
+                        if matched_path.is_relative_to(exclude_tmp_path):
+                            continue
+                    except ValueError:
+                        pass
                 return True
         return False
     finally:
@@ -276,6 +287,7 @@ def create_output_files(large_files: List[Dict[str, Any]], config: Dict[str, Any
     summary = {
         'count': len(large_files),
         'max_lines': config['settings']['max_lines'],
+        'tests_present': tests_present,
         'files': large_files
     }
     json_file = os.path.join(output_dir, 'summary.json')
