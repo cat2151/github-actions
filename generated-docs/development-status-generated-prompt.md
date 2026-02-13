@@ -1,4 +1,4 @@
-Last updated: 2026-02-12
+Last updated: 2026-02-14
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -194,6 +194,8 @@ Last updated: 2026-02-12
 - .github/actions-tmp/issue-notes/35.md
 - .github/actions-tmp/issue-notes/38.md
 - .github/actions-tmp/issue-notes/4.md
+- .github/actions-tmp/issue-notes/40.md
+- .github/actions-tmp/issue-notes/42.md
 - .github/actions-tmp/issue-notes/7.md
 - .github/actions-tmp/issue-notes/8.md
 - .github/actions-tmp/issue-notes/9.md
@@ -288,6 +290,8 @@ Last updated: 2026-02-12
 - issue-notes/35.md
 - issue-notes/38.md
 - issue-notes/4.md
+- issue-notes/40.md
+- issue-notes/42.md
 - issue-notes/7.md
 - issue-notes/8.md
 - issue-notes/9.md
@@ -581,29 +585,26 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
-b50fd11 Update callgraph.html [auto]
-63124e5 Merge pull request #39 from cat2151/codex/fix-workflow-error-issue-38
-246e008 fix: handle deleted issues in issue note cleanup
-6ad4559 Initial plan
-cdaf5bf Update issue notes for issue #38
-863c650 Add issue note for #38 [auto]
-586e488 Merge pull request #37 from cat2151/codex/fix-error-on-issue-notes
-e894a2d Simplify issue note read error handling
-adb912b Handle missing issue note lookup errors
-5a30363 Initial plan
+4c3ab3f Update callgraph.html [auto]
+6b1b7c7 Merge pull request #43 from cat2151/codex/detect-large-files-without-test
+64bf103 fix: harden test detection and summary output
+13cf647 feat: warn when large files lack tests
+89b4ddc Add issue note for #42 [auto]
+a329be6 Initial plan
+145ef38 Merge pull request #41 from cat2151/codex/include-test-codes-in-workflow
+2347587 chore: remove pycache artifacts
+48629de update large file workflow docs and messaging
+cb41943 Initial plan
 
 ### 変更されたファイル:
-.github/workflows/issue-note.yml
-.github_automation/project_summary/scripts/development/IssueTracker.cjs
+.github_automation/check-large-files/README.md
+.github_automation/check-large-files/check-large-files.toml.example
+.github_automation/check-large-files/scripts/check_large_files.py
+.gitignore
 generated-docs/callgraph.html
-generated-docs/development-status-generated-prompt.md
-generated-docs/development-status.md
-generated-docs/project-overview-generated-prompt.md
-generated-docs/project-overview.md
-issue-notes/31.md
-issue-notes/33.md
-issue-notes/38.md
+issue-notes/40.md
+issue-notes/42.md
 
 
 ---
-Generated at: 2026-02-12 07:09:44 JST
+Generated at: 2026-02-14 07:09:49 JST
