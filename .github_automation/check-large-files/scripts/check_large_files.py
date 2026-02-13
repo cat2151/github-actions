@@ -20,6 +20,17 @@ LOCKFILE_PATTERNS = [
     "**/yarn.lock",
     "**/pnpm-lock.yaml",
 ]
+TEST_FILE_PATTERNS = [
+    "**/tests/**",
+    "**/test/**",
+    "**/__tests__/**",
+    "**/spec/**",
+    "**/specs/**",
+    "**/*_test.*",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/*Test.*",
+]
 
 
 def load_config(config_path: str) -> Dict[str, Any]:
@@ -96,6 +107,35 @@ def should_exclude(file_path: str, exclude_patterns: List[str], exclude_files: L
     return False
 
 
+def has_test_files(repo_root: str, exclude_tmp_dir: str | None = None) -> bool:
+    """Detect if the repository already contains test files"""
+    original_cwd = os.getcwd()
+    try:
+        os.chdir(repo_root)
+    except OSError as e:
+        print(f"Warning: Could not change directory to {repo_root}: {e}", file=sys.stderr)
+        return False
+
+    exclude_tmp_path = Path(exclude_tmp_dir) if exclude_tmp_dir else None
+
+    try:
+        for pattern in TEST_FILE_PATTERNS:
+            for matched in glob.glob(pattern, recursive=True):
+                if not os.path.isfile(matched):
+                    continue
+                matched_path = Path(matched)
+                if exclude_tmp_path is not None:
+                    try:
+                        if matched_path.is_relative_to(exclude_tmp_path):
+                            continue
+                    except ValueError:
+                        pass
+                return True
+        return False
+    finally:
+        os.chdir(original_cwd)
+
+
 def find_large_files(config: Dict[str, Any], repo_root: str) -> List[Dict[str, Any]]:
     """Find files exceeding line count threshold"""
     # Safely access configuration sections
@@ -166,11 +206,15 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> List[Dict[str, A
     return large_files
 
 
-def generate_issue_body(large_files: List[Dict[str, Any]], config: Dict[str, Any]) -> str:
+def generate_issue_body(large_files: List[Dict[str, Any]], config: Dict[str, Any], tests_present: bool) -> str:
     """Generate GitHub issue body"""
     max_lines = config['settings']['max_lines']
 
-    body = f"以下のファイルが{max_lines}行を超えています。リファクタリングを検討してください。\n\n"
+    body = ""
+    if large_files and not tests_present:
+        body += "⚠️ 巨大ファイルが検知されていますがテストが見つかりません。まずテストを実装し、リファクタリング前後で結果を確認してください。\n\n"
+
+    body += f"以下のファイルが{max_lines}行を超えています。リファクタリングを検討してください。\n\n"
     body += "## 検出されたファイル\n\n"
     body += "| ファイル | 行数 | 超過行数 |\n"
     body += "|---------|------|----------|\n"
@@ -195,7 +239,7 @@ def generate_issue_body(large_files: List[Dict[str, Any]], config: Dict[str, Any
     return body
 
 
-def create_output_files(large_files: List[Dict[str, Any]], config: Dict[str, Any], output_dir: str):
+def create_output_files(large_files: List[Dict[str, Any]], config: Dict[str, Any], output_dir: str, tests_present: bool):
     """Create output files for GitHub Actions"""
     os.makedirs(output_dir, exist_ok=True)
 
@@ -206,7 +250,7 @@ def create_output_files(large_files: List[Dict[str, Any]], config: Dict[str, Any
             f.write(f"{file_info['path']}: {file_info['lines']} lines\n")
 
     # Write issue body
-    issue_body = generate_issue_body(large_files, config)
+    issue_body = generate_issue_body(large_files, config, tests_present)
     body_file = os.path.join(output_dir, 'issue_body.txt')
     with open(body_file, 'w', encoding='utf-8') as f:
         f.write(issue_body)
@@ -243,6 +287,7 @@ def create_output_files(large_files: List[Dict[str, Any]], config: Dict[str, Any
     summary = {
         'count': len(large_files),
         'max_lines': config['settings']['max_lines'],
+        'tests_present': tests_present,
         'files': large_files
     }
     json_file = os.path.join(output_dir, 'summary.json')
@@ -256,6 +301,7 @@ def main():
     repo_root = os.getenv('GITHUB_WORKSPACE', os.getcwd())
     config_path = os.path.join(repo_root, '.github', 'check-large-files.toml')
     output_dir = os.getenv('OUTPUT_DIR', '/tmp/check-large-files-output')
+    exclude_tmp_dir = os.getenv('EXCLUDE_TMP_DIR')
 
     # Load config
     print(f"Loading config from {config_path}")
@@ -264,6 +310,7 @@ def main():
     # Find large files
     print(f"Scanning files in {repo_root}")
     large_files = find_large_files(config, repo_root)
+    tests_present = has_test_files(repo_root, exclude_tmp_dir)
 
     # Report results
     print(f"\nFound {len(large_files)} files exceeding {config['settings']['max_lines']} lines:")
@@ -271,7 +318,7 @@ def main():
         print(f"  {file_info['path']}: {file_info['lines']} lines")
 
     # Create output files
-    create_output_files(large_files, config, output_dir)
+    create_output_files(large_files, config, output_dir, tests_present)
     print(f"\nOutput files created in {output_dir}")
 
     # Exit with success (detection is not an error condition)
