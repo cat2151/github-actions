@@ -40,10 +40,12 @@ exclude_patterns = [
     "**/*.yaml",
     "**/*.toml",
     "**/*.lock",
-    "**/*.html",
-    "**/*.css",
+#    "**/*.html", # チェック対象として様子見する。coding agentによる実装対象であり、ファイル分割してハルシネーションを防止したほうがよい、と判断した。
+#    "**/*.css",  # 上に同じ
+    "**/*.example",
+    "**/*.txt",
 
-    # ビルド成果物（拡張子で除外）
+# ビルド成果物（拡張子で除外）
     "**/*.d.ts",
     "**/*.d.ts.map",
     "**/*.js.map",
@@ -65,3 +67,4 @@ exclude_patterns = [
 exclude_files = [
     # 例: "src/legacy/LargeOldFile.ts",
 ]
+
