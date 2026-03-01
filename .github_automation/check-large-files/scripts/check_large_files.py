@@ -33,12 +33,15 @@ TEST_FILE_PATTERNS = [
 ]
 
 
-def load_config(config_path: str) -> Dict[str, Any]:
+def load_config(config_path: str, fallback_config_path: str | None = None) -> Dict[str, Any]:
     """Load configuration from TOML file"""
     try:
         with open(config_path, 'rb') as f:
             return tomllib.load(f)
     except FileNotFoundError:
+        if fallback_config_path is not None:
+            print(f"Config file not found: {config_path}, using default: {fallback_config_path}", file=sys.stderr)
+            return load_config(fallback_config_path, None)
         print(f"Error: Config file not found: {config_path}", file=sys.stderr)
         sys.exit(1)
     except PermissionError:
@@ -300,12 +303,13 @@ def main():
     # Get paths
     repo_root = os.getenv('GITHUB_WORKSPACE', os.getcwd())
     config_path = os.path.join(repo_root, '.github', 'check-large-files.toml')
+    default_config_path = str(Path(__file__).parent.parent / 'check-large-files.toml.default')
     output_dir = os.getenv('OUTPUT_DIR', '/tmp/check-large-files-output')
     exclude_tmp_dir = os.getenv('EXCLUDE_TMP_DIR')
 
-    # Load config
+    # Load config (fall back to default when calling repo has no TOML)
     print(f"Loading config from {config_path}")
-    config = load_config(config_path)
+    config = load_config(config_path, default_config_path)
 
     # Find large files
     print(f"Scanning files in {repo_root}")
