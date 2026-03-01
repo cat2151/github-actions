@@ -1,50 +1,77 @@
-Last updated: 2026-02-14
+Last updated: 2026-03-02
 
 # Development Status
 
 ## 現在のIssues
-- [Issue #13](../issue-notes/13.md) は、`issue-note` ワークフローを他のプロジェクトで利用しやすくするため、導入手順のドキュメント化が求められています。
-- [Issue #11](../issue-notes/11.md) は、`translate` ワークフローの他プロジェクトからの使いやすさを向上させるため、導入手順書の作成と、プロンプトの外部化・スクリプト整理が課題として挙げられています。
-- 共通ワークフローの利用を促進するためのドキュメント整備が、現在の主要なタスクとなっています。
+- [Issue #48](../issue-notes/48.md) では、`generated-docs/callgraph.js`が500行を超過しており、リファクタリング前にテストを実装し、その前後で結果を確認することが求められています。
+- [Issue #13](../issue-notes/13.md) は、issue-note共通ワークフローの他プロジェクトからの利用を容易にするための導入手順書作成が残っています。
+- [Issue #11](../issue-notes/11.md) は、translate共通ワークフローの他プロジェクトからの利用を容易にするための導入手順書作成と、プロンプトの外部指定化が課題です。
 
 ## 次の一手候補
-1.  [Issue #13](../issue-notes/13.md): `issue-note` ワークフローの利用手順書を作成する
-    -   最初の小さな一歩: `issue-note` 共通ワークフローの導入手順に関する初期ドラフトをMarkdownファイルとして作成し始める。
-    -   Agent実行プロンプ:
-        ```
-        対象ファイル: .github/workflows/issue-note.yml, .github/workflows/call-issue-note.yml, issue-notes/3.md
+1. [Issue #48](../issue-notes/48.md) `callgraph.js` リファクタリングに向けたテスト実装
+   - 最初の小さな一歩: `callgraph.js`に含まれる`escapeHtml`関数の単体テストをJestで実装する。
+   - Agent実行プロンプ:
+     ```
+     対象ファイル:
+     - .github_automation/callgraph/presets/callgraph.js
+     - （新規作成）test/unit/callgraph.test.js
 
-        実行内容: .github/workflows/issue-note.yml で定義されている共通ワークフローを外部プロジェクトから利用するための手順書をMarkdown形式で作成してください。issue-notes/3.md の共通ワークフロー化の経緯も参考にし、必須入力パラメータ、シークレット、ファイル配置の前提条件、および外部プロジェクトでの利用時に必要な追加設定を含めてください。
+     実行内容:
+     `.github_automation/callgraph/presets/callgraph.js` 内の`escapeHtml`関数について、Jestを用いた単体テストファイル`test/unit/callgraph.test.js`を新規作成し、以下のテストケースを実装してください。
+     - 基本的な文字列が正しくエスケープされること（例: `&`, `<`, `>`, `"`, `'`）。
+     - 空文字列が渡された場合に空文字列を返すこと。
+     - エスケープ不要な文字列が渡された場合にそのまま返すこと。
+     テストファイルは、プロジェクトルート直下の`test/unit/`ディレクトリに配置してください。
 
-        確認事項: `issue-note.yml` の `workflow_call` セクションで定義されている `inputs` と `secrets` を正確に洗い出し、それぞれの意味と設定方法を明確に記述してください。
+     確認事項:
+     - 既存のテストフレームワーク（もしあれば）との整合性。
+     - 新規テストファイルが既存のビルドやCIプロセスに影響を与えないこと。
+     - Jestがプロジェクトに導入されていない場合は、まずJestのインストールと設定を含めてください。
 
-        期待する出力: `docs/setup-issue-note-workflow.md` というファイル名で、`issue-note` ワークフローの導入手順書をMarkdown形式で出力してください。
-        ```
+     期待する出力:
+     - `test/unit/callgraph.test.js`の内容（`escapeHtml`関数のテストコードを含む）をmarkdown形式で出力してください。
+     - Jestが未導入の場合は、`package.json`へのJestの追加、`jest.config.js`の推奨設定も合わせて提案してください。
+     ```
 
-2.  [Issue #11](../issue-notes/11.md): `translate` ワークフローの利用手順書を作成する
-    -   最初の小さな一歩: `translate` 共通ワークフローの導入手順に関する初期ドラフトをMarkdownファイルとして作成し始める。
-    -   Agent実行プロンプト:
-        ```
-        対象ファイル: .github/workflows/translate-readme.yml, .github/workflows/call-translate-readme.yml, .github_automation/translate/docs/TRANSLATION_SETUP.md, issue-notes/11.md
+2. [Issue #11](../issue-notes/11.md) translate共通ワークフローのプロンプト外部指定化に向けた分析
+   - 最初の小さな一歩: `translate-readme.cjs`がどのようにプロンプトを使用しているかを分析し、ハードコードされているプロンプト部分を特定する。
+   - Agent実行プロンプト:
+     ```
+     対象ファイル: .github_automation/translate/scripts/translate-readme.cjs
 
-        実行内容: .github/workflows/translate-readme.yml で定義されている共通ワークフローを外部プロジェクトから利用するための手順書をMarkdown形式で作成してください。issue-notes/11.md に記載された課題や、既存の `TRANSLATION_SETUP.md` の内容も考慮し、必須入力パラメータ、シークレット、ファイル配置の前提条件（例: `README.ja.md`の存在）、および外部プロジェクトでの利用時に必要な追加設定を含めてください。
+     実行内容:
+     `.github_automation/translate/scripts/translate-readme.cjs` ファイルの内容を分析し、Gemini APIに渡すプロンプトがどこで定義されているか、またそれがどのように構築されているかをmarkdown形式で出力してください。特に、現在ハードコードされていると思われるプロンプトのテキストを特定してください。
 
-        確認事項: `translate-readme.yml` の `workflow_call` セクションで定義されている `inputs` と `secrets` を正確に洗い出し、それぞれの意味と設定方法を明確に記述してください。
+     確認事項:
+     - プロンプトの組み立てロジック、動的に変更される部分、静的な部分を明確に区別してください。
+     - プロンプトの入出力に関する依存関係（どの変数がプロンプトに影響するか）を確認してください。
 
-        期待する出力: `docs/setup-translate-workflow.md` というファイル名で、`translate` ワークフローの導入手順書をMarkdown形式で出力してください。
-        ```
+     期待する出力:
+     - プロンプトが定義されているコード箇所とその内容（ハードコードされている部分を明記）
+     - プロンプトの組み立てフローの説明
+     - 今後のプロンプト外部指定化に向けた初期の考察（例: どこを外部ファイルにするか、どのような形式が良いか）
+     これらをmarkdown形式で出力してください。
+     ```
 
-3.  [Issue #11](../issue-notes/11.md): `translate` ワークフローのプロンプト外部化とスクリプト整理に着手する
-    -   最初の小さな一歩: `translate-readme.cjs` スクリプト内で使用されているプロンプト文字列を特定し、その外部化の可能性を調査する。
-    -   Agent実行プロンプト:
-        ```
-        対象ファイル: .github/workflows/translate-readme.yml, .github_automation/translate/scripts/translate-readme.cjs, .github_automation/project_summary/prompts/development-status-prompt.md
+3. [Issue #13](../issue-notes/13.md) issue-note共通ワークフローの導入手順書作成
+   - 最初の小さな一歩: 共通ワークフロー化された`issue-note.yml`の利用に必要なパラメータとシークレットを洗い出す。
+   - Agent実行プロンプト:
+     ```
+     対象ファイル:
+     - .github/workflows/issue-note.yml
+     - .github/workflows/call-issue-note.yml (呼び出し元サンプルとして)
+     - issue-notes/3.md (共通ワークフロー化の経緯)
 
-        実行内容: `translate-readme.cjs` スクリプト内でハードコーディングされているプロンプト文字列を特定し、それを外部のMarkdownファイル（例: `.github_automation/translate/prompts/translate-readme-prompt.md`）に切り出すための具体的な変更点を分析してください。また、`translate-readme.yml` からこの外部プロンプトファイルを `inputs` を通じて動的に指定できるようにするための `workflow_call` の修正案、および `translate-readme.cjs` 内でのプロンプト読み込み方法の変更点を検討してください。
+     実行内容:
+     上記のファイルを分析し、共通ワークフローとして`issue-note.yml`を外部プロジェクトで利用する際に必要な設定項目（inputs、secrets、ファイル配置の前提条件など）を洗い出してください。特に、`issue-notes/3.md`で言及されている`actions/github-script`のinputsの渡し方についても考慮してください。
 
-        確認事項: プロンプトの外部化が現在の翻訳ロジックに影響を与えないこと、および `workflow_call` の `inputs` を拡張する際の互換性を確認してください。既存の `development-status-prompt.md` のような外部プロンプトの管理方法を参考にしてください。
+     確認事項:
+     - 必須の入力パラメータとオプションの入力パラメータを区別してください。
+     - 必要なGitHub Secretsを明記し、その用途を説明してください。
+     - どのような前提条件（例: リポジトリのcheckoutが必要か、特定のファイル構造が必要か）があるかを確認してください。
 
-        期待する出力: プロンプトの外部化と動的な指定を可能にするための技術的な検討結果をMarkdown形式で出力してください。具体的には、変更が必要なファイルとコードスニペット、およびその変更の理由を詳細に記述してください。
+     期待する出力:
+     外部プロジェクトがこの`issue-note.yml`を導入する際の手順書の一部として利用できる、必要な設定項目のリストとそれぞれの説明をmarkdown形式で出力してください。
 
 ---
-Generated at: 2026-02-14 07:10:02 JST
+Generated at: 2026-03-02 07:05:37 JST

@@ -1,4 +1,4 @@
-Last updated: 2026-02-14
+Last updated: 2026-03-02
 
 
 # プロジェクト概要生成プロンプト（来訪者向け）
@@ -119,7 +119,7 @@ Last updated: 2026-02-14
       📄 generateHTML.cjs
   📁 check-large-files/
     📖 README.md
-    📄 check-large-files.toml.example
+    📄 check-large-files.toml.default
     📁 scripts/
       📄 check_large_files.py
   📁 check_recent_human_commit/
@@ -193,7 +193,8 @@ Last updated: 2026-02-14
   📖 38.md
   📖 4.md
   📖 40.md
-  📖 42.md
+  📖 44.md
+  📖 46.md
   📖 7.md
   📖 8.md
   📖 9.md
@@ -209,7 +210,7 @@ Last updated: 2026-02-14
   - 関数: なし
   - インポート: なし
 
-**generated-docs/callgraph.html** (134行, 3954バイト)
+**generated-docs/callgraph.html** (134行, 3953バイト)
   - 関数: なし
   - インポート: なし
 
@@ -302,4 +303,4 @@ src/main.js
 
 
 ---
-Generated at: 2026-02-14 07:09:49 JST
+Generated at: 2026-03-02 07:05:21 JST
