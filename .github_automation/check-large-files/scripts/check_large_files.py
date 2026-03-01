@@ -40,7 +40,7 @@ def load_config(config_path: str, fallback_config_path: str | None = None) -> Di
             return tomllib.load(f)
     except FileNotFoundError:
         if fallback_config_path is not None:
-            print(f"Config file not found: {config_path}, using default: {fallback_config_path}", file=sys.stderr)
+            print(f"Info: Config file not found: {config_path}, using fallback config: {fallback_config_path}")
             return load_config(fallback_config_path, None)
         print(f"Error: Config file not found: {config_path}", file=sys.stderr)
         sys.exit(1)
