@@ -261,6 +261,7 @@ def generate_issue_body(large_files: List[Dict[str, Any]], config: Dict[str, Any
     body += "2. 共通ロジックを別モジュールに抽出する\n"
     body += "3. クラスやインターフェースを適切なサイズに保つ\n"
     body += "4. ファイル分割を段階的に行う（1つの関数を別ファイルに切り出してtest、必要ならtest修正、のサイクルをまわす）\n"
+    body += "5. issue作成から実施の間に状況が変わってファイル行数が既定値未満になっていた場合は、そのファイルは処理対象外にしてuserに報告する\n"
     body += "\n---\n"
     body += "*このissueは自動生成されました*"
 
@@ -383,4 +384,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
