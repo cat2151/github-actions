@@ -9,7 +9,7 @@ import sys
 import glob
 import tomllib
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 import json
 
 # Constants
@@ -139,8 +139,13 @@ def has_test_files(repo_root: str, exclude_tmp_dir: str | None = None) -> bool:
         os.chdir(original_cwd)
 
 
-def find_large_files(config: Dict[str, Any], repo_root: str) -> List[Dict[str, Any]]:
-    """Find files exceeding line count threshold"""
+def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    """Find files exceeding line count threshold.
+
+    Returns a tuple of (large_files, scanned_files) where both are lists of
+    dicts with 'path' and 'lines' keys. large_files contains only those files
+    exceeding the threshold; scanned_files contains all non-excluded files.
+    """
     # Safely access configuration sections
     settings = config.get('settings') or {}
     scan = config.get('scan') or {}
@@ -174,6 +179,7 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> List[Dict[str, A
                 exclude_patterns.append(pattern)
 
     large_files = []
+    scanned_files = []
 
     # Change to repo root for glob patterns
     original_cwd = os.getcwd()
@@ -196,6 +202,11 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> List[Dict[str, A
             # Count lines
             line_count = count_lines(file_path)
 
+            scanned_files.append({
+                'path': file_path,
+                'lines': line_count,
+            })
+
             # Check threshold
             if line_count > max_lines:
                 large_files.append({
@@ -206,7 +217,7 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> List[Dict[str, A
     finally:
         os.chdir(original_cwd)
 
-    return large_files
+    return large_files, scanned_files
 
 
 def generate_issue_body(large_files: List[Dict[str, Any]], config: Dict[str, Any], tests_present: bool) -> str:
@@ -298,6 +309,40 @@ def create_output_files(large_files: List[Dict[str, Any]], config: Dict[str, Any
         json.dump(summary, f, indent=2, ensure_ascii=False)
 
 
+def write_step_summary(scanned_files: List[Dict[str, Any]], large_files: List[Dict[str, Any]], config: Dict[str, Any]):
+    """Write scan statistics to GITHUB_STEP_SUMMARY in markdown format"""
+    summary_path = os.getenv('GITHUB_STEP_SUMMARY')
+    if not summary_path:
+        return
+
+    max_lines_config = config['settings']['max_lines']
+    total_files = len(scanned_files)
+
+    extensions = sorted(set(
+        Path(f['path']).suffix if Path(f['path']).suffix else '(no ext)'
+        for f in scanned_files
+    ))
+
+    if scanned_files:
+        max_file = max(scanned_files, key=lambda x: x['lines'])
+        max_file_path = max_file['path']
+        max_file_lines = max_file['lines']
+    else:
+        max_file_path = '(none)'
+        max_file_lines = 0
+
+    lines = [
+        "## check large files スキャン結果\n\n",
+        f"- 調査ファイル数: **{total_files}**\n",
+        f"- 調査拡張子 ({len(extensions)}種): {' '.join(extensions)}\n",
+        f"- 最大行数ファイル: `{max_file_path}` ({max_file_lines} 行)\n",
+        f"- 大きなファイル検出数: **{len(large_files)}** (閾値: {max_lines_config} 行)\n",
+    ]
+
+    with open(summary_path, 'a', encoding='utf-8') as f:
+        f.writelines(lines)
+
+
 def main():
     """Main function"""
     # Get paths
@@ -313,7 +358,7 @@ def main():
 
     # Find large files
     print(f"Scanning files in {repo_root}")
-    large_files = find_large_files(config, repo_root)
+    large_files, scanned_files = find_large_files(config, repo_root)
     tests_present = has_test_files(repo_root, exclude_tmp_dir)
 
     # Report results
@@ -324,6 +369,9 @@ def main():
     # Create output files
     create_output_files(large_files, config, output_dir, tests_present)
     print(f"\nOutput files created in {output_dir}")
+
+    # Write step summary for GitHub Actions job overview
+    write_step_summary(scanned_files, large_files, config)
 
     # Exit with success (detection is not an error condition)
     sys.exit(0)
