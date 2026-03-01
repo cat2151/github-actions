@@ -139,12 +139,14 @@ def has_test_files(repo_root: str, exclude_tmp_dir: str | None = None) -> bool:
         os.chdir(original_cwd)
 
 
-def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     """Find files exceeding line count threshold.
 
-    Returns a tuple of (large_files, scanned_files) where both are lists of
-    dicts with 'path' and 'lines' keys. large_files contains only those files
-    exceeding the threshold; scanned_files contains all non-excluded files.
+    Returns a tuple of (large_files, scan_stats) where large_files is a list of
+    dicts with 'path' and 'lines' keys for files exceeding the threshold, and
+    scan_stats is a dict with aggregate scan metrics: 'count' (total files
+    scanned after applying include patterns and exclusions), 'extensions' (sorted
+    list of unique file extensions), 'max_file_path', and 'max_file_lines'.
     """
     # Safely access configuration sections
     settings = config.get('settings') or {}
@@ -179,7 +181,10 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[
                 exclude_patterns.append(pattern)
 
     large_files = []
-    scanned_files = []
+    scanned_count = 0
+    extensions: set = set()
+    max_file_path = '(none)'
+    max_file_lines = 0
 
     # Change to repo root for glob patterns
     original_cwd = os.getcwd()
@@ -202,10 +207,12 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[
             # Count lines
             line_count = count_lines(file_path)
 
-            scanned_files.append({
-                'path': file_path,
-                'lines': line_count,
-            })
+            # Accumulate scan stats inline to avoid storing every file in memory
+            scanned_count += 1
+            extensions.add(Path(file_path).suffix or '(no ext)')
+            if line_count > max_file_lines:
+                max_file_lines = line_count
+                max_file_path = file_path
 
             # Check threshold
             if line_count > max_lines:
@@ -217,7 +224,13 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[
     finally:
         os.chdir(original_cwd)
 
-    return large_files, scanned_files
+    scan_stats = {
+        'count': scanned_count,
+        'extensions': sorted(extensions),
+        'max_file_path': max_file_path,
+        'max_file_lines': max_file_lines,
+    }
+    return large_files, scan_stats
 
 
 def generate_issue_body(large_files: List[Dict[str, Any]], config: Dict[str, Any], tests_present: bool) -> str:
@@ -309,27 +322,17 @@ def create_output_files(large_files: List[Dict[str, Any]], config: Dict[str, Any
         json.dump(summary, f, indent=2, ensure_ascii=False)
 
 
-def write_step_summary(scanned_files: List[Dict[str, Any]], large_files: List[Dict[str, Any]], config: Dict[str, Any]):
+def write_step_summary(scan_stats: Dict[str, Any], large_files: List[Dict[str, Any]], config: Dict[str, Any]):
     """Write scan statistics to GITHUB_STEP_SUMMARY in markdown format"""
     summary_path = os.getenv('GITHUB_STEP_SUMMARY')
     if not summary_path:
         return
 
     max_lines_config = config['settings']['max_lines']
-    total_files = len(scanned_files)
-
-    extensions = sorted(set(
-        Path(f['path']).suffix if Path(f['path']).suffix else '(no ext)'
-        for f in scanned_files
-    ))
-
-    if scanned_files:
-        max_file = max(scanned_files, key=lambda x: x['lines'])
-        max_file_path = max_file['path']
-        max_file_lines = max_file['lines']
-    else:
-        max_file_path = '(none)'
-        max_file_lines = 0
+    total_files = scan_stats['count']
+    extensions = scan_stats['extensions']
+    max_file_path = scan_stats['max_file_path']
+    max_file_lines = scan_stats['max_file_lines']
 
     lines = [
         "## check large files スキャン結果\n\n",
@@ -358,7 +361,7 @@ def main():
 
     # Find large files
     print(f"Scanning files in {repo_root}")
-    large_files, scanned_files = find_large_files(config, repo_root)
+    large_files, scan_stats = find_large_files(config, repo_root)
     tests_present = has_test_files(repo_root, exclude_tmp_dir)
 
     # Report results
@@ -371,7 +374,7 @@ def main():
     print(f"\nOutput files created in {output_dir}")
 
     # Write step summary for GitHub Actions job overview
-    write_step_summary(scanned_files, large_files, config)
+    write_step_summary(scan_stats, large_files, config)
 
     # Exit with success (detection is not an error condition)
     sys.exit(0)
