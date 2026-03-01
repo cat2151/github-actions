@@ -10,9 +10,9 @@ This reusable workflow checks for source files that exceed a configured line cou
 
 ## Usage
 
-### 1. Create Configuration File
+### 1. (Optional) Create Configuration File
 
-In your repository, create `.github/check-large-files.toml` with the following content:
+If your repository needs custom settings, create `.github/check-large-files.toml`:
 
 Test files are included in the scan; avoid excluding them unless there's a specific reason.
 
@@ -34,7 +34,7 @@ exclude_patterns = [
 exclude_files = []
 ```
 
-See `check-large-files.toml.example` for a complete example with common patterns.
+If no `.github/check-large-files.toml` is found in your repository, the workflow falls back to the default configuration bundled with this reusable workflow at `.github_automation/check-large-files/check-large-files.toml.default`. See that file in this repository for a complete example with common patterns.
 
 ### 2. Create Caller Workflow
 
@@ -118,4 +118,4 @@ exclude_patterns = [
 
 - Workflow: `.github/workflows/check-large-files.yml`
 - Script: `.github_automation/check-large-files/scripts/check_large_files.py`
-- Example config: `.github_automation/check-large-files/check-large-files.toml.example`
+- Example config: `.github_automation/check-large-files/check-large-files.toml.default`
