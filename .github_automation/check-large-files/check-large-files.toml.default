@@ -39,6 +39,7 @@ exclude_patterns = [
     "**/*.yml",
     "**/*.yaml",
     "**/*.toml",
+    "**/*.ini",
     "**/*.lock",
 #    "**/*.html", # チェック対象として様子見する。coding agentによる実装対象であり、ファイル分割してハルシネーションを防止したほうがよい、と判断した。
 #    "**/*.css",  # 上に同じ
@@ -67,4 +68,5 @@ exclude_patterns = [
 exclude_files = [
     # 例: "src/legacy/LargeOldFile.ts",
 ]
+
 
