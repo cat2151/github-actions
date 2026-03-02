@@ -20,6 +20,9 @@ LOCKFILE_PATTERNS = [
     "**/yarn.lock",
     "**/pnpm-lock.yaml",
 ]
+NODE_MODULES_PATTERNS = [
+    "**/node_modules/**",
+]
 TEST_FILE_PATTERNS = [
     "**/tests/**",
     "**/test/**",
@@ -101,10 +104,17 @@ def should_exclude(file_path: str, exclude_patterns: List[str], exclude_files: L
             simple_pattern = pattern[3:]  # Remove '**/
             if path_obj.match(simple_pattern):
                 return True
-        # For patterns like "dist/**", check if file is under that directory
+        # For patterns like "dist/**" or "**/node_modules/**", check if file is under that directory
         if pattern.endswith('/**'):
             dir_prefix = pattern[:-3]  # Remove '/**'
-            if str(path_obj).startswith(dir_prefix + '/') or str(path_obj).startswith(dir_prefix + '\\'):
+            if dir_prefix.startswith('**/'):
+                # Pattern like "**/node_modules/**" - check if the directory component
+                # appears anywhere in the path (handles subdirectory node_modules etc.)
+                dir_component = dir_prefix[3:]  # Remove '**/'
+                normalized = str(path_obj).replace('\\', '/')
+                if f'/{dir_component}/' in f'/{normalized}/':
+                    return True
+            elif str(path_obj).startswith(dir_prefix + '/') or str(path_obj).startswith(dir_prefix + '\\'):
                 return True
 
     return False
@@ -179,6 +189,11 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[
         for pattern in LOCKFILE_PATTERNS:
             if pattern not in exclude_patterns:
                 exclude_patterns.append(pattern)
+
+    # Always exclude node_modules directories (dependency directories should never be scanned)
+    for pattern in NODE_MODULES_PATTERNS:
+        if pattern not in exclude_patterns:
+            exclude_patterns.append(pattern)
 
     large_files = []
     scanned_count = 0
