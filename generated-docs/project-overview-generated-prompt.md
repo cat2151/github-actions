@@ -1,4 +1,4 @@
-Last updated: 2026-03-02
+Last updated: 2026-03-03
 
 
 # プロジェクト概要生成プロンプト（来訪者向け）
@@ -194,7 +194,7 @@ Last updated: 2026-03-02
   📖 4.md
   📖 40.md
   📖 44.md
-  📖 46.md
+  📖 49.md
   📖 7.md
   📖 8.md
   📖 9.md
@@ -202,7 +202,7 @@ Last updated: 2026-03-02
   📜 main.js
 
 ## ファイル詳細分析
-**.github_automation/callgraph/presets/callgraph.js** (527行, 17906バイト)
+**.github_automation/callgraph/presets/callgraph.js** (500行, 17143バイト)
   - 関数: escapeHtml, getLayoutConfig, placeCentralNode, showNodeInfo, showEdgeInfo, hideInfoPanel, showInfoPanel, toggleInfoPanel, generateGitHubURL, resetLayout, watchNodeMovementAndFixOverlapsWrap, watchNodeMovementAndFixOverlaps, resolveNodeOverlaps, switchLayout, resetNodeStates, fitToContent, toggleNodeLabels, toggleCalleeLocationFilter, replace, switch, function, max, on, if, for, ready, addListener
   - インポート: なし
 
@@ -214,7 +214,7 @@ Last updated: 2026-03-02
   - 関数: なし
   - インポート: なし
 
-**generated-docs/callgraph.js** (527行, 17906バイト)
+**generated-docs/callgraph.js** (500行, 17143バイト)
   - 関数: escapeHtml, getLayoutConfig, placeCentralNode, showNodeInfo, showEdgeInfo, hideInfoPanel, showInfoPanel, toggleInfoPanel, generateGitHubURL, resetLayout, watchNodeMovementAndFixOverlapsWrap, watchNodeMovementAndFixOverlaps, resolveNodeOverlaps, switchLayout, resetNodeStates, fitToContent, toggleNodeLabels, toggleCalleeLocationFilter, replace, switch, function, max, on, if, for, ready, addListener
   - インポート: なし
 
@@ -303,4 +303,4 @@ src/main.js
 
 
 ---
-Generated at: 2026-03-02 07:05:21 JST
+Generated at: 2026-03-03 07:08:35 JST
