@@ -192,11 +192,30 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[
 
     try:
         # Collect all files matching include patterns
-        all_files = set()
+        all_files_raw = set()
         for pattern in include_patterns:
             matched = glob.glob(pattern, recursive=True)
             # Filter out directories - only keep files
-            all_files.update(f for f in matched if os.path.isfile(f))
+            all_files_raw.update(f for f in matched if os.path.isfile(f))
+
+        # Deduplicate by real (symlink-resolved) path to avoid counting the same
+        # file multiple times via symlink loops (e.g. _codeql_detected_source_root
+        # symlink created by CodeQL that points back to the repo root).
+        # Sort by path length first so shorter (canonical) paths win over symlink paths.
+        all_files: set = set()
+        seen_real_paths: set = set()
+        for f in sorted(all_files_raw, key=lambda p: (len(p), p)):
+            try:
+                real = Path(f).resolve()
+                if real in seen_real_paths:
+                    continue
+                seen_real_paths.add(real)
+            except OSError as e:
+                print(f"Warning: Could not resolve real path for {f}: {e}", file=sys.stderr)
+                # Skip files whose real path cannot be resolved to avoid
+                # reintroducing duplicate scanning via symlink loops.
+                continue
+            all_files.add(f)
 
         # Check each file
         for file_path in sorted(all_files):
