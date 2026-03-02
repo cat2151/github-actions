@@ -236,8 +236,6 @@ function showNodeInfo(data) {
     let html = '<div class="info-title">Function: ' + data.label + '</div>';
     if (data.hasCalleeLocationInfo && data.calleeFncDef) {
         // calleeの関数定義のソースコードを1行表示
-        // html += '<p><strong>✓ This function has source location info</strong></p>'; // コメントアウト理由 : かわりに calleeFncDef を表示しているので
-        // html += '<div style="margin-bottom:6px;font-size:13px;color:#888">'; // 備忘、888だと暗い
         html += '<div style="margin-bottom:6px;font-size:13px;color:#EEE">'; // 備忘、EEEだとダークモードならOK、今後はライトモードとダークモードの切り替えに対応予定
         html += '<div class="location-item"><div><small>';
         html += '<pre class="source-line">' + escapeHtml(data.calleeFncDef) + '</pre>';
@@ -300,13 +298,6 @@ function showEdgeInfo(data) {
         html += '<p>呼び出し位置情報がありません</p>';
         html += '<p><small>この呼び出しは動的に発生するか、CodeQLで検出できない方法で行われている可能性があります。</small></p>';
     }
-// HTMLエスケープ関数
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>"']/g, function (c) {
-        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c];
-    });
-}
     content.innerHTML = html;
     showInfoPanel();
 }
@@ -340,7 +331,6 @@ function generateGitHubURL(file, line) {
         const srcIndex = normalizedFile.lastIndexOf('/src/');
         normalizedFile = normalizedFile.substring(srcIndex + 1);
     } else if (normalizedFile.startsWith('src/')) {
-        normalizedFile = normalizedFile;
     } else {
         const lastSlash = normalizedFile.lastIndexOf('/');
         if (lastSlash !== -1) {
@@ -364,11 +354,7 @@ function watchNodeMovementAndFixOverlapsWrap() {
 
 let movementWatcherTimer;
 
-/**
- * ノードの動きを監視して、動きが止まったら重なり修正をする関数
- * @param {number} interval - チェック間隔(ms)
- * @param {number} maxChecks - 最大チェック回数
- */
+// ノードの動きを監視して、動きが止まったら重なり修正をする（interval: チェック間隔ms, maxChecks: 最大チェック回数）
 function watchNodeMovementAndFixOverlaps(interval, maxChecks) {
     let prevPositions = new Map();
     let checks = 0;
@@ -376,7 +362,6 @@ function watchNodeMovementAndFixOverlaps(interval, maxChecks) {
     const movementThreshold = 1.0; // 動き判定閾値(px)
     const stableThreshold = 3;     // 何回連続で動かないと止まった判定するか
 
-    // 初期ノード位置を記録
     cy.nodes().forEach(node => {
         prevPositions.set(node.id(), {...node.position()});
     });
@@ -421,18 +406,11 @@ function watchNodeMovementAndFixOverlaps(interval, maxChecks) {
     }, interval);
 }
 
-/**
- * ノード同士の重なりを軽減する
- * 反発力ベースで自然に押しのける
- * @param {number} minDistance - ノード間の最小距離(px)
- * @param {number} shiftRatio - 移動の強さ(0~1)
- * @param {number} iterations - 繰り返し回数
- */
+// ノード同士の重なりを反発力ベースで軽減する（minDistance: 最小距離px, shiftRatio: 移動の強さ0~1, iterations: 繰り返し回数）
 function resolveNodeOverlaps(minDistance, shiftRatio, iterations) {
     for (let iter = 0; iter < iterations; iter++) {
         cy.nodes().forEach(node => {
             const pos = node.position();
-            
             cy.nodes().forEach(other => {
                 if (node.id() === other.id()) return; // 自分自身はスキップ
 
@@ -442,14 +420,9 @@ function resolveNodeOverlaps(minDistance, shiftRatio, iterations) {
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
                 if (dist < minDistance && dist > 0.0001) {
-                    // 反発力の大きさ（距離が近いほど強く押す）
                     const force = (1 - dist / minDistance) * shiftRatio;
-
-                    // 正規化ベクトル（方向だけを表す）
                     const nx = dx / dist;
                     const ny = dy / dist;
-
-                    // お互いを少しずつ押しのける（対称に動かす）
                     node.position({
                         x: pos.x + nx * force * (minDistance / 2),
                         y: pos.y + ny * force * (minDistance / 2)
