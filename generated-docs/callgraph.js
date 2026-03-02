@@ -231,7 +231,6 @@ cy.on('tap', function(evt) {
 });
 
 function showNodeInfo(data) {
-    const panel = document.getElementById('info-panel');
     const content = document.getElementById('info-content');
     let html = '<div class="info-title">Function: ' + data.label + '</div>';
     if (data.hasCalleeLocationInfo && data.calleeFncDef) {
@@ -269,7 +268,6 @@ function showNodeInfo(data) {
 }
 
 function showEdgeInfo(data) {
-    const panel = document.getElementById('info-panel');
     const content = document.getElementById('info-content');
     let html = '<div class="info-title">Call: ' + data.source + ' → ' + data.target + '</div>';
     html += '<div style="margin-bottom:6px;font-size:13px;color:#888">';
@@ -331,6 +329,8 @@ function generateGitHubURL(file, line) {
         const srcIndex = normalizedFile.lastIndexOf('/src/');
         normalizedFile = normalizedFile.substring(srcIndex + 1);
     } else if (normalizedFile.startsWith('src/')) {
+        // Path is already relative to the repository root (e.g. "src/foo.js"),
+        // so no normalization is needed.
     } else {
         const lastSlash = normalizedFile.lastIndexOf('/');
         if (lastSlash !== -1) {
