@@ -204,7 +204,7 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[
         # Sort by path length first so shorter (canonical) paths win over symlink paths.
         all_files: set = set()
         seen_real_paths: set = set()
-        for f in sorted(all_files_raw, key=len):
+        for f in sorted(all_files_raw, key=lambda p: (len(p), p)):
             try:
                 real = Path(f).resolve()
                 if real in seen_real_paths:
@@ -212,6 +212,9 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[
                 seen_real_paths.add(real)
             except OSError as e:
                 print(f"Warning: Could not resolve real path for {f}: {e}", file=sys.stderr)
+                # Skip files whose real path cannot be resolved to avoid
+                # reintroducing duplicate scanning via symlink loops.
+                continue
             all_files.add(f)
 
         # Check each file
