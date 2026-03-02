@@ -108,12 +108,16 @@ def should_exclude(file_path: str, exclude_patterns: List[str], exclude_files: L
         if pattern.endswith('/**'):
             dir_prefix = pattern[:-3]  # Remove '/**'
             if dir_prefix.startswith('**/'):
-                # Pattern like "**/node_modules/**" - check if the directory component
-                # appears anywhere in the path (handles subdirectory node_modules etc.)
+                # Pattern like "**/node_modules/**" or "**/foo/bar/**" - check if the
+                # directory component sequence appears anywhere in the path components
+                # (handles nested directories regardless of depth)
                 dir_component = dir_prefix[3:]  # Remove '**/'
-                normalized = str(path_obj).replace('\\', '/')
-                if f'/{dir_component}/' in f'/{normalized}/':
-                    return True
+                dir_parts = Path(dir_component).parts
+                path_parts = path_obj.parts
+                if dir_parts:
+                    for i in range(len(path_parts) - len(dir_parts) + 1):
+                        if path_parts[i:i + len(dir_parts)] == dir_parts:
+                            return True
             elif str(path_obj).startswith(dir_prefix + '/') or str(path_obj).startswith(dir_prefix + '\\'):
                 return True
 
@@ -175,6 +179,7 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[
     exclude_patterns = list(scan.get('exclude_patterns', []))
     exclude_files = list(scan.get('exclude_files', []))
     auto_exclude_lockfiles = scan.get('auto_exclude_lockfiles', True)
+    auto_exclude_node_modules = scan.get('auto_exclude_node_modules', True)
 
     # Automatically exclude the workflow's temporary checkout directory if set
     exclude_tmp_dir = os.getenv('EXCLUDE_TMP_DIR')
@@ -190,10 +195,11 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[
             if pattern not in exclude_patterns:
                 exclude_patterns.append(pattern)
 
-    # Always exclude node_modules directories (dependency directories should never be scanned)
-    for pattern in NODE_MODULES_PATTERNS:
-        if pattern not in exclude_patterns:
-            exclude_patterns.append(pattern)
+    # Optionally ignore node_modules directories to avoid scanning dependencies
+    if auto_exclude_node_modules:
+        for pattern in NODE_MODULES_PATTERNS:
+            if pattern not in exclude_patterns:
+                exclude_patterns.append(pattern)
 
     large_files = []
     scanned_count = 0
