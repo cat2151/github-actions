@@ -20,9 +20,6 @@ LOCKFILE_PATTERNS = [
     "**/yarn.lock",
     "**/pnpm-lock.yaml",
 ]
-NODE_MODULES_PATTERNS = [
-    "**/node_modules/**",
-]
 TEST_FILE_PATTERNS = [
     "**/tests/**",
     "**/test/**",
@@ -179,7 +176,6 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[
     exclude_patterns = list(scan.get('exclude_patterns', []))
     exclude_files = list(scan.get('exclude_files', []))
     auto_exclude_lockfiles = scan.get('auto_exclude_lockfiles', True)
-    auto_exclude_node_modules = scan.get('auto_exclude_node_modules', True)
 
     # Automatically exclude the workflow's temporary checkout directory if set
     exclude_tmp_dir = os.getenv('EXCLUDE_TMP_DIR')
@@ -192,12 +188,6 @@ def find_large_files(config: Dict[str, Any], repo_root: str) -> Tuple[List[Dict[
     # Optionally ignore common lockfiles to avoid noise
     if auto_exclude_lockfiles:
         for pattern in LOCKFILE_PATTERNS:
-            if pattern not in exclude_patterns:
-                exclude_patterns.append(pattern)
-
-    # Optionally ignore node_modules directories to avoid scanning dependencies
-    if auto_exclude_node_modules:
-        for pattern in NODE_MODULES_PATTERNS:
             if pattern not in exclude_patterns:
                 exclude_patterns.append(pattern)
 
