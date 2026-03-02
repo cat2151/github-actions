@@ -101,10 +101,21 @@ def should_exclude(file_path: str, exclude_patterns: List[str], exclude_files: L
             simple_pattern = pattern[3:]  # Remove '**/
             if path_obj.match(simple_pattern):
                 return True
-        # For patterns like "dist/**", check if file is under that directory
+        # For patterns like "dist/**" or "**/node_modules/**", check if file is under that directory
         if pattern.endswith('/**'):
             dir_prefix = pattern[:-3]  # Remove '/**'
-            if str(path_obj).startswith(dir_prefix + '/') or str(path_obj).startswith(dir_prefix + '\\'):
+            if dir_prefix.startswith('**/'):
+                # Pattern like "**/node_modules/**" or "**/foo/bar/**" - check if the
+                # directory component sequence appears anywhere in the path components
+                # (handles nested directories regardless of depth)
+                dir_component = dir_prefix[3:]  # Remove '**/'
+                dir_parts = Path(dir_component).parts
+                path_parts = path_obj.parts
+                if dir_parts:
+                    for i in range(len(path_parts) - len(dir_parts) + 1):
+                        if path_parts[i:i + len(dir_parts)] == dir_parts:
+                            return True
+            elif str(path_obj).startswith(dir_prefix + '/') or str(path_obj).startswith(dir_prefix + '\\'):
                 return True
 
     return False
