@@ -32,6 +32,7 @@ exclude_patterns = [
     "**/public/wasm/**",
     "**/.git/**",
     "**/target/**",
+    "**/generated-docs/**",
 
     # ドキュメント・設定ファイル（拡張子で除外）
     "**/*.md",
@@ -68,5 +69,6 @@ exclude_patterns = [
 exclude_files = [
     # 例: "src/legacy/LargeOldFile.ts",
 ]
+
 
 
