@@ -1,4 +1,4 @@
-Last updated: 2026-03-03
+Last updated: 2026-03-04
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -197,7 +197,7 @@ Last updated: 2026-03-03
 - .github/actions-tmp/issue-notes/4.md
 - .github/actions-tmp/issue-notes/40.md
 - .github/actions-tmp/issue-notes/44.md
-- .github/actions-tmp/issue-notes/49.md
+- .github/actions-tmp/issue-notes/52.md
 - .github/actions-tmp/issue-notes/7.md
 - .github/actions-tmp/issue-notes/8.md
 - .github/actions-tmp/issue-notes/9.md
@@ -295,7 +295,7 @@ Last updated: 2026-03-03
 - issue-notes/4.md
 - issue-notes/40.md
 - issue-notes/44.md
-- issue-notes/49.md
+- issue-notes/52.md
 - issue-notes/7.md
 - issue-notes/8.md
 - issue-notes/9.md
@@ -589,19 +589,20 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+3857301 Update callgraph.html [auto]
+8d2c4be Merge pull request #53 from cat2151/copilot/fix-check-large-files-node-modules
+4bceb88 revert: remove auto_exclude_node_modules; rely solely on TOML patterns
+6db53d8 refactor: use Path.parts for **/ pattern matching; make node_modules exclusion configurable
+48d3a1d fix: exclude subdirectory node_modules in check-large-files
+33a56ef Initial plan
+eb1834b Add issue note for #52 [auto]
+c6e84d8 Update large file detection configuration
+453f8ee Update project summaries (overview & development status) [auto]
 098cb6e Update callgraph.html [auto]
-6b20973 Merge pull request #51 from cat2151/copilot/add-tests-for-large-file
-050c2a0 refactor: remove unused panel variables and clarify empty else-if in generateGitHubURL
-d1293e8 refactor: reduce callgraph.js from 526 to 499 lines (below 500 limit)
-91eb0aa Initial plan
-58bf0a2 Merge pull request #50 from cat2151/copilot/fix-large-file-detection-error
-2fc6229 Apply PR review suggestions: deterministic sort key and skip unresolvable paths
-4f130f2 Refactor large file detection script with improvements
-fbb5fa7 Fix check-large-files symlink loop detection error (e.g. _codeql_detected_source_root)
-285ca87 Initial plan
 
 ### 変更されたファイル:
 .github_automation/callgraph/presets/callgraph.js
+.github_automation/check-large-files/check-large-files.toml.default
 .github_automation/check-large-files/scripts/check_large_files.py
 generated-docs/callgraph.html
 generated-docs/callgraph.js
@@ -609,9 +610,9 @@ generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview-generated-prompt.md
 generated-docs/project-overview.md
-issue-notes/46.md
 issue-notes/49.md
+issue-notes/52.md
 
 
 ---
-Generated at: 2026-03-03 07:08:36 JST
+Generated at: 2026-03-04 07:07:53 JST
