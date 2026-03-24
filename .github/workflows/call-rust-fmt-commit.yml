@@ -16,6 +16,7 @@ jobs:
   call-rust-fmt:
     permissions:
       contents: write
-    uses: ./.github/workflows/rust-fmt-commit.yml
+    # uses: ./.github/workflows/rust-fmt-commit.yml # ローカルでのテスト用
+    uses: cat2151/github-actions/.github/workflows/rust-fmt-commit.yml@main
     with:
       target-branch: ${{ github.ref_name }}
