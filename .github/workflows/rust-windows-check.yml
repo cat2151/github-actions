@@ -45,12 +45,12 @@ jobs:
           key: ${{ runner.os }}-cargo-target-windows-gnu-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Run clippy for Windows GNU target
-        run: cargo clippy --all-targets --target x86_64-pc-windows-gnu -- -D warnings
+        run: cargo clippy --workspace --all-targets --target x86_64-pc-windows-gnu -- -D warnings
 
       - name: Build for Windows GNU target
-        run: cargo build --all-targets --target x86_64-pc-windows-gnu
+        run: cargo build --workspace --all-targets --target x86_64-pc-windows-gnu
         env:
-          RUSTFLAGS: "-D warnings"
+          CARGO_TARGET_X86_64_PC_WINDOWS_GNU_RUSTFLAGS: "-D warnings"
 
       - name: Create issue if check fails
         #if: failure() && github.event_name == 'schedule'
