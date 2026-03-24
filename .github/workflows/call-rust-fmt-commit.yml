@@ -1,0 +1,19 @@
+name: Call Rust fmt and Commit
+
+on:
+  push:
+    paths:
+      - '**/*.rs'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'rustfmt.toml'
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  call-rust-fmt:
+    uses: cat2151/github-actions/.github/workflows/rust-fmt-commit.yml@main
+    with:
+      target-branch: ${{ github.ref_name }}
