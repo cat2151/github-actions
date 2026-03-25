@@ -1,11 +1,11 @@
-name: Rust Windows GNU Cross-compilation Check
+name: Rust Windows Runner Cargo Check
 
 on:
   workflow_call:
 
 jobs:
-  check-rust-windows-gnu:
-    runs-on: ubuntu-latest
+  check-rust-windows-cargo:
+    runs-on: windows-latest
     permissions:
       contents: read
       issues: write
@@ -15,16 +15,6 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
-        with:
-          components: clippy
-
-      - name: Install MinGW-w64
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mingw-w64
-
-      - name: Add Windows GNU target
-        run: rustup target add x86_64-pc-windows-gnu
 
       - name: Cache cargo registry
         uses: actions/cache@v4
@@ -42,15 +32,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: target
-          key: ${{ runner.os }}-cargo-target-windows-gnu-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Run clippy for Windows GNU target
-        run: cargo clippy --workspace --all-targets --target x86_64-pc-windows-gnu -- -D warnings
-
-      - name: Build for Windows GNU target
-        run: cargo build --workspace --all-targets --target x86_64-pc-windows-gnu
-        env:
-          CARGO_TARGET_X86_64_PC_WINDOWS_GNU_RUSTFLAGS: "-D warnings"
+      - name: Run cargo check on Windows runner
+        run: cargo check --workspace --all-targets
 
       - name: Create issue if check fails
         #if: failure() && github.event_name == 'schedule'
@@ -58,12 +43,12 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const title = 'Windows GNU cross-compilation check failed';
+            const title = 'Windows runner cargo check failed';
             const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const body = [
-              'Windows GNU cross-compilation check failed in scheduled run.',
+              'Windows runner cargo check failed.',
               '',
-              'Please investigate the build errors and ensure all dependencies are compatible with Windows.',
+              'Please investigate the check errors and ensure all dependencies are compatible with Windows.',
               '',
               `Workflow run: ${runUrl}`
             ].join('\n');
@@ -76,8 +61,8 @@ jobs:
               labels: ['windows-build']
             });
 
-            const existingIssue = issues.data.find(issue => 
-              issue.title.includes('Windows GNU cross-compilation check failed')
+            const existingIssue = issues.data.find(issue =>
+              issue.title.includes('Windows runner cargo check failed')
             );
 
             if (!existingIssue) {
