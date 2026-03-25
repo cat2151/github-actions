@@ -1,4 +1,4 @@
-Last updated: 2026-03-04
+Last updated: 2026-03-26
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -107,6 +107,8 @@ Last updated: 2026-03-04
 - .github/actions-tmp/.github/workflows/call-check-large-files.yml
 - .github/actions-tmp/.github/workflows/call-daily-project-summary.yml
 - .github/actions-tmp/.github/workflows/call-issue-note.yml
+- .github/actions-tmp/.github/workflows/call-rust-fmt-commit.yml
+- .github/actions-tmp/.github/workflows/call-rust-windows-cargo-check.yml
 - .github/actions-tmp/.github/workflows/call-rust-windows-check.yml
 - .github/actions-tmp/.github/workflows/call-translate-readme.yml
 - .github/actions-tmp/.github/workflows/callgraph.yml
@@ -114,6 +116,8 @@ Last updated: 2026-03-04
 - .github/actions-tmp/.github/workflows/check-recent-human-commit.yml
 - .github/actions-tmp/.github/workflows/daily-project-summary.yml
 - .github/actions-tmp/.github/workflows/issue-note.yml
+- .github/actions-tmp/.github/workflows/rust-fmt-commit.yml
+- .github/actions-tmp/.github/workflows/rust-windows-cargo-check.yml
 - .github/actions-tmp/.github/workflows/rust-windows-check.yml
 - .github/actions-tmp/.github/workflows/translate-readme.yml
 - .github/actions-tmp/.github_automation/callgraph/codeql-queries/callgraph.ql
@@ -157,6 +161,7 @@ Last updated: 2026-03-04
 - .github/actions-tmp/.github_automation/translate/scripts/translate-readme.cjs
 - .github/actions-tmp/.gitignore
 - .github/actions-tmp/.vscode/settings.json
+- .github/actions-tmp/AGENTS.md
 - .github/actions-tmp/LICENSE
 - .github/actions-tmp/README.ja.md
 - .github/actions-tmp/README.md
@@ -197,7 +202,8 @@ Last updated: 2026-03-04
 - .github/actions-tmp/issue-notes/4.md
 - .github/actions-tmp/issue-notes/40.md
 - .github/actions-tmp/issue-notes/44.md
-- .github/actions-tmp/issue-notes/52.md
+- .github/actions-tmp/issue-notes/57.md
+- .github/actions-tmp/issue-notes/59.md
 - .github/actions-tmp/issue-notes/7.md
 - .github/actions-tmp/issue-notes/8.md
 - .github/actions-tmp/issue-notes/9.md
@@ -208,6 +214,8 @@ Last updated: 2026-03-04
 - .github/workflows/call-check-large-files.yml
 - .github/workflows/call-daily-project-summary.yml
 - .github/workflows/call-issue-note.yml
+- .github/workflows/call-rust-fmt-commit.yml
+- .github/workflows/call-rust-windows-cargo-check.yml
 - .github/workflows/call-rust-windows-check.yml
 - .github/workflows/call-translate-readme.yml
 - .github/workflows/callgraph.yml
@@ -215,6 +223,8 @@ Last updated: 2026-03-04
 - .github/workflows/check-recent-human-commit.yml
 - .github/workflows/daily-project-summary.yml
 - .github/workflows/issue-note.yml
+- .github/workflows/rust-fmt-commit.yml
+- .github/workflows/rust-windows-cargo-check.yml
 - .github/workflows/rust-windows-check.yml
 - .github/workflows/translate-readme.yml
 - .github_automation/callgraph/codeql-queries/callgraph.ql
@@ -258,6 +268,7 @@ Last updated: 2026-03-04
 - .github_automation/translate/scripts/translate-readme.cjs
 - .gitignore
 - .vscode/settings.json
+- AGENTS.md
 - LICENSE
 - README.ja.md
 - README.md
@@ -295,13 +306,29 @@ Last updated: 2026-03-04
 - issue-notes/4.md
 - issue-notes/40.md
 - issue-notes/44.md
-- issue-notes/52.md
+- issue-notes/57.md
+- issue-notes/59.md
 - issue-notes/7.md
 - issue-notes/8.md
 - issue-notes/9.md
 - src/main.js
 
 ## 現在のオープンIssues
+## [Issue #57](../issue-notes/57.md): （人力）catrepoで今cargo install運用をしているものそれぞれについて、rustのfmtとcheckをcallを配置して検証する
+[issue-notes/57.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/57.md)
+
+...
+ラベル: 
+--- issue-notes/57.md の内容 ---
+
+```markdown
+# issue （人力）catrepoで今cargo install運用をしているものそれぞれについて、rustのfmtとcheckをcallを配置して検証する #57
+[issues #57](https://github.com/cat2151/github-actions/issues/57)
+
+
+
+```
+
 ## [Issue #13](../issue-notes/13.md): issue-note を他projectから使いやすくする
 [issue-notes/13.md](https://github.com/cat2151/github-actions/blob/main/issue-notes/13.md)
 
@@ -587,32 +614,77 @@ env: で値を渡し、process.env で参照するのが正しい
 {% endraw %}
 ```
 
+### .github/actions-tmp/issue-notes/57.md
+```md
+{% raw %}
+# issue （人力）catrepoで今cargo install運用をしているものそれぞれについて、rustのfmtとcheckをcallを配置して検証する #57
+[issues #57](https://github.com/cat2151/github-actions/issues/57)
+
+
+
+{% endraw %}
+```
+
+### issue-notes/57.md
+```md
+{% raw %}
+# issue （人力）catrepoで今cargo install運用をしているものそれぞれについて、rustのfmtとcheckをcallを配置して検証する #57
+[issues #57](https://github.com/cat2151/github-actions/issues/57)
+
+
+
+{% endraw %}
+```
+
+### .github/actions-tmp/issue-notes/7.md
+```md
+{% raw %}
+# issue issue note生成できるかのtest用 #7
+[issues #7](https://github.com/cat2151/github-actions/issues/7)
+
+- 生成できた
+- closeとする
+
+{% endraw %}
+```
+
+### issue-notes/7.md
+```md
+{% raw %}
+# issue issue note生成できるかのtest用 #7
+[issues #7](https://github.com/cat2151/github-actions/issues/7)
+
+- 生成できた
+- closeとする
+
+{% endraw %}
+```
+
 ## 最近の変更（過去7日間）
 ### コミット履歴:
-3857301 Update callgraph.html [auto]
-8d2c4be Merge pull request #53 from cat2151/copilot/fix-check-large-files-node-modules
-4bceb88 revert: remove auto_exclude_node_modules; rely solely on TOML patterns
-6db53d8 refactor: use Path.parts for **/ pattern matching; make node_modules exclusion configurable
-48d3a1d fix: exclude subdirectory node_modules in check-large-files
-33a56ef Initial plan
-eb1834b Add issue note for #52 [auto]
-c6e84d8 Update large file detection configuration
-453f8ee Update project summaries (overview & development status) [auto]
-098cb6e Update callgraph.html [auto]
+8083b5b Update callgraph.html [auto]
+08317cc pushでなくPR merge(closed)にした
+50d561f Merge pull request #60 from cat2151/copilot/implement-cargo-check-windows-runner
+be81e9a fix: add permissions to windows cargo check caller
+873fc05 fix: split windows cargo check into separate workflows
+709587d Add instruction to write pull requests in Japanese
+8c8e33e feat: run rust cargo check on windows runner
+87c41c4 Initial plan
+835cb3d Add issue note for #59 [auto]
+742108c Merge pull request #58 from cat2151/copilot/add-linter-and-error-warnings
 
 ### 変更されたファイル:
-.github_automation/callgraph/presets/callgraph.js
-.github_automation/check-large-files/check-large-files.toml.default
-.github_automation/check-large-files/scripts/check_large_files.py
+.github/workflows/call-rust-fmt-commit.yml
+.github/workflows/call-rust-windows-cargo-check.yml
+.github/workflows/rust-fmt-commit.yml
+.github/workflows/rust-windows-cargo-check.yml
+.github/workflows/rust-windows-check.yml
+AGENTS.md
 generated-docs/callgraph.html
-generated-docs/callgraph.js
-generated-docs/development-status-generated-prompt.md
-generated-docs/development-status.md
-generated-docs/project-overview-generated-prompt.md
-generated-docs/project-overview.md
-issue-notes/49.md
-issue-notes/52.md
+issue-notes/54.md
+issue-notes/56.md
+issue-notes/59.md
 
 
 ---
-Generated at: 2026-03-04 07:07:53 JST
+Generated at: 2026-03-26 07:12:38 JST

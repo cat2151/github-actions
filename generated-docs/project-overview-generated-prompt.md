@@ -1,4 +1,4 @@
-Last updated: 2026-03-04
+Last updated: 2026-03-26
 
 
 # プロジェクト概要生成プロンプト（来訪者向け）
@@ -156,6 +156,7 @@ Last updated: 2026-03-04
 📄 .gitignore
 📁 .vscode/
   📊 settings.json
+📖 AGENTS.md
 📄 LICENSE
 📖 README.ja.md
 📖 README.md
@@ -194,7 +195,8 @@ Last updated: 2026-03-04
   📖 4.md
   📖 40.md
   📖 44.md
-  📖 52.md
+  📖 57.md
+  📖 59.md
   📖 7.md
   📖 8.md
   📖 9.md
@@ -210,7 +212,7 @@ Last updated: 2026-03-04
   - 関数: なし
   - インポート: なし
 
-**generated-docs/callgraph.html** (134行, 3953バイト)
+**generated-docs/callgraph.html** (134行, 3954バイト)
   - 関数: なし
   - インポート: なし
 
@@ -271,6 +273,7 @@ Last updated: 2026-03-04
 .github_automation/project_summary/prompts/project-overview-prompt.md
 .github_automation/translate/docs/TRANSLATION_SETUP.md
 .vscode/settings.json
+AGENTS.md
 README.ja.md
 README.md
 generated-docs/callgraph.html
@@ -290,7 +293,6 @@ issue-notes/19.md
 issue-notes/2.md
 issue-notes/20.md
 issue-notes/21.md
-issue-notes/22.md
 src/main.js
 
 上記の情報を基に、プロンプトで指定された形式でプロジェクト概要を生成してください。
@@ -303,4 +305,4 @@ src/main.js
 
 
 ---
-Generated at: 2026-03-04 07:07:53 JST
+Generated at: 2026-03-26 07:12:38 JST
