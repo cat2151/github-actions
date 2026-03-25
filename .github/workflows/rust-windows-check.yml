@@ -63,7 +63,7 @@ jobs:
             const body = [
               'Windows GNU cross-compilation check failed in scheduled run.',
               '',
-              'Please investigate the build errors and ensure all dependencies are compatible with Windows.',
+              'Please investigate the build or clippy errors and ensure all dependencies are compatible with Windows.',
               '',
               `Workflow run: ${runUrl}`
             ].join('\n');

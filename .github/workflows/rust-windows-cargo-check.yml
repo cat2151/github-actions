@@ -48,7 +48,7 @@ jobs:
             const body = [
               'Windows runner cargo check failed.',
               '',
-              'Please investigate the check errors and ensure all dependencies are compatible with Windows.',
+              'Please investigate the cargo check failures and ensure all dependencies are compatible with Windows.',
               '',
               `Workflow run: ${runUrl}`
             ].join('\n');
