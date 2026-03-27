@@ -70,18 +70,18 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const title = 'Windows runner Rust validation failed';
+            const title = 'Windows ランナーの Rust 検証が失敗しました';
             const runUrl =
               '${{ github.server_url }}/' +
               '${{ github.repository }}/actions/runs/' +
               '${{ github.run_id }}';
             const body = [
-              'Windows runner Rust validation failed.',
+              'Windows ランナーの Rust 検証が失敗しました。',
               '',
-              'Please investigate the failed Windows runner Rust validation ' +
-              'step and ensure all dependencies are compatible with Windows.',
+              '失敗した Windows ランナーの Rust 検証ステップを調査し、' +
+              'すべての依存関係が Windows と互換性を持つことを確認してください。',
               '',
-              `Workflow run: ${runUrl}`
+              `ワークフロー実行: ${runUrl}`
             ].join('\n');
 
             // Check if issue already exists
@@ -93,6 +93,7 @@ jobs:
             });
 
             const knownTitles = [
+              'Windows ランナーの Rust 検証が失敗しました',
               'Windows runner Rust validation failed',
               'Windows runner cargo check failed'
             ];

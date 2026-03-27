@@ -58,14 +58,14 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const title = 'Windows GNU cross-compilation check failed';
+            const title = 'Windows GNU クロスコンパイルチェックが失敗しました';
             const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const body = [
-              'Windows GNU cross-compilation check failed in scheduled run.',
+              '定期実行で Windows GNU クロスコンパイルチェックが失敗しました。',
               '',
-              'Please investigate the build or clippy errors and ensure all dependencies are compatible with Windows.',
+              'build または clippy のエラーを確認し、すべての依存関係が Windows と互換性を持つことを確認してください。',
               '',
-              `Workflow run: ${runUrl}`
+              `ワークフロー実行: ${runUrl}`
             ].join('\n');
 
             // Check if issue already exists
@@ -76,8 +76,12 @@ jobs:
               labels: ['windows-build']
             });
 
-            const existingIssue = issues.data.find(issue => 
-              issue.title.includes('Windows GNU cross-compilation check failed')
+            const knownTitles = [
+              'Windows GNU クロスコンパイルチェックが失敗しました',
+              'Windows GNU cross-compilation check failed'
+            ];
+            const existingIssue = issues.data.find(issue =>
+              knownTitles.some(title => issue.title.includes(title))
             );
 
             if (!existingIssue) {
