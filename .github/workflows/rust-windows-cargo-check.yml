@@ -85,10 +85,11 @@ jobs:
             ].join('\n');
 
             // Check if issue already exists
-            const issues = await github.rest.issues.listForRepo({
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
+              per_page: 100,
               labels: ['windows-build']
             });
 
@@ -97,8 +98,8 @@ jobs:
               'Windows runner Rust validation failed',
               'Windows runner cargo check failed'
             ];
-            const existingIssue = issues.data.find(issue =>
-              knownTitles.some(title => issue.title.includes(title))
+            const existingIssue = issues.find(issue =>
+              knownTitles.some(knownTitle => issue.title.includes(knownTitle))
             );
 
             if (!existingIssue) {

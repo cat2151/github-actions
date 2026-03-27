@@ -61,7 +61,7 @@ jobs:
             const title = 'Windows GNU クロスコンパイルチェックが失敗しました';
             const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const body = [
-              '定期実行で Windows GNU クロスコンパイルチェックが失敗しました。',
+              'このワークフローで Windows GNU クロスコンパイルチェックが失敗しました。',
               '',
               'build または clippy のエラーを確認し、すべての依存関係が Windows と互換性を持つことを確認してください。',
               '',
@@ -69,10 +69,11 @@ jobs:
             ].join('\n');
 
             // Check if issue already exists
-            const issues = await github.rest.issues.listForRepo({
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
+              per_page: 100,
               labels: ['windows-build']
             });
 
@@ -80,8 +81,8 @@ jobs:
               'Windows GNU クロスコンパイルチェックが失敗しました',
               'Windows GNU cross-compilation check failed'
             ];
-            const existingIssue = issues.data.find(issue =>
-              knownTitles.some(title => issue.title.includes(title))
+            const existingIssue = issues.find(issue =>
+              knownTitles.some(knownTitle => issue.title.includes(knownTitle))
             );
 
             if (!existingIssue) {
