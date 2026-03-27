@@ -41,6 +41,8 @@ jobs:
 
       - name: Run cargo check on Windows runner
         run: cargo check --workspace --all-targets
+        env:
+          RUSTFLAGS: "-D warnings"
 
       - name: Create issue if check fails
         #if: failure() && github.event_name == 'schedule'
@@ -71,7 +73,8 @@ jobs:
             });
 
             const existingIssue = issues.data.find(issue =>
-              issue.title.includes('Windows runner Rust validation failed')
+              issue.title.includes('Windows runner Rust validation failed') ||
+              issue.title.includes('Windows runner cargo check failed')
             );
 
             if (!existingIssue) {
