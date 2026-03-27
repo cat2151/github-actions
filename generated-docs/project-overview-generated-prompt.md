@@ -1,4 +1,4 @@
-Last updated: 2026-03-26
+Last updated: 2026-03-28
 
 
 # プロジェクト概要生成プロンプト（来訪者向け）
@@ -196,7 +196,7 @@ Last updated: 2026-03-26
   📖 40.md
   📖 44.md
   📖 57.md
-  📖 59.md
+  📖 61.md
   📖 7.md
   📖 8.md
   📖 9.md
@@ -305,4 +305,4 @@ src/main.js
 
 
 ---
-Generated at: 2026-03-26 07:12:38 JST
+Generated at: 2026-03-28 07:08:29 JST

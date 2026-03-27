@@ -1,4 +1,4 @@
-Last updated: 2026-03-26
+Last updated: 2026-03-28
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -203,7 +203,7 @@ Last updated: 2026-03-26
 - .github/actions-tmp/issue-notes/40.md
 - .github/actions-tmp/issue-notes/44.md
 - .github/actions-tmp/issue-notes/57.md
-- .github/actions-tmp/issue-notes/59.md
+- .github/actions-tmp/issue-notes/61.md
 - .github/actions-tmp/issue-notes/7.md
 - .github/actions-tmp/issue-notes/8.md
 - .github/actions-tmp/issue-notes/9.md
@@ -307,7 +307,7 @@ Last updated: 2026-03-26
 - issue-notes/40.md
 - issue-notes/44.md
 - issue-notes/57.md
-- issue-notes/59.md
+- issue-notes/61.md
 - issue-notes/7.md
 - issue-notes/8.md
 - issue-notes/9.md
@@ -662,29 +662,28 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
-8083b5b Update callgraph.html [auto]
-08317cc pushでなくPR merge(closed)にした
-50d561f Merge pull request #60 from cat2151/copilot/implement-cargo-check-windows-runner
-be81e9a fix: add permissions to windows cargo check caller
-873fc05 fix: split windows cargo check into separate workflows
-709587d Add instruction to write pull requests in Japanese
-8c8e33e feat: run rust cargo check on windows runner
-87c41c4 Initial plan
-835cb3d Add issue note for #59 [auto]
-742108c Merge pull request #58 from cat2151/copilot/add-linter-and-error-warnings
+b596385 Update callgraph.html [auto]
+b9502de Merge pull request #64 from cat2151/copilot/fix-windows-runner-rust-validation
+b8c65dc fix: align cargo detection step naming
+87df31a fix: tighten skip condition for windows rust validation
+5f573a5 fix: skip windows rust validation when Cargo.toml is absent
+8a72230 Initial plan
+143f132 Merge pull request #62 from cat2151/copilot/update-rust-windows-cargo-check
+b7f1ecd chore: simplify workflow issue title matching
+a55170a fix: align windows cargo check warnings and issue dedupe
+5852f86 chore: refine windows workflow failure messaging
 
 ### 変更されたファイル:
 .github/workflows/call-rust-fmt-commit.yml
-.github/workflows/call-rust-windows-cargo-check.yml
-.github/workflows/rust-fmt-commit.yml
 .github/workflows/rust-windows-cargo-check.yml
-.github/workflows/rust-windows-check.yml
-AGENTS.md
 generated-docs/callgraph.html
-issue-notes/54.md
-issue-notes/56.md
+generated-docs/development-status-generated-prompt.md
+generated-docs/development-status.md
+generated-docs/project-overview-generated-prompt.md
+generated-docs/project-overview.md
 issue-notes/59.md
+issue-notes/61.md
 
 
 ---
-Generated at: 2026-03-26 07:12:38 JST
+Generated at: 2026-03-28 07:08:29 JST
