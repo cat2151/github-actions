@@ -48,16 +48,16 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const title = 'Windows runner cargo check or lint failed';
+            const title = 'Windows runner Rust validation failed';
             const runUrl =
               '${{ github.server_url }}/' +
               '${{ github.repository }}/actions/runs/' +
               '${{ github.run_id }}';
             const body = [
-              'Windows runner cargo check or lint failed.',
+              'Windows runner Rust validation failed.',
               '',
-              'Please investigate the cargo check or clippy failures ' +
-              'and ensure all dependencies are compatible with Windows.',
+              'Please investigate the failed Windows runner Rust validation ' +
+              'step and ensure all dependencies are compatible with Windows.',
               '',
               `Workflow run: ${runUrl}`
             ].join('\n');
@@ -71,7 +71,7 @@ jobs:
             });
 
             const existingIssue = issues.data.find(issue =>
-              issue.title.includes('Windows runner cargo check or lint failed')
+              issue.title.includes('Windows runner Rust validation failed')
             );
 
             if (!existingIssue) {
