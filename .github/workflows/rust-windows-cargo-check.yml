@@ -51,7 +51,7 @@ jobs:
           key: ${{ runner.os }}-cargo-target-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Skip validation when Cargo.toml is missing
-        if: steps.cargo-workspace.outputs.found != 'true'
+        if: steps.cargo-workspace.outputs.found == 'false'
         run: echo "Skipping Windows Rust validation because no Cargo.toml was found."
 
       - name: Run clippy on Windows runner
