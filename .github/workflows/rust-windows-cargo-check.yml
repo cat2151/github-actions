@@ -15,6 +15,8 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
 
       - name: Cache cargo registry
         uses: actions/cache@v4
@@ -34,6 +36,9 @@ jobs:
           path: target
           key: ${{ runner.os }}-cargo-target-${{ hashFiles('**/Cargo.lock') }}
 
+      - name: Run clippy on Windows runner
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
       - name: Run cargo check on Windows runner
         run: cargo check --workspace --all-targets
 
@@ -43,12 +48,16 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const title = 'Windows runner cargo check failed';
-            const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+            const title = 'Windows runner cargo check or lint failed';
+            const runUrl =
+              '${{ github.server_url }}/' +
+              '${{ github.repository }}/actions/runs/' +
+              '${{ github.run_id }}';
             const body = [
-              'Windows runner cargo check failed.',
+              'Windows runner cargo check or lint failed.',
               '',
-              'Please investigate the cargo check failures and ensure all dependencies are compatible with Windows.',
+              'Please investigate the cargo check or clippy failures ' +
+              'and ensure all dependencies are compatible with Windows.',
               '',
               `Workflow run: ${runUrl}`
             ].join('\n');
@@ -62,7 +71,7 @@ jobs:
             });
 
             const existingIssue = issues.data.find(issue =>
-              issue.title.includes('Windows runner cargo check failed')
+              issue.title.includes('Windows runner cargo check or lint failed')
             );
 
             if (!existingIssue) {
