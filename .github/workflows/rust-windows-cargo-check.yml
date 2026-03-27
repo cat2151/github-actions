@@ -72,9 +72,12 @@ jobs:
               labels: ['windows-build']
             });
 
+            const knownTitles = [
+              'Windows runner Rust validation failed',
+              'Windows runner cargo check failed'
+            ];
             const existingIssue = issues.data.find(issue =>
-              issue.title.includes('Windows runner Rust validation failed') ||
-              issue.title.includes('Windows runner cargo check failed')
+              knownTitles.some(title => issue.title.includes(title))
             );
 
             if (!existingIssue) {
