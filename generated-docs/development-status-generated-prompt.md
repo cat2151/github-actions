@@ -1,4 +1,4 @@
-Last updated: 2026-03-28
+Last updated: 2026-03-29
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -203,7 +203,7 @@ Last updated: 2026-03-28
 - .github/actions-tmp/issue-notes/40.md
 - .github/actions-tmp/issue-notes/44.md
 - .github/actions-tmp/issue-notes/57.md
-- .github/actions-tmp/issue-notes/61.md
+- .github/actions-tmp/issue-notes/67.md
 - .github/actions-tmp/issue-notes/7.md
 - .github/actions-tmp/issue-notes/8.md
 - .github/actions-tmp/issue-notes/9.md
@@ -307,7 +307,7 @@ Last updated: 2026-03-28
 - issue-notes/40.md
 - issue-notes/44.md
 - issue-notes/57.md
-- issue-notes/61.md
+- issue-notes/67.md
 - issue-notes/7.md
 - issue-notes/8.md
 - issue-notes/9.md
@@ -662,28 +662,28 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
-b596385 Update callgraph.html [auto]
-b9502de Merge pull request #64 from cat2151/copilot/fix-windows-runner-rust-validation
-b8c65dc fix: align cargo detection step naming
-87df31a fix: tighten skip condition for windows rust validation
-5f573a5 fix: skip windows rust validation when Cargo.toml is absent
-8a72230 Initial plan
-143f132 Merge pull request #62 from cat2151/copilot/update-rust-windows-cargo-check
-b7f1ecd chore: simplify workflow issue title matching
-a55170a fix: align windows cargo check warnings and issue dedupe
-5852f86 chore: refine windows workflow failure messaging
+6f0b468 Update callgraph.html [auto]
+d86ed19 Merge pull request #68 from cat2151/copilot/fix-windows-rust-issue-message
+6feee1b fix: windows互換性を保つ案内を追加
+bb2bc2b fix: issue本文の改行を整理
+f8a7ccf fix: windows rust issue文言を明確化
+df95d2f Initial plan
+e50242b Add issue note for #67 [auto]
+cbbd67d Merge pull request #66 from cat2151/copilot/change-issue-title-and-message
+79b8050 fix: PRレビューコメントを反映
+016547b fix: issue作成文言を日本語化
 
 ### 変更されたファイル:
-.github/workflows/call-rust-fmt-commit.yml
 .github/workflows/rust-windows-cargo-check.yml
+.github/workflows/rust-windows-check.yml
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview-generated-prompt.md
 generated-docs/project-overview.md
-issue-notes/59.md
 issue-notes/61.md
+issue-notes/67.md
 
 
 ---
-Generated at: 2026-03-28 07:08:29 JST
+Generated at: 2026-03-29 07:07:25 JST
