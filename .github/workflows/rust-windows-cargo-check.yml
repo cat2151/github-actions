@@ -2,6 +2,11 @@ name: Rust Windows Runner Cargo Check
 
 on:
   workflow_call:
+    inputs:
+      extra-test-commands:
+        required: false
+        type: string
+        default: ""
 
 jobs:
   check-rust-windows-cargo:
@@ -64,6 +69,25 @@ jobs:
         env:
           RUSTFLAGS: "-D warnings"
 
+      - name: Run extra test commands on Windows runner
+        if: steps.cargo_workspace.outputs.found == 'true' && inputs.extra-test-commands != ''
+        shell: pwsh
+        env:
+          EXTRA_TEST_COMMANDS: ${{ inputs.extra-test-commands }}
+        run: |
+          $commands = $env:EXTRA_TEST_COMMANDS `
+            -split "(`r`n|`n|`r)" `
+            | ForEach-Object { $_.Trim() } `
+            | Where-Object { $_ }
+
+          foreach ($command in $commands) {
+            Write-Host "Running: $command"
+            Invoke-Expression $command
+            if ($LASTEXITCODE -ne 0) {
+              exit $LASTEXITCODE
+            }
+          }
+
       - name: Create issue if check fails
         #if: failure() && github.event_name == 'schedule'
         if: failure() && steps.cargo_workspace.outputs.found == 'true'
@@ -79,7 +103,7 @@ jobs:
               'Windows ランナーの Rust 検証が失敗しました。',
               '',
               '失敗した Windows ランナーの Rust 検証ステップのログを確認し、',
-              'cargo clippy または cargo check のエラー内容に応じて修正してください。',
+              'cargo clippy、cargo check、または追加テストコマンドのエラー内容に応じて修正してください。',
               'Windows 対応アプリのため、修正時は Windows 互換性を損なわないことも確認してください。',
               'Windows 依存の問題が疑われる場合は、依存関係や実装の互換性も確認してください。',
               '',
