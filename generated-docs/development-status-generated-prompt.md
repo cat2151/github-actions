@@ -1,4 +1,4 @@
-Last updated: 2026-03-29
+Last updated: 2026-04-19
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -103,6 +103,8 @@ Last updated: 2026-03-29
 - Issue番号を記載する際は、必ず [Issue #番号](../issue-notes/番号.md) の形式でMarkdownリンクとして記載してください。
 
 ## プロジェクトのファイル一覧
+- .gitattributes
+- .github/actions-tmp/.gitattributes
 - .github/actions-tmp/.github/workflows/call-callgraph.yml
 - .github/actions-tmp/.github/workflows/call-check-large-files.yml
 - .github/actions-tmp/.github/workflows/call-daily-project-summary.yml
@@ -662,18 +664,12 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
-6f0b468 Update callgraph.html [auto]
-d86ed19 Merge pull request #68 from cat2151/copilot/fix-windows-rust-issue-message
-6feee1b fix: windows互換性を保つ案内を追加
-bb2bc2b fix: issue本文の改行を整理
-f8a7ccf fix: windows rust issue文言を明確化
-df95d2f Initial plan
-e50242b Add issue note for #67 [auto]
-cbbd67d Merge pull request #66 from cat2151/copilot/change-issue-title-and-message
-79b8050 fix: PRレビューコメントを反映
-016547b fix: issue作成文言を日本語化
+7fc30f9 Update callgraph.html [auto]
+0484c1a Rust CI checkだけでなくtestも行うようにした
+f7ed901 agent改行破壊対応
 
 ### 変更されたファイル:
+.gitattributes
 .github/workflows/rust-windows-cargo-check.yml
 .github/workflows/rust-windows-check.yml
 generated-docs/callgraph.html
@@ -681,9 +677,9 @@ generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview-generated-prompt.md
 generated-docs/project-overview.md
-issue-notes/61.md
+issue-notes/65.md
 issue-notes/67.md
 
 
 ---
-Generated at: 2026-03-29 07:07:25 JST
+Generated at: 2026-04-19 07:09:42 JST

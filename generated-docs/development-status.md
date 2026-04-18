@@ -1,51 +1,50 @@
-Last updated: 2026-03-29
+Last updated: 2026-04-19
 
 # Development Status
 
 ## 現在のIssues
-- [Issue #57](../issue-notes/57.md) では、`cargo install`運用しているRustプロジェクトへの`rust-fmt`と`cargo check`ワークフロー導入の検証が求められています。
-- [Issue #13](../issue-notes/13.md) は、`issue-note`アクションを他のプロジェクトからより利用しやすくするための導入手順ドキュメント整備を進める課題です。
-- [Issue #11](../issue-notes/11.md) は、`translate`アクションの他プロジェクトからの利用改善と導入手順ドキュメント作成、およびプロンプトの外部指定化を検討しています。
+- RustプロジェクトのCI/CD強化として、`cargo install`運用されているリポジトリへの`fmt`と`check`の導入と検証 ([Issue #57](../issue-notes/57.md)) が進行中です。
+- GitHub Actionsの再利用可能なワークフローについて、`issue-note` ([Issue #13](../issue-notes/13.md))と`translate` ([Issue #11](../issue-notes/11.md))の外部プロジェクトからの利用を容易にするためのドキュメント整備が必要です。
+- 特に`translate`ワークフローでは、`prompt`の外部指定による柔軟性向上も検討されています。
 
 ## 次の一手候補
-1. [Issue #57](../issue-notes/57.md): `cargo install` Rustプロジェクトへのfmt/checkワークフロー導入を検証する
-   - 最初の小さな一歩: 既存のRustフォーマット・チェックワークフロー（`rust-fmt-commit.yml`と`rust-windows-cargo-check.yml`）が、`cargo install`運用されているプロジェクトにどのように適用可能かを分析し、潜在的な課題を特定します。
-   - Agent実行プロンプ:
-     ```
-     対象ファイル: .github/workflows/rust-fmt-commit.yml, .github/workflows/rust-windows-cargo-check.yml
-
-     実行内容: 提供されたRust関連ワークフロー（`rust-fmt-commit.yml`と`rust-windows-cargo-check.yml`）が、`cargo install`運用されているRustプロジェクト（例: `catrepo`）に適用可能か、またその際の必要な修正点や前提条件（Rustツールのインストール、ワークスペース構造など）を分析してください。特に、`rust-fmt-commit.yml`が`cargo fmt`を実行し、`rust-windows-cargo-check.yml`が`cargo check`を実行する仕組みに注目してください。
-
-     確認事項: 各ワークフローが想定するリポジトリ構造やRustのバージョン、依存関係の解決方法（`cargo install`でインストールされたツールとの競合など）を確認してください。
-
-     期待する出力: `catrepo`のような`cargo install`運用プロジェクトにこれらのワークフローを導入する際の互換性レポートをmarkdown形式で出力してください。レポートには、潜在的な課題と解決策の提案を含めてください。
-     ```
-
-2. [Issue #13](../issue-notes/13.md): `issue-note`を他プロジェクトから使いやすくするための導入手順を文書化する
-   - 最初の小さな一歩: `issue-note.yml`の共通ワークフローとしての機能と、`issue-notes/3.md`に記載されている過去の共通ワークフロー化の経緯と`actions/github-script`での入力値利用の修正点を分析します。
-   - Agent実行プロンプ:
+1. [Issue #13](../issue-notes/13.md): issue-note を他projectから使いやすくするための導入手順書作成
+   - 最初の小さな一歩: `issue-note.yml` ワークフローの機能と `workflow_call` の入力パラメータを分析し、外部プロジェクトが利用するための導入手順書のドラフトを作成する。
+   - Agent実行プロンプト:
      ```
      対象ファイル: .github/workflows/issue-note.yml, issue-notes/3.md
 
-     実行内容: `.github/workflows/issue-note.yml`が共通ワークフローとしてどのように機能し、どのような`inputs`と`secrets`を必要とするかを分析してください。特に`issue-notes/3.md`に記載されている共通ワークフロー化の経緯と`actions/github-script@v7`での`inputs`の正しい参照方法（`env`経由）に着目してください。
+     実行内容: .github/workflows/issue-note.yml の workflow_call セクション、特に inputs および secrets 定義、そして issue-notes/3.md に記載されている共通ワークフロー化の経緯と修正内容を詳細に分析し、外部プロジェクトがこのワークフローを呼び出す際に必要な設定項目（入力パラメータ、シークレット、前提条件）を洗い出してください。
 
-     確認事項: 共通ワークフローの`inputs`と`outputs`、必要な`permissions`、およびGitHub APIを呼び出すための`secrets`（例: `GITHUB_TOKEN`）の利用状況を確認してください。
+     確認事項: .github/workflows/issue-note.yml が最新の共通ワークフローの形になっているか確認してください。issue-notes/3.md の内容と実際の .github/workflows/issue-note.yml の整合性を確認してください。
 
-     期待する出力: `.github/workflows/issue-note.yml`を外部プロジェクトで`workflow_call`を使って導入するための詳細な手順書をmarkdown形式で生成してください。必須入力パラメータ、必要なシークレット、`github-script`内でのパラメータ利用方法、および`permissions`設定について具体的に記述してください。
+     期待する出力: 外部プロジェクトが issue-note.yml を導入する際の手順書をmarkdown形式で生成してください。具体的には：必須パラメータの設定方法、シークレットの登録手順、前提条件の確認項目（例: issue-notes ディレクトリの存在など）を含めてください。
      ```
 
-3. [Issue #11](../issue-notes/11.md): `translate`の他プロジェクトからの利用を改善し、導入手順を文書化する
-   - 最初の小さな一歩: `translate-readme.yml`が現在どのように外部プロジェクトから利用されるかを分析し、既存の`inputs`と`secrets`の定義、および`TRANSLATION_SETUP.md`の内容を確認します。
-   - Agent実行プロンプ:
+2. [Issue #11](../issue-notes/11.md): translate を他projectから使いやすくするための導入手順書作成とPromptの柔軟性確認
+   - 最初の小さな一歩: `translate-readme.yml` ワークフローの機能と `workflow_call` の入力パラメータを分析し、外部プロジェクトが利用するための導入手順書のドラフトを作成する。
+   - Agent実行プロンプト:
      ```
-     対象ファイル: .github/workflows/call-translate-readme.yml, .github_automation/translate/scripts/translate-readme.cjs, .github_automation/translate/docs/TRANSLATION_SETUP.md
+     対象ファイル: .github/workflows/translate-readme.yml, .github_automation/translate/docs/TRANSLATION_SETUP.md, issue-notes/11.md
 
-     実行内容: `.github/workflows/call-translate-readme.yml`が外部プロジェクトから`workflow_call`で利用される際の現在の導入手順と、`inputs`（特にプロンプト関連）の柔軟性について分析してください。`.github_automation/translate/docs/TRANSLATION_SETUP.md`の内容も考慮に入れ、現在の制約や改善点を特定してください。
+     実行内容: .github/workflows/translate-readme.yml の workflow_call セクション、特に inputs および secrets 定義、そして .github_automation/translate/docs/TRANSLATION_SETUP.md の内容を詳細に分析し、外部プロジェクトがこのワークフローを呼び出す際に必要な設定項目（入力パラメータ、シークレット、前提条件）を洗い出してください。また、issue-notes/11.md で言及されている prompt のパラメータ化の現状も確認してください。
 
-     確認事項: `call-translate-readme.yml`の`inputs`定義、`.github_automation/translate/scripts/translate-readme.cjs`でのプロンプトの利用方法、および翻訳対象ファイルの特定方法（現時点ではREADME決め打ちとあるが）を確認してください。
+     確認事項: .github/workflows/translate-readme.yml が最新の共通ワークフローの形になっているか確認してください。TRANSLATION_SETUP.md の内容と実際の .github/workflows/translate-readme.yml の整合性を確認してください。
 
-     期待する出力: `call-translate-readme.yml`の現在の導入手順の概要と、[Issue #11](../issue-notes/11.md)で言及されている「プロンプトをハードコーディングでなく、promptsに切り出し、呼び出し元ymlから任意のpromptsを指定できるようにする」という改善提案について、技術的な実現可能性と初期の設計案をmarkdown形式で出力してください。
+     期待する出力: 外部プロジェクトが translate-readme.yml を導入する際の手順書をmarkdown形式で生成してください。具体的には：必須パラメータの設定方法、シークレットの登録手順、前提条件の確認項目（例: README.ja.md の存在など）を含めてください。また、prompt パラメータ化の現状と今後の課題について簡潔にまとめてください。
      ```
+
+3. [Issue #57](../issue-notes/57.md): Rust CIワークフローの外部利用可能性の調査
+   - 最初の小さな一歩: プロジェクト内のRust関連CIワークフロー (`rust-windows-check.yml`, `rust-windows-cargo-check.yml`, `rust-fmt-commit.yml`) をレビューし、これらのワークフローが他のリポジトリから `workflow_call` で利用可能かどうか、またその利用方法の概要を把握する。
+   - Agent実行プロンプト:
+     ```
+     対象ファイル: .github/workflows/rust-windows-check.yml, .github/workflows/rust-windows-cargo-check.yml, .github/workflows/rust-fmt-commit.yml
+
+     実行内容: 各Rust CIワークフローファイルの内容を分析し、特に on: workflow_call: の定義、必要な inputs および secrets、そして実行されるステップ（cargo fmt, cargo check, cargo test など）を確認してください。
+
+     確認事項: これらのワークフローが実際に workflow_call を使用して他のリポジトリから呼び出されることを想定しているか、またそのための準備（例えば、適切な permissions 設定や paths の調整など）がされているか確認してください。
+
+     期待する出力: 各Rust CIワークフロー（rust-windows-check.yml, rust-windows-cargo-check.yml, rust-fmt-commit.yml）を外部プロジェクトから利用する際の主要な inputs と secrets の一覧、および各ワークフローが実行する主要なアクション（例: fmt の実行、check の実行、test の実行）をまとめたマークダウン形式のサマリを生成してください。
 
 ---
-Generated at: 2026-03-29 07:07:40 JST
+Generated at: 2026-04-19 07:10:00 JST

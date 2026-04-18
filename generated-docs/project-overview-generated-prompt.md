@@ -1,4 +1,4 @@
-Last updated: 2026-03-29
+Last updated: 2026-04-19
 
 
 # プロジェクト概要生成プロンプト（来訪者向け）
@@ -93,6 +93,7 @@ Last updated: 2026-03-29
 {}
 
 ## ファイル階層ツリー
+📄 .gitattributes
 📁 .github_automation/
   📁 callgraph/
     📁 codeql-queries/
@@ -305,4 +306,4 @@ src/main.js
 
 
 ---
-Generated at: 2026-03-29 07:07:24 JST
+Generated at: 2026-04-19 07:09:42 JST
