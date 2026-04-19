@@ -34,7 +34,17 @@ TEST_FILE_PATTERNS = [
 
 
 def load_toml_file(config_path: str) -> Dict[str, Any]:
-    """Load a TOML file"""
+    """Load and parse a TOML file.
+
+    Args:
+        config_path: Path to the TOML file.
+
+    Returns:
+        Parsed configuration data.
+
+    Raises:
+        FileNotFoundError: If the TOML file does not exist.
+    """
     try:
         with open(config_path, 'rb') as f:
             return tomllib.load(f)
@@ -52,7 +62,15 @@ def load_toml_file(config_path: str) -> Dict[str, Any]:
 
 
 def merge_config(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
-    """Merge config dicts recursively, replacing values from override"""
+    """Recursively merge two configuration dictionaries.
+
+    Args:
+        base: Base configuration dictionary.
+        override: Override configuration dictionary whose values take precedence.
+
+    Returns:
+        Merged configuration dictionary.
+    """
     merged = dict(base)
     for key, value in override.items():
         base_value = merged.get(key)
@@ -64,7 +82,16 @@ def merge_config(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, An
 
 
 def load_config(config_path: str, fallback_config_path: str | None = None) -> Dict[str, Any]:
-    """Load configuration from TOML file"""
+    """Load configuration, optionally merging it onto a fallback config.
+
+    Args:
+        config_path: Path to the primary repository config file.
+        fallback_config_path: Optional path to the default config file.
+
+    Returns:
+        Repository config, fallback config, or a merge of both where values from
+        config_path override fallback_config_path.
+    """
     try:
         config = load_toml_file(config_path)
     except FileNotFoundError:
