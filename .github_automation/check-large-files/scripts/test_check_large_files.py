@@ -67,6 +67,24 @@ exclude_files = []
             self.assertEqual(config["settings"]["max_lines"], 300)
             self.assertEqual(config["scan"]["exclude_files"], [])
 
+    def test_missing_fallback_config_exits_cleanly(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            config_path = temp_path / "config.toml"
+
+            config_path.write_text(
+                """
+[scan]
+exclude_files = ["src/chord2mml_chord2ast.cjs"]
+""".strip(),
+                encoding="utf-8",
+            )
+
+            with self.assertRaises(SystemExit) as exc:
+                check_large_files.load_config(str(config_path), str(temp_path / "missing-default.toml"))
+
+            self.assertEqual(exc.exception.code, 1)
+
 
 if __name__ == "__main__":
     unittest.main()
