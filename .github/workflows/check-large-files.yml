@@ -32,6 +32,10 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Run bundled unit tests
+        run: |
+          python ${{ env.TMP_DIR }}/${{ env.SCRIPT_DIR }}/test_check_large_files.py
+
       - name: Run large file detection
         id: check
         env:

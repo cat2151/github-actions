@@ -33,17 +33,23 @@ TEST_FILE_PATTERNS = [
 ]
 
 
-def load_config(config_path: str, fallback_config_path: str | None = None) -> Dict[str, Any]:
-    """Load configuration from TOML file"""
+def load_toml_file(config_path: str) -> Dict[str, Any]:
+    """Load and parse a TOML file.
+
+    Args:
+        config_path: Path to the TOML file.
+
+    Returns:
+        Parsed configuration data.
+
+    Raises:
+        FileNotFoundError: If the TOML file does not exist.
+    """
     try:
         with open(config_path, 'rb') as f:
             return tomllib.load(f)
     except FileNotFoundError:
-        if fallback_config_path is not None:
-            print(f"Info: Config file not found: {config_path}, using fallback config: {fallback_config_path}")
-            return load_config(fallback_config_path, None)
-        print(f"Error: Config file not found: {config_path}", file=sys.stderr)
-        sys.exit(1)
+        raise
     except PermissionError:
         print(f"Error: Permission denied when reading config file: {config_path}", file=sys.stderr)
         sys.exit(1)
@@ -53,6 +59,61 @@ def load_config(config_path: str, fallback_config_path: str | None = None) -> Di
     except OSError as e:
         print(f"Error: Failed to read config file {config_path}: {e}", file=sys.stderr)
         sys.exit(1)
+
+
+def merge_config(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
+    """Recursively merge two configuration dictionaries.
+
+    Args:
+        base: Base configuration dictionary.
+        override: Override configuration dictionary whose values take precedence.
+
+    Returns:
+        Merged configuration dictionary.
+    """
+    merged = dict(base)
+    for key, value in override.items():
+        base_value = merged.get(key)
+        if isinstance(base_value, dict) and isinstance(value, dict):
+            merged[key] = merge_config(base_value, value)
+            continue
+        merged[key] = value
+    return merged
+
+
+def load_config(config_path: str, fallback_config_path: str | None = None) -> Dict[str, Any]:
+    """Load configuration, optionally merging it onto a fallback config.
+
+    Args:
+        config_path: Path to the primary repository config file.
+        fallback_config_path: Optional path to the default config file.
+
+    Returns:
+        Repository config, fallback config, or a merge of both where values from
+        config_path override fallback_config_path.
+    """
+    try:
+        config = load_toml_file(config_path)
+    except FileNotFoundError:
+        if fallback_config_path is not None:
+            print(f"Info: Config file not found: {config_path}, using fallback config: {fallback_config_path}")
+            try:
+                return load_toml_file(fallback_config_path)
+            except FileNotFoundError:
+                print(f"Error: Config file not found: {fallback_config_path}", file=sys.stderr)
+                sys.exit(1)
+        print(f"Error: Config file not found: {config_path}", file=sys.stderr)
+        sys.exit(1)
+
+    if fallback_config_path is None:
+        return config
+
+    try:
+        fallback_config = load_toml_file(fallback_config_path)
+    except FileNotFoundError:
+        print(f"Error: Config file not found: {fallback_config_path}", file=sys.stderr)
+        sys.exit(1)
+    return merge_config(fallback_config, config)
 
 
 def count_lines(file_path: str) -> int:
