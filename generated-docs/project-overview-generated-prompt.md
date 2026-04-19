@@ -1,4 +1,4 @@
-Last updated: 2026-04-19
+Last updated: 2026-04-20
 
 
 # プロジェクト概要生成プロンプト（来訪者向け）
@@ -123,6 +123,7 @@ Last updated: 2026-04-19
     📄 check-large-files.toml.default
     📁 scripts/
       📄 check_large_files.py
+      📄 test_check_large_files.py
   📁 check_recent_human_commit/
     📁 scripts/
       📄 check-recent-human-commit.cjs
@@ -197,7 +198,7 @@ Last updated: 2026-04-19
   📖 40.md
   📖 44.md
   📖 57.md
-  📖 67.md
+  📖 69.md
   📖 7.md
   📖 8.md
   📖 9.md
@@ -306,4 +307,4 @@ src/main.js
 
 
 ---
-Generated at: 2026-04-19 07:09:42 JST
+Generated at: 2026-04-20 07:10:33 JST

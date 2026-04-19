@@ -1,4 +1,4 @@
-Last updated: 2026-04-19
+Last updated: 2026-04-20
 
 # 開発状況生成プロンプト（開発者向け）
 
@@ -142,6 +142,7 @@ Last updated: 2026-04-19
 - .github/actions-tmp/.github_automation/check-large-files/README.md
 - .github/actions-tmp/.github_automation/check-large-files/check-large-files.toml.default
 - .github/actions-tmp/.github_automation/check-large-files/scripts/check_large_files.py
+- .github/actions-tmp/.github_automation/check-large-files/scripts/test_check_large_files.py
 - .github/actions-tmp/.github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
 - .github/actions-tmp/.github_automation/project_summary/docs/daily-summary-setup.md
 - .github/actions-tmp/.github_automation/project_summary/prompts/development-status-prompt.md
@@ -205,7 +206,7 @@ Last updated: 2026-04-19
 - .github/actions-tmp/issue-notes/40.md
 - .github/actions-tmp/issue-notes/44.md
 - .github/actions-tmp/issue-notes/57.md
-- .github/actions-tmp/issue-notes/67.md
+- .github/actions-tmp/issue-notes/69.md
 - .github/actions-tmp/issue-notes/7.md
 - .github/actions-tmp/issue-notes/8.md
 - .github/actions-tmp/issue-notes/9.md
@@ -249,6 +250,7 @@ Last updated: 2026-04-19
 - .github_automation/check-large-files/README.md
 - .github_automation/check-large-files/check-large-files.toml.default
 - .github_automation/check-large-files/scripts/check_large_files.py
+- .github_automation/check-large-files/scripts/test_check_large_files.py
 - .github_automation/check_recent_human_commit/scripts/check-recent-human-commit.cjs
 - .github_automation/project_summary/docs/daily-summary-setup.md
 - .github_automation/project_summary/prompts/development-status-prompt.md
@@ -309,7 +311,7 @@ Last updated: 2026-04-19
 - issue-notes/40.md
 - issue-notes/44.md
 - issue-notes/57.md
-- issue-notes/67.md
+- issue-notes/69.md
 - issue-notes/7.md
 - issue-notes/8.md
 - issue-notes/9.md
@@ -664,22 +666,32 @@ env: で値を渡し、process.env で参照するのが正しい
 
 ## 最近の変更（過去7日間）
 ### コミット履歴:
+e1c562b Update callgraph.html [auto]
+8f93cd8 Merge pull request #70 from cat2151/copilot/update-check-large-files-toml
+d5e3ee7 fix: PR レビューコメントへ対応
+07aeb97 docs: check-large-files の設定マージ仕様を補足
+fd7f523 fix: check-large-files の設定を差分上書き対応
+6145d76 Initial plan
+f265367 Add issue note for #69 [auto]
+97dcdf1 Update project summaries (overview & development status) [auto]
 7fc30f9 Update callgraph.html [auto]
 0484c1a Rust CI checkだけでなくtestも行うようにした
-f7ed901 agent改行破壊対応
 
 ### 変更されたファイル:
 .gitattributes
+.github/workflows/check-large-files.yml
 .github/workflows/rust-windows-cargo-check.yml
-.github/workflows/rust-windows-check.yml
+.github_automation/check-large-files/README.md
+.github_automation/check-large-files/scripts/check_large_files.py
+.github_automation/check-large-files/scripts/test_check_large_files.py
 generated-docs/callgraph.html
 generated-docs/development-status-generated-prompt.md
 generated-docs/development-status.md
 generated-docs/project-overview-generated-prompt.md
 generated-docs/project-overview.md
-issue-notes/65.md
 issue-notes/67.md
+issue-notes/69.md
 
 
 ---
-Generated at: 2026-04-19 07:09:42 JST
+Generated at: 2026-04-20 07:10:34 JST
