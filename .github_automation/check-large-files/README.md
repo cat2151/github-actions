@@ -34,7 +34,7 @@ exclude_patterns = [
 exclude_files = []
 ```
 
-If no `.github/check-large-files.toml` is found in your repository, the workflow falls back to the default configuration bundled with this reusable workflow at `.github_automation/check-large-files/check-large-files.toml.default`. See that file in this repository for a complete example with common patterns.
+If no `.github/check-large-files.toml` is found in your repository, the workflow falls back to the default configuration bundled with this reusable workflow at `.github_automation/check-large-files/check-large-files.toml.default`. If you do provide `.github/check-large-files.toml`, it is treated as a partial override on top of that default file, so you can specify only the fields you want to change. See that file in this repository for a complete example with common patterns.
 
 ### 2. Create Caller Workflow
 

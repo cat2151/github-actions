@@ -33,17 +33,13 @@ TEST_FILE_PATTERNS = [
 ]
 
 
-def load_config(config_path: str, fallback_config_path: str | None = None) -> Dict[str, Any]:
-    """Load configuration from TOML file"""
+def load_toml_file(config_path: str) -> Dict[str, Any]:
+    """Load a TOML file"""
     try:
         with open(config_path, 'rb') as f:
             return tomllib.load(f)
     except FileNotFoundError:
-        if fallback_config_path is not None:
-            print(f"Info: Config file not found: {config_path}, using fallback config: {fallback_config_path}")
-            return load_config(fallback_config_path, None)
-        print(f"Error: Config file not found: {config_path}", file=sys.stderr)
-        sys.exit(1)
+        raise
     except PermissionError:
         print(f"Error: Permission denied when reading config file: {config_path}", file=sys.stderr)
         sys.exit(1)
@@ -53,6 +49,36 @@ def load_config(config_path: str, fallback_config_path: str | None = None) -> Di
     except OSError as e:
         print(f"Error: Failed to read config file {config_path}: {e}", file=sys.stderr)
         sys.exit(1)
+
+
+def merge_config(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
+    """Merge config dicts recursively, replacing values from override"""
+    merged = dict(base)
+    for key, value in override.items():
+        base_value = merged.get(key)
+        if isinstance(base_value, dict) and isinstance(value, dict):
+            merged[key] = merge_config(base_value, value)
+            continue
+        merged[key] = value
+    return merged
+
+
+def load_config(config_path: str, fallback_config_path: str | None = None) -> Dict[str, Any]:
+    """Load configuration from TOML file"""
+    try:
+        config = load_toml_file(config_path)
+    except FileNotFoundError:
+        if fallback_config_path is not None:
+            print(f"Info: Config file not found: {config_path}, using fallback config: {fallback_config_path}")
+            return load_toml_file(fallback_config_path)
+        print(f"Error: Config file not found: {config_path}", file=sys.stderr)
+        sys.exit(1)
+
+    if fallback_config_path is None:
+        return config
+
+    fallback_config = load_toml_file(fallback_config_path)
+    return merge_config(fallback_config, config)
 
 
 def count_lines(file_path: str) -> int:
